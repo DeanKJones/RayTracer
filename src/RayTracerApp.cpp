@@ -1,7 +1,7 @@
-#include "Core/Application.h"
-#include "Core/EntryPoint.h"
+#include "../core/Application.h"
+#include "../core/EntryPoint.h"
 
-#include "Core/Image.h"
+#include "../core/Image.h"
 
 class ExampleLayer : public Core::Layer
 {

@@ -1,5 +1,7 @@
+#!/bin/sh
+
 mkdir -p build
 cd build
-cmake -S ../ -B .
+cmake -DGLFW_BUILD_DOCS=OFF -S ../ -B .
 make
 cd ..
