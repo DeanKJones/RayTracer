@@ -82,12 +82,12 @@ else()
     message(STATUS "Using vulkan lib at: ${Vulkan_LIBRARIES}")
 endif()
 
-#set(VULKAN_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/vulkan)
-#message(STATUS "Got the Vulkan folder here: ${VULKAN_DIR}")  
+set(VULKAN_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/vulkan)
+message(STATUS "Got the Vulkan folder here: ${VULKAN_DIR}")  
 
 #============== IMGUI ==============#
 
-set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/imgui)
+set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/imgui-cherno)
 message(STATUS "Got the IMGUI folder here: ${IMGUI_DIR}")
 add_library(imgui 
         STATIC
@@ -133,6 +133,6 @@ target_link_libraries(${PROJECT_NAME}
 )
 target_link_directories(${PROJECT_NAME}
 PUBLIC
-    imgui
-    imgui/backends
+    imgui-cherno
+    imgui-cherno/backends
 )
