@@ -13,11 +13,21 @@ set(GCC_COVERAGE_COMPILE_FLAGS "")
 if(NOT MSVC)
 	set(CMAKE_CXX_FLAGS	"${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}")
 endif()
+
+option(GLM_TEST_ENABLE "GLM test" ON)
+
 # ===============================
 
 # ========= deps ================
 # vulkan loader
 find_package(Vulkan REQUIRED)
+
+set(VULKAN_DIR ${PROJECT_SOURCE_DIR}/external/vulkan)
+message(STATUS "Got the Vulkan folder here: ${VULKAN_DIR}") 
+
+# Include Vulkan
+include_directories(${VULKAN_DIR}/include)
+
 
 # glfw
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
@@ -30,19 +40,19 @@ add_subdirectory(external/glfw)
 add_subdirectory(external/glm)
 
 # imgui
-add_subdirectory(external/imgui-cherno)
+add_subdirectory(external/imgui)
 
 #stb-image
 add_subdirectory(external/stb_image)
 # ===============================
 
-# ========== walnut =============
+# ========== Core =============
 # find all source files and headers
 file(
 	GLOB_RECURSE # recursive
 	APP_SRC # variable to store the source files and headers
 	CONFIGURE_DEPENDS # make a dependency
-	"${PROJECT_SOURCE_DIR}/src/*.h" "${PROJECT_SOURCE_DIR}/src/*.cpp"
+	"${PROJECT_SOURCE_DIR}/*.h" "${PROJECT_SOURCE_DIR}/*.cpp"
 )
 
 add_library(core STATIC ${APP_SRC})
@@ -57,6 +67,6 @@ target_link_libraries(core PUBLIC stbimage)
 # =================================
 
 # ========== include dir ==========
-target_include_directories(core PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
+target_include_directories(core PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 target_include_directories(core PUBLIC "${PROJECT_SOURCE_DIR}/vendor/stb_image")
 # =================================
