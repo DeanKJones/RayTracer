@@ -14,8 +14,6 @@ if(NOT MSVC)
 	set(CMAKE_CXX_FLAGS	"${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}")
 endif()
 
-option(GLM_TEST_ENABLE "GLM test" ON)
-
 # ===============================
 
 # ========= deps ================
@@ -37,6 +35,7 @@ set(GLFW_VULKAN_STATIC ON CACHE BOOL "" FORCE)
 add_subdirectory(external/glfw)
 
 # glm
+set(BUILD_TESTING OFF)
 add_subdirectory(external/glm)
 
 # imgui
@@ -52,7 +51,7 @@ file(
 	GLOB_RECURSE # recursive
 	APP_SRC # variable to store the source files and headers
 	CONFIGURE_DEPENDS # make a dependency
-	"${PROJECT_SOURCE_DIR}/*.h" "${PROJECT_SOURCE_DIR}/*.cpp"
+	"${PROJECT_SOURCE_DIR}/src/*.h" "${PROJECT_SOURCE_DIR}/src/*.cpp"
 )
 
 add_library(core STATIC ${APP_SRC})

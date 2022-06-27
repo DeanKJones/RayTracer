@@ -473,7 +473,7 @@ namespace Core {
 		// Load default font
 		ImFontConfig fontConfig;
 		fontConfig.FontDataOwnedByAtlas = false;
-		ImFont* robotoFont = io.Fonts->AddFontFromMemoryTTF((void*)g_RobotoRegular, sizeof(g_RobotoRegular), 20.0f, &fontConfig);
+		ImFont* robotoFont = io.Fonts->AddFontFromMemoryTTF((void*)g_RobotoRegular, sizeof(g_RobotoRegular), 15.0f, &fontConfig);
 		io.FontDefault = robotoFont;
 
 		// Upload Fonts

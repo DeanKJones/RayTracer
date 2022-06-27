@@ -1,4 +1,4 @@
 #!/bin/sh zsh
 
-cd build
+cd build/app
 ./RayTracerApplication

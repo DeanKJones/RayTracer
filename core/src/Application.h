@@ -19,8 +19,8 @@ namespace Core {
 	struct ApplicationSpecification
 	{
 		std::string Name = "Ray Tracer App";
-		uint32_t Width = 1600;
-		uint32_t Height = 900;
+		uint32_t Width = 1300;
+		uint32_t Height = 650;
 	};
 
 	class Application
