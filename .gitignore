@@ -46,3 +46,7 @@ _deps
 
 # Build Folder
 build/
+
+# Compiles
+.cache
+compile_commands.json
