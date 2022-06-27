@@ -47,6 +47,8 @@ _deps
 .env.cmake
 .DS_Store
 
+.vscode
+
 # Build Folder
 build/
 
