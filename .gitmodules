@@ -1,9 +1,6 @@
-[submodule "external/glm"]
-	path = external/glm
-	url = https://github.com/g-truc/glm.git
-[submodule "external/glfw"]
-	path = external/glfw
+[submodule "core/external/imgui"]
+	path = core/external/imgui
+	url = https://github.com/DeanKJones/imgui.git
+[submodule "core/external/glfw3"]
+	path = core/external/glfw3
 	url = https://github.com/glfw/glfw.git
-[submodule "external/imgui-cherno"]
-	path = external/imgui-cherno
-	url = https://github.com/TheCherno/imgui.git
