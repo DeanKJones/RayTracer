@@ -3,3 +3,9 @@
 	path = core/external/glfw
 	url = https://github.com/glfw/glfw.git
 
+[submodule "core/external/imgui"]
+	path = core/external/imgui
+	url = https://github.com/thegeeko/imgui.git
+[submodule "core/external/glm"]
+	path = core/external/glm
+	url = https://github.com/g-truc/glm.git
