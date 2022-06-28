@@ -1,16 +1,16 @@
-@echo off
+@REM @echo off
  
-:: Create build dir
-set buildDir=%~dp0..build
-if not exist %buildDir% mkdir %buildDir%
-pushd %buildDir%
+@REM :: Create build dir
+@REM set buildDir=%~dp0..build
+@REM if not exist %buildDir% mkdir %buildDir%
+@REM pushd %buildDir%
  
-:: Needed folders
-set extDir=%~dp0..\external
-set scriptDir=%~dp0..\scripts
+@REM :: Needed folders
+@REM set extDir=%~dp0..\core\external
+@REM set scriptDir=%~dp0..\scripts
  
-:: Use make to build default target
-cd %scriptDir%\
-mingw32-make
+@REM :: Use make to build default target
+@REM cd %scriptDir%\
+@REM mingw32-make
  
-popd
+@REM popd

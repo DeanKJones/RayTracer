@@ -22,10 +22,8 @@ find_package(Vulkan REQUIRED)
 
 set(VULKAN_DIR ${PROJECT_SOURCE_DIR}/external/vulkan)
 message(STATUS "Got the Vulkan folder here: ${VULKAN_DIR}") 
-
 # Include Vulkan
 include_directories(${VULKAN_DIR}/include)
-
 
 # glfw
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
