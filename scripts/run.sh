@@ -1,4 +1,4 @@
-#!/bin/sh zsh
+#!/bin/sh
 
 cd build/app
-./RayTracerApplication
+./RayTracingApp
