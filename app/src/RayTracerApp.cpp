@@ -2,8 +2,9 @@
 #include "../../core/src/EntryPoint.h"
 
 #include "../../core/src/Image.h"
-#include "../../src/Random.h"
-#include "../../src/Timer.h"
+#include "../../core/src/Timer.h"
+
+#include "Render.h"
 
 using namespace Core;
 
@@ -15,7 +16,7 @@ public:
 		ImGui::Begin("Settings");
 		ImGui::Text("Last Render: %.3fms", m_lastRenderTime);
 		if (ImGui::Button("Render")) {
-			Render();
+			RenderImage();
 		}
 		ImGui::End();
 
@@ -25,37 +26,27 @@ public:
 		m_viewportWidth = ImGui::GetContentRegionAvail().x;
 		m_viewportHeight = ImGui::GetContentRegionAvail().y;
 
-		if (m_image) {
- 			ImGui::Image(m_image->GetDescriptorSet(), {(float)m_image->GetWidth(), (float)m_image->GetHeight()});
+		auto image = m_Render.getFinalImage();
+		if (image) {
+ 			ImGui::Image(image->GetDescriptorSet(), {(float)image->GetWidth(), (float)image->GetHeight()},
+						 ImVec2(0, 1), ImVec2(1, 0));
 		}
 		ImGui::End();
 		ImGui::PopStyleVar();
 	}
 
-	void Render()
+	void RenderImage()
 	{
 		Timer timer;
 
-		if (!m_image || m_viewportWidth != m_image->GetWidth() || m_viewportHeight != m_image->GetHeight()) 
-		{
-			m_image = std::make_shared<Image>(m_viewportWidth, m_viewportHeight, ImageFormat::RGBA);
-			delete[] m_imageData;
-			m_imageData = new uint32_t[m_viewportWidth * m_viewportHeight];
-		}
+		m_Render.onResize(m_viewportWidth, m_viewportHeight);
+		m_Render.Render();
 
-		for (uint32_t i = 0; i < m_viewportWidth * m_viewportHeight; i++) 
-		{
-			m_imageData[i] = Random::UInt();
-			m_imageData[i] |= 0xff000000;
-		}
-
-		m_image->SetData(m_imageData);
 		m_lastRenderTime = timer.ElapsedMillis();
 	}
 
 private:
-	std::shared_ptr<Image> m_image;
-	uint32_t* m_imageData = nullptr;
+	Renderer m_Render;
 	float m_lastRenderTime = 0.0f;
 	uint32_t m_viewportWidth = 0, m_viewportHeight = 0;
 };
