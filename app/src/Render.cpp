@@ -38,9 +38,14 @@ void Renderer::Render()
 // Shader
 uint32_t Renderer::perPixel(glm::vec2 coord)
 {   
-    float radius = 0.5f;
-    
+    /* R G B */
+    uint8_t cR = (uint8_t)(255.0f);
+    uint8_t cG = (uint8_t)(255.0f);
+    uint8_t cB = (uint8_t)(255.0f);
 
+    float radius = 0.25f;
+    glm::vec3 spherePos(0.5f, 0.5f, 0.0f);
+    createSphere(spherePos, radius);
 
     glm::vec3 rayOrigin(0.0f, 0.0f, 2.0f);
     glm::vec3 rayDirection(coord.x, coord.y, -1.0f);
@@ -54,8 +59,8 @@ uint32_t Renderer::perPixel(glm::vec2 coord)
     // t = Hit Distance
 
     float a = glm::dot(rayDirection, rayDirection);
-    float b = 2.0f * glm::dot(rayOrigin, rayDirection);
-    float c = glm::dot(rayOrigin, rayOrigin) - radius * radius;
+    float b = 2.0f * glm::dot((rayOrigin - spherePos), rayDirection);  // rayOrigin - spherePosition allows the sphere to move
+    float c = glm::dot(rayOrigin, rayOrigin) - s_radius * s_radius;
 
     /*  Quadratic Formula
     *         ___________
@@ -66,7 +71,7 @@ uint32_t Renderer::perPixel(glm::vec2 coord)
     float discriminant = b * b - 4.0f * a * c;
 
     if (discriminant >= 0.0f){
-        return 0xff00ffff;
+        return 0xff000000 | (cB << 16) | (cG << 8) | cR;
     }
     return 0xff000000;
 }

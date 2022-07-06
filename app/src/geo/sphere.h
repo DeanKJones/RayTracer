@@ -5,7 +5,7 @@
 class Sphere 
 {
 public:
-    Sphere();
+    Sphere() = default;
     //void createSphere(glm::vec3 position, float radius);
 
 private:
