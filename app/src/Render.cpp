@@ -39,6 +39,9 @@ void Renderer::Render()
 uint32_t Renderer::perPixel(glm::vec2 coord)
 {   
     float radius = 0.5f;
+    
+
+
     glm::vec3 rayOrigin(0.0f, 0.0f, 2.0f);
     glm::vec3 rayDirection(coord.x, coord.y, -1.0f);
     rayDirection = glm::normalize(rayDirection);
@@ -73,3 +76,8 @@ uint32_t Renderer::perPixel(glm::vec2 coord)
 //      Return the ray hit distances 
 //      Find the 3D Coordinate of everything 
 //      Apply some shading to it (normal or otherwise)
+
+void Renderer::createSphere(glm::vec3 position, float radius) {
+    s_pos = position;
+    s_radius = radius;
+}

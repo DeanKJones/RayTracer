@@ -18,6 +18,10 @@ public:
 
 private:
     uint32_t perPixel(glm::vec2 coord);
+    
+    void createSphere(glm::vec3 position, float radius);
+    glm::vec3 s_pos;
+    float s_radius;
 
 private:
     std::shared_ptr<Core::Image> m_FinalImage;
