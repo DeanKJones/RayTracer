@@ -38,7 +38,13 @@ void Renderer::Render()
 // Shader
 uint32_t Renderer::perPixel(glm::vec2 coord)
 {   
+    /* R G B */
+    uint8_t cR = (uint8_t)(255.0f);
+    uint8_t cG = (uint8_t)(255.0f);
+    uint8_t cB = (uint8_t)(255.0f);
+
     float radius = 0.5f;
+
     glm::vec3 rayOrigin(0.0f, 0.0f, 2.0f);
     glm::vec3 rayDirection(coord.x, coord.y, -1.0f);
     rayDirection = glm::normalize(rayDirection);
@@ -63,7 +69,7 @@ uint32_t Renderer::perPixel(glm::vec2 coord)
     float discriminant = b * b - 4.0f * a * c;
 
     if (discriminant >= 0.0f){
-        return 0xff00ffff;
+        return 0xff000000 | (cB << 16) | (cG << 8) | cR;
     }
     return 0xff000000;
 }
