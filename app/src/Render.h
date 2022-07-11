@@ -18,7 +18,9 @@ public:
 
 private:
     uint32_t perPixel(glm::vec2 coord);
-    
+    uint32_t color(glm::vec4 color);
+
+private:
     void createSphere(glm::vec3 position, float radius);
     glm::vec3 s_pos;
     float s_radius;

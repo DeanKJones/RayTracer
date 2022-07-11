@@ -22,11 +22,16 @@ void Renderer::onResize(uint32_t width, uint32_t height)
 // Render
 void Renderer::Render()
 {
+    // Aspect Ratio
+    float aspectRatio = (float)m_FinalImage->GetWidth() / (float)m_FinalImage->GetHeight();
+
     for (uint32_t y = 0; y < m_FinalImage->GetHeight(); y++) {
         for (uint32_t x = 0; x < m_FinalImage->GetWidth(); x++) 
         {    
             glm::vec2 coord = { (float)x / (float)m_FinalImage->GetWidth(), (float)y / (float)m_FinalImage->GetHeight() };
             coord = coord * 2.0f - 1.0f;  // -1 -> 1
+            // Aspect Ratio
+            coord.x *= aspectRatio;
             // Image Data Pixel Position
             int p_pos = x + y * m_FinalImage->GetWidth();
             m_imageData[p_pos] = perPixel(coord);
@@ -38,18 +43,14 @@ void Renderer::Render()
 // Shader
 uint32_t Renderer::perPixel(glm::vec2 coord)
 {   
-    /* R G B */
-    uint8_t cR = (uint8_t)(255.0f);
-    uint8_t cG = (uint8_t)(255.0f);
-    uint8_t cB = (uint8_t)(255.0f);
-
-    float radius = 0.25f;
-    glm::vec3 spherePos(0.5f, 0.5f, 0.0f);
+    // Create Sphere
+    float radius = 0.5f;
+    glm::vec3 spherePos(0.0f, 0.0f, 0.0f);
     createSphere(spherePos, radius);
 
     glm::vec3 rayOrigin(0.0f, 0.0f, 2.0f);
     glm::vec3 rayDirection(coord.x, coord.y, -1.0f);
-    rayDirection = glm::normalize(rayDirection);
+    //rayDirection = glm::normalize(rayDirection);
 
     // (bx^2 + bx^2)t^2 + (2(axbx + ayby))t + (ax^2 + ay^2 - r^2) = 0
     // Where: 
@@ -71,9 +72,37 @@ uint32_t Renderer::perPixel(glm::vec2 coord)
     float discriminant = b * b - 4.0f * a * c;
 
     if (discriminant >= 0.0f){
-        return 0xff000000 | (cB << 16) | (cG << 8) | cR;
+        // Quadtratic solutions
+        float t[] = {
+            (-b - glm::sqrt(discriminant)) / (2.0f * a),
+            (-b + glm::sqrt(discriminant)) / (2.0f * a)
+        };
+        // Create Light
+        glm::vec3 lightDirection(1.0f, -1.0f, -1.0f);
+        glm::normalize(lightDirection);
+
+        // For both quadratic solutions
+        for (int i = 0; i < 2; i++) {
+            glm::vec3 hitPosition = rayOrigin + rayDirection * t[i];
+            glm::vec3 normal = hitPosition - spherePos;
+            glm::normalize(normal);
+
+            // Get light hits
+            float light = glm::max(glm::dot(normal, -lightDirection), 0.0f);
+
+            // Normals
+            glm::vec4 sphereColor(normal * 0.5f + 0.5f, 1.0f);
+
+            // Solid Unlit
+            //glm::vec4 sphereColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+            // Color Lit
+            glm::vec4 sphereColorL((light * sphereColor.r), (light * sphereColor.g), (light * sphereColor.b), 1.0f);
+            // Return hit object
+            return color(sphereColorL);
+        }
     }
-    return 0xff000000;
+    return color({0.0f, 0.0f, 0.0f, 1.0f});
 }
 
 // TODO:
@@ -81,6 +110,16 @@ uint32_t Renderer::perPixel(glm::vec2 coord)
 //      Return the ray hit distances 
 //      Find the 3D Coordinate of everything 
 //      Apply some shading to it (normal or otherwise)
+
+// Color to Uint32_t
+uint32_t Renderer::color(glm::vec4 color) {
+    uint32_t result = 
+        ((uint8_t)(color.a * 255.0f) << 24) +
+        ((uint8_t)(color.b * 255.0f) << 16) +
+        ((uint8_t)(color.g * 255.0f) << 8)  +
+        ((uint8_t)(color.r * 255.0f));
+    return result;
+}
 
 void Renderer::createSphere(glm::vec3 position, float radius) {
     s_pos = position;
