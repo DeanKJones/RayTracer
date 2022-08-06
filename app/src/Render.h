@@ -17,8 +17,8 @@ public:
     std::shared_ptr<Core::Image> getFinalImage() const { return m_FinalImage; }
 
 private:
-    uint32_t perPixel(glm::vec2 coord);
-    uint32_t color(glm::vec4 color);
+    glm::vec4 perPixel(glm::vec2 coord);
+    uint32_t ConvertRGBA(glm::vec4 color);
 
 private:
     void createSphere(glm::vec3 position, float radius);

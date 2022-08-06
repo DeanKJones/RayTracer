@@ -31,16 +31,19 @@ void Renderer::Render()
             coord = coord * 2.0f - 1.0f;  // -1 -> 1
             // Aspect Ratio
             coord.x *= aspectRatio;
+            // Color
+            glm::vec4 color = perPixel(coord);
+            color = glm::clamp(color, glm::vec4(0.0f), glm::vec4(1.0f));
             // Image Data Pixel Position
             int p_pos = x + y * m_FinalImage->GetWidth();
-            m_imageData[p_pos] = perPixel(coord);
+            m_imageData[p_pos] = ConvertRGBA(color);
         }
     }
     m_FinalImage->SetData(m_imageData);
 }
 
 // Shader
-uint32_t Renderer::perPixel(glm::vec2 coord)
+glm::vec4 Renderer::perPixel(glm::vec2 coord)
 {   
     // Create Sphere
     float radius = 0.5f;
@@ -69,45 +72,43 @@ uint32_t Renderer::perPixel(glm::vec2 coord)
 
     float discriminant = b * b - 4.0f * a * c;
 
-    if (discriminant >= 0.0f){
-        // Quadtratic solutions
-        float t[] = {
-            (-b - glm::sqrt(discriminant)) / (2.0f * a),
-            (-b + glm::sqrt(discriminant)) / (2.0f * a)
-        };
-        // Create Light
-        glm::vec3 lightDirection(1.0f, -1.0f, -1.0f);
-        glm::normalize(lightDirection);
-
-        // For both quadratic solutions
-        for (int i = 0; i < 2; i++) {
-            glm::vec3 hitPosition = rayOrigin + rayDirection * t[i];
-            glm::vec3 normal = hitPosition - spherePos;
-            glm::normalize(normal);
-
-            // Get light hits
-            float light = glm::max(glm::dot(normal, -lightDirection), 0.0f);
-            // Normals
-            glm::vec4 sphereColorNormals(normal * 0.5f + 0.5f, 1.0f);
-            // Solid Unlit
-            glm::vec4 sphereColorSolid(1.0f, 1.0f, 1.0f, 1.0f);
-            // Color Lit
-            glm::vec4 sphereColorLit((light * sphereColorNormals.r), 
-                                     (light * sphereColorNormals.g),
-                                     (light * sphereColorNormals.b), 1.0f);
-            // Return hit object
-            return color(sphereColorLit);
-        }
+    if (discriminant < 0.0f){
+        return glm::vec4({0.0f, 0.0f, 0.0f, 1.0f});
     }
-    return color({0.0f, 0.0f, 0.0f, 1.0f});
+
+    // Quadtratic solutions
+    float rayHit = (-b - glm::sqrt(discriminant)) / (2.0f * a);
+    // float HitDistant = (-b + glm::sqrt(discriminant)) / (2.0f * a);
+
+    // Create Light
+    glm::vec3 lightDirection(-1.0f, -1.0f, -1.0f);
+    glm::normalize(lightDirection);
+
+    // For both quadratic solutions
+    for (int i = 0; i < 2; i++) {
+        glm::vec3 hitPosition = rayOrigin + rayDirection * rayHit;
+        glm::vec3 normal = glm::normalize(hitPosition - spherePos);
+
+        // Get light hits
+        float light = glm::max(glm::dot(normal, -lightDirection), 0.0f);
+        // Solid Unlit
+        glm::vec3 sphereColor(1.0f, 1.0f, 1.0f);
+        // Normals
+        glm::vec3 colorNormals(normal * 0.5f + 0.5f);
+        // Color Lit
+        glm::vec3 colorLit(sphereColor * light);
+
+        // Return hit object
+        return glm::vec4(colorLit, 1.0f);
+    }
 }
 
 // Color to Uint32_t
-uint32_t Renderer::color(glm::vec4 color) {
+uint32_t Renderer::ConvertRGBA(glm::vec4 color) {
     uint32_t result = 
-        ((uint8_t)(color.a * 255.0f) << 24) +
-        ((uint8_t)(color.b * 255.0f) << 16) +
-        ((uint8_t)(color.g * 255.0f) << 8)  +
+        ((uint8_t)(color.a * 255.0f) << 24) |
+        ((uint8_t)(color.b * 255.0f) << 16) |
+        ((uint8_t)(color.g * 255.0f) << 8)  |
         ((uint8_t)(color.r * 255.0f));
     return result;
 }
