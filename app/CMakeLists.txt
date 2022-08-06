@@ -4,6 +4,8 @@ project(RayTracing_app)
 set(CMAKE_CXX_STANDARD 17)
 
 # ========== SRC =============
+add_subdirectory(src/geo)
+
 # find all source files and headers
 file(
 	GLOB_RECURSE 		# recursive

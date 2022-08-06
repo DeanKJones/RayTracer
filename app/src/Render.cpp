@@ -13,7 +13,6 @@ void Renderer::onResize(uint32_t width, uint32_t height)
     else {
         m_FinalImage = std::make_shared<Core::Image>(width, height, Core::ImageFormat::RGBA);
     }
-
     delete[] m_imageData;
     m_imageData = new uint32_t[width * height];
 
@@ -50,7 +49,6 @@ uint32_t Renderer::perPixel(glm::vec2 coord)
 
     glm::vec3 rayOrigin(0.0f, 0.0f, 2.0f);
     glm::vec3 rayDirection(coord.x, coord.y, -1.0f);
-    //rayDirection = glm::normalize(rayDirection);
 
     // (bx^2 + bx^2)t^2 + (2(axbx + ayby))t + (ax^2 + ay^2 - r^2) = 0
     // Where: 
@@ -89,27 +87,20 @@ uint32_t Renderer::perPixel(glm::vec2 coord)
 
             // Get light hits
             float light = glm::max(glm::dot(normal, -lightDirection), 0.0f);
-
             // Normals
-            glm::vec4 sphereColor(normal * 0.5f + 0.5f, 1.0f);
-
+            glm::vec4 sphereColorNormals(normal * 0.5f + 0.5f, 1.0f);
             // Solid Unlit
-            //glm::vec4 sphereColor(1.0f, 1.0f, 1.0f, 1.0f);
-
+            glm::vec4 sphereColorSolid(1.0f, 1.0f, 1.0f, 1.0f);
             // Color Lit
-            glm::vec4 sphereColorL((light * sphereColor.r), (light * sphereColor.g), (light * sphereColor.b), 1.0f);
+            glm::vec4 sphereColorLit((light * sphereColorNormals.r), 
+                                     (light * sphereColorNormals.g),
+                                     (light * sphereColorNormals.b), 1.0f);
             // Return hit object
-            return color(sphereColorL);
+            return color(sphereColorLit);
         }
     }
     return color({0.0f, 0.0f, 0.0f, 1.0f});
 }
-
-// TODO:
-//      Solve the rest of the quadratic formula 
-//      Return the ray hit distances 
-//      Find the 3D Coordinate of everything 
-//      Apply some shading to it (normal or otherwise)
 
 // Color to Uint32_t
 uint32_t Renderer::color(glm::vec4 color) {
@@ -121,6 +112,7 @@ uint32_t Renderer::color(glm::vec4 color) {
     return result;
 }
 
+// Sphere 
 void Renderer::createSphere(glm::vec3 position, float radius) {
     s_pos = position;
     s_radius = radius;
