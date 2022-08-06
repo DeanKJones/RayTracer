@@ -54,11 +54,6 @@ void Renderer::Render()
 // Shader
 glm::vec4 Renderer::perPixel(glm::vec2 coord)
 {   
-    /* R G B */
-    uint8_t cR = (uint8_t)(255.0f);
-    uint8_t cG = (uint8_t)(255.0f);
-    uint8_t cB = (uint8_t)(255.0f);
-
     float radius = 0.5f;
 
     glm::vec3 rayOrigin(0.0f, 0.0f, 2.0f);
@@ -71,8 +66,29 @@ glm::vec4 Renderer::perPixel(glm::vec2 coord)
 
     float discriminant = b * b - 4.0f * a * c;
 
-    if (discriminant >= 0.0f){
-        return glm::vec4(1, 0, 1, 1);
+    // Not Hit
+    if (discriminant < 0.0f){
+        return glm::vec4(0, 0, 0, 1);
     }
-    return glm::vec4(0, 0, 0, 1);
+
+    float t0 = (-b + glm::sqrt(discriminant)) / (2.0f * a);
+    float t1 = (-b - glm::sqrt(discriminant)) / (2.0f * a);
+
+    //glm::vec3 h0 = rayOrigin + rayDirection * t0;
+    glm::vec3 hitPoint = rayOrigin + rayDirection * t1;
+    // Normal
+    glm::vec3 normal = glm::normalize(hitPoint);
+    // Light 
+    glm::vec3 lightDir = glm::normalize(glm::vec3(-1.0f, -1.0f, -1.0f));
+
+    float d = glm::max(glm::dot(normal, -lightDir), 0.0f); 
+
+    // Sphere Color
+    glm::vec3 SphereColor(1, 1, 1);
+    // Changed
+    SphereColor *= d;
+    return glm::vec4(SphereColor, 1);
 }
+
+// Homework
+// Add options to the IMGUI window to control, light dir, sphere color
