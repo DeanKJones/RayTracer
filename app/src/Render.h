@@ -17,7 +17,7 @@ public:
     std::shared_ptr<Core::Image> getFinalImage() const { return m_FinalImage; }
 
 private:
-    uint32_t perPixel(glm::vec2 coord);
+    glm::vec4 perPixel(glm::vec2 coord);
 
 private:
     std::shared_ptr<Core::Image> m_FinalImage;

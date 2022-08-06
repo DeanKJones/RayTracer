@@ -1,5 +1,18 @@
 #include "Render.h"
 
+namespace Utils {
+
+    // RGBA conversion
+    static uint32_t ConvertToRGBA(const glm::vec4& color) {
+        uint8_t r = (uint8_t)(color.r * 255.0f);
+        uint8_t g = (uint8_t)(color.g * 255.0f);
+        uint8_t b = (uint8_t)(color.b * 255.0f);
+        uint8_t a = (uint8_t)(color.a * 255.0f);
+
+        uint32_t result = (a << 24) | (b << 16) | (g << 8) | r;
+        return result;
+    }
+}
 
 void Renderer::onResize(uint32_t width, uint32_t height)
 {
@@ -27,16 +40,19 @@ void Renderer::Render()
         {    
             glm::vec2 coord = { (float)x / (float)m_FinalImage->GetWidth(), (float)y / (float)m_FinalImage->GetHeight() };
             coord = coord * 2.0f - 1.0f;  // -1 -> 1
+            // Color
+            glm::vec4 color = perPixel(coord);
+            color = glm::clamp(color, glm::vec4(0.0f), glm::vec4(1.0f));
             // Image Data Pixel Position
             int p_pos = x + y * m_FinalImage->GetWidth();
-            m_imageData[p_pos] = perPixel(coord);
+            m_imageData[p_pos] = Utils::ConvertToRGBA(color);
         }
     }
     m_FinalImage->SetData(m_imageData);
 }
 
 // Shader
-uint32_t Renderer::perPixel(glm::vec2 coord)
+glm::vec4 Renderer::perPixel(glm::vec2 coord)
 {   
     /* R G B */
     uint8_t cR = (uint8_t)(255.0f);
@@ -49,33 +65,14 @@ uint32_t Renderer::perPixel(glm::vec2 coord)
     glm::vec3 rayDirection(coord.x, coord.y, -1.0f);
     rayDirection = glm::normalize(rayDirection);
 
-    // (bx^2 + bx^2)t^2 + (2(axbx + ayby))t + (ax^2 + ay^2 - r^2) = 0
-    // Where: 
-    // a = Ray Origin
-    // b = Ray Direction
-    // r = Radius
-    // t = Hit Distance
-
     float a = glm::dot(rayDirection, rayDirection);
     float b = 2.0f * glm::dot(rayOrigin, rayDirection);
     float c = glm::dot(rayOrigin, rayOrigin) - radius * radius;
 
-    /*  Quadratic Formula
-    *         ___________
-    *   -b +-/ b^2 - 4ac
-    *           2a
-    */  
-
     float discriminant = b * b - 4.0f * a * c;
 
     if (discriminant >= 0.0f){
-        return 0xff000000 | (cB << 16) | (cG << 8) | cR;
+        return glm::vec4(1, 0, 1, 1);
     }
-    return 0xff000000;
+    return glm::vec4(0, 0, 0, 1);
 }
-
-// TODO:
-//      Solve the rest of the quadratic formula 
-//      Return the ray hit distances 
-//      Find the 3D Coordinate of everything 
-//      Apply some shading to it (normal or otherwise)
