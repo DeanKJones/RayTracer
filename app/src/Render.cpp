@@ -70,6 +70,7 @@ glm::vec4 Renderer::perPixel(glm::vec2 coord)
         return glm::vec4(0, 0, 0, 1);
     }
 
+    // t1 is the closest hit position
     float t0 = (-b + glm::sqrt(discriminant)) / (2.0f * a);
     float t1 = (-b - glm::sqrt(discriminant)) / (2.0f * a);
 
