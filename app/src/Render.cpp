@@ -1,7 +1,6 @@
 #include "Render.h"
 
 namespace Utils {
-
     // RGBA conversion
     static uint32_t ConvertToRGBA(const glm::vec4& color) {
         uint8_t r = (uint8_t)(color.r * 255.0f);
