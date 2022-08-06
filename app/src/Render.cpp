@@ -1,17 +1,5 @@
 #include "Render.h"
 
-namespace Utils {
-    // RGBA conversion
-    static uint32_t ConvertToRGBA(const glm::vec4& color) {
-        uint8_t r = (uint8_t)(color.r * 255.0f);
-        uint8_t g = (uint8_t)(color.g * 255.0f);
-        uint8_t b = (uint8_t)(color.b * 255.0f);
-        uint8_t a = (uint8_t)(color.a * 255.0f);
-
-        uint32_t result = (a << 24) | (b << 16) | (g << 8) | r;
-        return result;
-    }
-}
 
 void Renderer::onResize(uint32_t width, uint32_t height)
 {
@@ -25,7 +13,6 @@ void Renderer::onResize(uint32_t width, uint32_t height)
     else {
         m_FinalImage = std::make_shared<Core::Image>(width, height, Core::ImageFormat::RGBA);
     }
-
     delete[] m_imageData;
     m_imageData = new uint32_t[width * height];
 
@@ -34,17 +21,22 @@ void Renderer::onResize(uint32_t width, uint32_t height)
 // Render
 void Renderer::Render()
 {
+    // Aspect Ratio
+    float aspectRatio = (float)m_FinalImage->GetWidth() / (float)m_FinalImage->GetHeight();
+
     for (uint32_t y = 0; y < m_FinalImage->GetHeight(); y++) {
         for (uint32_t x = 0; x < m_FinalImage->GetWidth(); x++) 
         {    
             glm::vec2 coord = { (float)x / (float)m_FinalImage->GetWidth(), (float)y / (float)m_FinalImage->GetHeight() };
             coord = coord * 2.0f - 1.0f;  // -1 -> 1
+            // Aspect Ratio
+            coord.x *= aspectRatio;
             // Color
             glm::vec4 color = perPixel(coord);
             color = glm::clamp(color, glm::vec4(0.0f), glm::vec4(1.0f));
             // Image Data Pixel Position
             int p_pos = x + y * m_FinalImage->GetWidth();
-            m_imageData[p_pos] = Utils::ConvertToRGBA(color);
+            m_imageData[p_pos] = ConvertRGBA(color);
         }
     }
     m_FinalImage->SetData(m_imageData);
@@ -53,41 +45,76 @@ void Renderer::Render()
 // Shader
 glm::vec4 Renderer::perPixel(glm::vec2 coord)
 {   
+    // Create Sphere
     float radius = 0.5f;
+    glm::vec3 spherePos(0.0f, 0.0f, 0.0f);
+    createSphere(spherePos, radius);
 
     glm::vec3 rayOrigin(0.0f, 0.0f, 2.0f);
     glm::vec3 rayDirection(coord.x, coord.y, -1.0f);
-    rayDirection = glm::normalize(rayDirection);
+
+    // (bx^2 + bx^2)t^2 + (2(axbx + ayby))t + (ax^2 + ay^2 - r^2) = 0
+    // Where: 
+    // a = Ray Origin
+    // b = Ray Direction
+    // r = Radius
+    // t = Hit Distance
 
     float a = glm::dot(rayDirection, rayDirection);
-    float b = 2.0f * glm::dot(rayOrigin, rayDirection);
-    float c = glm::dot(rayOrigin, rayOrigin) - radius * radius;
+    float b = 2.0f * glm::dot((rayOrigin - spherePos), rayDirection);  // rayOrigin - spherePosition allows the sphere to move
+    float c = glm::dot(rayOrigin, rayOrigin) - s_radius * s_radius;
+
+    /*  Quadratic Formula
+    *         ___________
+    *   -b +-/ b^2 - 4ac
+    *           2a
+    */  
 
     float discriminant = b * b - 4.0f * a * c;
 
-    // Not Hit
     if (discriminant < 0.0f){
-        return glm::vec4(0, 0, 0, 1);
+        return glm::vec4({0.0f, 0.0f, 0.0f, 1.0f});
     }
 
-    float t0 = (-b + glm::sqrt(discriminant)) / (2.0f * a);
-    float t1 = (-b - glm::sqrt(discriminant)) / (2.0f * a);
+    // Quadtratic solutions
+    float rayHit = (-b - glm::sqrt(discriminant)) / (2.0f * a);
+    // float HitDistant = (-b + glm::sqrt(discriminant)) / (2.0f * a);
 
-    //glm::vec3 h0 = rayOrigin + rayDirection * t0;
-    glm::vec3 hitPoint = rayOrigin + rayDirection * t1;
-    // Normal
-    glm::vec3 normal = glm::normalize(hitPoint);
-    // Light 
-    glm::vec3 lightDir = glm::normalize(glm::vec3(-1.0f, -1.0f, -1.0f));
+    // Create Light
+    glm::vec3 lightDirection(-1.0f, -1.0f, -1.0f);
+    glm::normalize(lightDirection);
 
-    float d = glm::max(glm::dot(normal, -lightDir), 0.0f); 
+    // For both quadratic solutions
+    for (int i = 0; i < 2; i++) {
+        glm::vec3 hitPosition = rayOrigin + rayDirection * rayHit;
+        glm::vec3 normal = glm::normalize(hitPosition - spherePos);
 
-    // Sphere Color
-    glm::vec3 SphereColor(1, 1, 1);
-    // Changed
-    SphereColor *= d;
-    return glm::vec4(SphereColor, 1);
+        // Get light hits
+        float light = glm::max(glm::dot(normal, -lightDirection), 0.0f);
+        // Solid Unlit
+        glm::vec3 sphereColor(1.0f, 1.0f, 1.0f);
+        // Normals
+        glm::vec3 colorNormals(normal * 0.5f + 0.5f);
+        // Color Lit
+        glm::vec3 colorLit(sphereColor * light);
+
+        // Return hit object
+        return glm::vec4(colorLit, 1.0f);
+    }
 }
 
-// Homework
-// Add options to the IMGUI window to control, light dir, sphere color
+// Color to Uint32_t
+uint32_t Renderer::ConvertRGBA(glm::vec4 color) {
+    uint32_t result = 
+        ((uint8_t)(color.a * 255.0f) << 24) |
+        ((uint8_t)(color.b * 255.0f) << 16) |
+        ((uint8_t)(color.g * 255.0f) << 8)  |
+        ((uint8_t)(color.r * 255.0f));
+    return result;
+}
+
+// Sphere 
+void Renderer::createSphere(glm::vec3 position, float radius) {
+    s_pos = position;
+    s_radius = radius;
+}
