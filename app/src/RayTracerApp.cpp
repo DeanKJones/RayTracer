@@ -18,6 +18,10 @@ public:
 		if (ImGui::Button("Render")) {
 			RenderImage();
 		}
+
+		ImGui::ColorEdit4("Sphere Color :", (float*)&Utils::SphereColor);
+		ImGui::InputFloat3("Light Direction: \n", (float*)&Utils::lightDirection);
+	
 		ImGui::End();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));

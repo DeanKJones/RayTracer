@@ -29,3 +29,10 @@ private:
     std::shared_ptr<Core::Image> m_FinalImage;
     uint32_t* m_imageData = nullptr;
 };
+
+namespace Utils {
+    // IMGUI GLOBALS
+    static glm::vec3 SphereColor{1.0f, 1.0f, 1.0f};
+    static glm::vec3 lightDirection{0.0f, 0.0f, 0.0f};
+   
+}

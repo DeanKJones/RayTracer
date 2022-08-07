@@ -92,11 +92,11 @@ glm::vec4 Renderer::perPixel(glm::vec2 coord)
         // Get light hits
         float light = glm::max(glm::dot(normal, -lightDirection), 0.0f);
         // Solid Unlit
-        glm::vec3 sphereColor(1.0f, 1.0f, 1.0f);
+        //glm::vec3 sphereColor(1.0f, 1.0f, 1.0f);
         // Normals
         glm::vec3 colorNormals(normal * 0.5f + 0.5f);
         // Color Lit
-        glm::vec3 colorLit(sphereColor * light);
+        glm::vec3 colorLit(Utils::SphereColor * light);
 
         // Return hit object
         return glm::vec4(colorLit, 1.0f);
