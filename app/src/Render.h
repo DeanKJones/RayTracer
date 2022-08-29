@@ -3,6 +3,9 @@
 #include "../../core/src/Image.h"
 #include "../../core/src/Random.h"
 
+#include "Camera.h"
+#include "Ray.h"
+
 #include "glm/glm.hpp"
 #include <memory>
 
@@ -12,12 +15,12 @@ public:
     Renderer() = default;
 
     void onResize(uint32_t width, uint32_t height);
-    void Render();
+    void Render(const Camera& camera);
 
     std::shared_ptr<Core::Image> getFinalImage() const { return m_FinalImage; }
 
 private:
-    glm::vec4 perPixel(glm::vec2 coord);
+    glm::vec4 TraceRay(const Ray& ray);
     uint32_t ConvertRGBA(glm::vec4 color);
 
 private:
@@ -32,7 +35,7 @@ private:
 
 namespace Utils {
     // IMGUI GLOBALS
-    static glm::vec3 SphereColor{1.0f, 1.0f, 1.0f};
+    static glm::vec3 SphereColor{1.0f, 0.0f, 0.0f};
     static glm::vec3 lightDirection{0.0f, 0.0f, 0.0f};
    
 }

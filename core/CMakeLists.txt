@@ -50,6 +50,7 @@ file(
 	APP_SRC # variable to store the source files and headers
 	CONFIGURE_DEPENDS # make a dependency
 	"${PROJECT_SOURCE_DIR}/src/*.h" "${PROJECT_SOURCE_DIR}/src/*.cpp"
+	"${PROJECT_SOURCE_DIR}/src/input/*.h" "${PROJECT_SOURCE_DIR}/src/input/*.cpp"
 )
 
 add_library(core STATIC ${APP_SRC})

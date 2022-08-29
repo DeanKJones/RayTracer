@@ -5,12 +5,21 @@
 #include "../../core/src/Timer.h"
 
 #include "Render.h"
+#include "Camera.h"
 
 using namespace Core;
 
 class ExampleLayer : public Core::Layer
 {
 public:
+	ExampleLayer()
+		: m_Camera(45.0f, 0.1f, 100.0f) {}
+
+	virtual void OnUpdate(float ts) override
+	{
+		m_Camera.OnUpdate(ts);
+	}
+
 	virtual void OnUIRender() override
 	{
 		ImGui::Begin("Settings");
@@ -19,7 +28,7 @@ public:
 			RenderImage();
 		}
 
-		ImGui::ColorEdit4("Sphere Color :", (float*)&Utils::SphereColor);
+		ImGui::InputFloat3("Sphere Color :", (float*)&Utils::SphereColor);
 		ImGui::InputFloat3("Light Direction: \n", (float*)&Utils::lightDirection);
 	
 		ImGui::End();
@@ -44,13 +53,17 @@ public:
 		Timer timer;
 
 		m_Render.onResize(m_viewportWidth, m_viewportHeight);
-		m_Render.Render();
+
+		m_Camera.OnResize(m_viewportWidth, m_viewportHeight);
+		m_Render.Render(m_Camera);
 
 		m_lastRenderTime = timer.ElapsedMillis();
 	}
 
 private:
 	Renderer m_Render;
+	Camera m_Camera;
+
 	float m_lastRenderTime = 0.0f;
 	uint32_t m_viewportWidth = 0, m_viewportHeight = 0;
 };

@@ -19,21 +19,22 @@ void Renderer::onResize(uint32_t width, uint32_t height)
 }
 
 // Render
-void Renderer::Render()
+void Renderer::Render(const Camera& camera)
 {
+    Ray ray;
+	ray.Origin = camera.GetPosition();
+
     // Aspect Ratio
     float aspectRatio = (float)m_FinalImage->GetWidth() / (float)m_FinalImage->GetHeight();
 
     for (uint32_t y = 0; y < m_FinalImage->GetHeight(); y++) {
         for (uint32_t x = 0; x < m_FinalImage->GetWidth(); x++) 
         {    
-            glm::vec2 coord = { (float)x / (float)m_FinalImage->GetWidth(), (float)y / (float)m_FinalImage->GetHeight() };
-            coord = coord * 2.0f - 1.0f;  // -1 -> 1
-            // Aspect Ratio
-            coord.x *= aspectRatio;
-            // Color
-            glm::vec4 color = perPixel(coord);
+            ray.Direction = camera.GetRayDirections()[x + y * m_FinalImage->GetWidth()];
+			glm::vec4 color = TraceRay(ray);
+
             color = glm::clamp(color, glm::vec4(0.0f), glm::vec4(1.0f));
+
             // Image Data Pixel Position
             int p_pos = x + y * m_FinalImage->GetWidth();
             m_imageData[p_pos] = ConvertRGBA(color);
@@ -43,15 +44,12 @@ void Renderer::Render()
 }
 
 // Shader
-glm::vec4 Renderer::perPixel(glm::vec2 coord)
+glm::vec4 Renderer::TraceRay(const Ray& ray)
 {   
     // Create Sphere
     float radius = 0.5f;
     glm::vec3 spherePos(0.0f, 0.0f, 0.0f);
     createSphere(spherePos, radius);
-
-    glm::vec3 rayOrigin(0.0f, 0.0f, 2.0f);
-    glm::vec3 rayDirection(coord.x, coord.y, -1.0f);
 
     // (bx^2 + bx^2)t^2 + (2(axbx + ayby))t + (ax^2 + ay^2 - r^2) = 0
     // Where: 
@@ -60,9 +58,9 @@ glm::vec4 Renderer::perPixel(glm::vec2 coord)
     // r = Radius
     // t = Hit Distance
 
-    float a = glm::dot(rayDirection, rayDirection);
-    float b = 2.0f * glm::dot((rayOrigin - spherePos), rayDirection);  // rayOrigin - spherePosition allows the sphere to move
-    float c = glm::dot(rayOrigin, rayOrigin) - s_radius * s_radius;
+    float a = glm::dot(ray.Direction, ray.Direction);
+    float b = 2.0f * glm::dot((ray.Origin - spherePos), ray.Direction);  // rayOrigin - spherePosition allows the sphere to move
+    float c = glm::dot(ray.Origin, ray.Origin) - s_radius * s_radius;
 
     /*  Quadratic Formula
     *         ___________
@@ -85,22 +83,18 @@ glm::vec4 Renderer::perPixel(glm::vec2 coord)
     glm::normalize(lightDirection);
 
     // For both quadratic solutions
-    for (int i = 0; i < 2; i++) {
-        glm::vec3 hitPosition = rayOrigin + rayDirection * rayHit;
-        glm::vec3 normal = glm::normalize(hitPosition - spherePos);
+    glm::vec3 hitPosition = ray.Origin + ray.Direction * rayHit;
+    glm::vec3 normal = glm::normalize(hitPosition - spherePos);
 
-        // Get light hits
-        float light = glm::max(glm::dot(normal, -lightDirection), 0.0f);
-        // Solid Unlit
-        //glm::vec3 sphereColor(1.0f, 1.0f, 1.0f);
-        // Normals
-        glm::vec3 colorNormals(normal * 0.5f + 0.5f);
-        // Color Lit
-        glm::vec3 colorLit(Utils::SphereColor * light);
+    // Get light hits
+    float light = glm::max(glm::dot(normal, -lightDirection), 0.0f);
+    // Normals
+    glm::vec3 colorNormals(normal * 0.5f + 0.5f);
+    // Color Lit
+    glm::vec3 colorLit(Utils::SphereColor * light);
 
-        // Return hit object
-        return glm::vec4(colorLit, 1.0f);
-    }
+    // Return hit object
+    return glm::vec4(colorLit, 1.0f);
 }
 
 // Color to Uint32_t
