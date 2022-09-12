@@ -28,8 +28,8 @@ public:
 			RenderImage();
 		}
 
-		ImGui::InputFloat3("Sphere Color :", (float*)&Utils::SphereColor);
-		ImGui::InputFloat3("Light Direction: \n", (float*)&Utils::lightDirection);
+		//ImGui::InputFloat3("Sphere Color :", (float*)&Utils::SphereColor);
+		//ImGui::InputFloat3("Light Direction: \n", (float*)&Utils::lightDirection);
 	
 		ImGui::End();
 
@@ -46,6 +46,8 @@ public:
 		}
 		ImGui::End();
 		ImGui::PopStyleVar();
+
+		//RenderImage();
 	}
 
 	void RenderImage()

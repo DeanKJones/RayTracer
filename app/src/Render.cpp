@@ -91,7 +91,7 @@ glm::vec4 Renderer::TraceRay(const Ray& ray)
     // Normals
     glm::vec3 colorNormals(normal * 0.5f + 0.5f);
     // Color Lit
-    glm::vec3 colorLit(Utils::SphereColor * light);
+    glm::vec3 colorLit(colorNormals * light);
 
     // Return hit object
     return glm::vec4(colorLit, 1.0f);
