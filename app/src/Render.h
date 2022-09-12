@@ -23,19 +23,19 @@ private:
     glm::vec4 TraceRay(const Ray& ray);
     uint32_t ConvertRGBA(glm::vec4 color);
 
-private:
+private:    // Sphere
     void createSphere(glm::vec3 position, float radius);
     glm::vec3 s_pos;
     float s_radius;
-
-private:
+    
+    // Image
     std::shared_ptr<Core::Image> m_FinalImage;
     uint32_t* m_imageData = nullptr;
-};
 
-namespace Utils {
-    // IMGUI GLOBALS
-    static glm::vec3 SphereColor{1.0f, 0.0f, 0.0f};
-    static glm::vec3 lightDirection{0.0f, 0.0f, 0.0f};
-   
-}
+public:     // Getter Functions 
+    glm::vec3 GetSphereColor() { return sphereColor; }
+    static glm::vec3 sphereColor;
+
+    glm::vec3 GetLightDirection() { return lightDirection; }
+    static glm::vec3 lightDirection;
+};

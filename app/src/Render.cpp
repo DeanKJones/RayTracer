@@ -1,5 +1,8 @@
 #include "Render.h"
 
+// UI VARIABLES
+glm::vec3 Renderer::sphereColor     = {1.0f, 1.0f, 1.0f};
+glm::vec3 Renderer::lightDirection  = {-1.0f, -1.0f, -1.0f};
 
 void Renderer::onResize(uint32_t width, uint32_t height)
 {
@@ -79,7 +82,7 @@ glm::vec4 Renderer::TraceRay(const Ray& ray)
     // float HitDistant = (-b + glm::sqrt(discriminant)) / (2.0f * a);
 
     // Create Light
-    glm::vec3 lightDirection(-1.0f, -1.0f, -1.0f);
+    glm::vec3 lightDirection = GetLightDirection();
     glm::normalize(lightDirection);
 
     // For both quadratic solutions
@@ -88,10 +91,12 @@ glm::vec4 Renderer::TraceRay(const Ray& ray)
 
     // Get light hits
     float light = glm::max(glm::dot(normal, -lightDirection), 0.0f);
+    // Base Color
+    glm::vec3 objectColor = GetSphereColor();
     // Normals
     glm::vec3 colorNormals(normal * 0.5f + 0.5f);
     // Color Lit
-    glm::vec3 colorLit(colorNormals * light);
+    glm::vec3 colorLit(objectColor * light);
 
     // Return hit object
     return glm::vec4(colorLit, 1.0f);
