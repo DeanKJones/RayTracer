@@ -31,7 +31,7 @@ public:
 		ImGui::Separator();
 
 		ImGui::Text("Sphere Color: ");
-		ImGui::ColorPicker3("", (float*)&Renderer::sphereColor);
+		//ImGui::ColorPicker3("", (float*)&Renderer::sphereColor);
 		ImGui::NewLine();
 
 		ImGui::Text("Light Direction: ");
@@ -56,16 +56,25 @@ public:
 		RenderImage();
 	}
 
-	void RenderImage()
+	void RenderImage() // Pass objects in here?
 	{
-		Timer timer;
+		Timer m_timer;
 
 		m_Render.onResize(m_viewportWidth, m_viewportHeight);
-
 		m_Camera.OnResize(m_viewportWidth, m_viewportHeight);
-		m_Render.Render(m_Camera);
 
-		m_lastRenderTime = timer.ElapsedMillis();
+		std::vector<std::unique_ptr<Object>> objects;
+
+		// Only one object is coming through
+		// The second object is rendered but not the first strangely
+		// 
+		//
+		objects.push_back(std::unique_ptr<Object>(new Sphere(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f, glm::vec3(1.0f, 0.0f, 0.0f))));
+		objects.push_back(std::unique_ptr<Object>(new Sphere(glm::vec3(-1.0f, 0.0f, 0.0f), 0.2f, glm::vec3(1.0f, 0.0f, 0.0f))));
+
+		m_Render.Render(m_Camera, objects);
+
+		m_lastRenderTime = m_timer.ElapsedMillis();
 	}
 
 private:

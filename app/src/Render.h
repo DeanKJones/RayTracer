@@ -5,6 +5,7 @@
 
 #include "Camera.h"
 #include "Ray.h"
+#include "obj/Object.h"
 
 #include "glm/glm.hpp"
 #include <memory>
@@ -15,27 +16,20 @@ public:
     Renderer() = default;
 
     void onResize(uint32_t width, uint32_t height);
-    void Render(const Camera& camera);
+    void Render(const Camera& camera, const std::vector<std::unique_ptr<Object>> &objects);
 
     std::shared_ptr<Core::Image> getFinalImage() const { return m_FinalImage; }
 
 private:
-    glm::vec4 TraceRay(const Ray& ray);
+    glm::vec4 TraceRay(const Ray& ray, const std::vector<std::unique_ptr<Object>> &objects, const Object *hitObject);
     uint32_t ConvertRGBA(glm::vec4 color);
 
-private:    // Sphere
-    void createSphere(glm::vec3 position, float radius);
-    glm::vec3 s_pos;
-    float s_radius;
-    
+private:
     // Image
     std::shared_ptr<Core::Image> m_FinalImage;
     uint32_t* m_imageData = nullptr;
 
 public:     // Getter Functions 
-    glm::vec3 GetSphereColor() { return sphereColor; }
-    static glm::vec3 sphereColor;
-
     glm::vec3 GetLightDirection() { return lightDirection; }
     static glm::vec3 lightDirection;
 };

@@ -10,6 +10,7 @@ file(
 	SRC 		 		# variable to store the source files and headers
 	CONFIGURE_DEPENDS 	# make a dependency
 	"${PROJECT_SOURCE_DIR}/src/*.h" "${PROJECT_SOURCE_DIR}/src/*.cpp"
+	"${PROJECT_SOURCE_DIR}/src/obj/*.h" "${PROJECT_SOURCE_DIR}/src/obj/*.cpp"
 )
 
 add_executable(RayTracingApp ${SRC})
