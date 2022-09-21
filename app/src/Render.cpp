@@ -56,9 +56,9 @@ glm::vec4 Renderer::TraceRay(const Ray& ray, const std::vector<std::unique_ptr<O
     for (; iter != objects.end(); ++iter) {
         float t = INFINITY;
         if((*iter)->intersect(ray.Origin, ray.Direction, t)) {
-            //hitObject = iter->get();
-            //tNear = t;
-            return RenderColor(ray, t, iter->get());
+            auto object = iter->get();
+            glm::vec4 objectColor = RenderColor(ray, t, object);
+            return objectColor;
         } 
     } 
     return glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -86,7 +86,7 @@ glm::vec4 Renderer::RenderColor(const Ray& ray, float &tNear, Object *hitObject)
     glm::vec3 colorLit(objectColor * light);
 
     // Return hit object
-    hitColor = glm::vec4(hitNormal, 1.0f);
+    hitColor = glm::vec4(colorNormals, 1.0f);
  
     return hitColor;
 }

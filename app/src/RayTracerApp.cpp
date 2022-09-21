@@ -56,7 +56,7 @@ public:
 		RenderImage();
 	}
 
-	void RenderImage() // Pass objects in here?
+	void RenderImage()
 	{
 		Timer m_timer;
 
@@ -65,12 +65,9 @@ public:
 
 		std::vector<std::unique_ptr<Object>> objects;
 
-		// Only one object is coming through
-		// The second object is rendered but not the first strangely
-		// 
-		//
 		objects.push_back(std::unique_ptr<Object>(new Sphere(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f, glm::vec3(1.0f, 0.0f, 0.0f))));
 		objects.push_back(std::unique_ptr<Object>(new Sphere(glm::vec3(-1.0f, 0.0f, 0.0f), 0.2f, glm::vec3(1.0f, 0.0f, 0.0f))));
+		objects.push_back(std::unique_ptr<Object>(new Sphere(glm::vec3(1.0f, 0.0f, 0.0f), 0.2f, glm::vec3(1.0f, 0.0f, 0.0f))));
 
 		m_Render.Render(m_Camera, objects);
 
