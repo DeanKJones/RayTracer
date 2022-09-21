@@ -30,7 +30,7 @@ public:
     glm::vec3 getSphereColor() { return color; }
 
 public:
-    static glm::vec3 sphereCenter;
-    static float radius;
-    static glm::vec3 color;
+    glm::vec3 sphereCenter;
+    float radius;
+    glm::vec3 color;
 };

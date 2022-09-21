@@ -1,9 +1,6 @@
 #include "Object.h"
 
-////// UI VARIABLES //////
-glm::vec3 Sphere::sphereCenter = {0.0f, 0.0f, 0.0f};
-float Sphere::radius = 0.5f;
-glm::vec3 Sphere::color = {1.0f, 1.0f, 1.0f};
+////// UI VARIABLES /////
 
 Sphere::Sphere(glm::vec3 pPos, float pRadius, glm::vec3 pColor)
 {
@@ -31,10 +28,10 @@ bool Sphere::intersect(const glm::vec3 &origin, const glm::vec3 &rayDirection, f
 
     if(!solveQuadratic(a, b, c, t)) 
         return false;
-
-    tNear = t;
-
-    return true;
+    else {
+        tNear = t;
+        return true;
+    }
 }
 
 
@@ -54,21 +51,25 @@ bool Sphere::solveQuadratic(const float &a, const float &b, const float &c, floa
 
    float t0, t1;
 
-    float discriminant = b * b - 4.0f * a * c;
+    float discriminant = (b * b) - (4.0f * a * c);
     if (discriminant < 0.0f)
         return false;
 
-    else if (discriminant == 0) { 
-        t0 = t1 = - 0.5 * b / a; 
-    } 
-    else { 
-        float quadratic = (b > 0) ? 
-            (-0.5 * (b + glm::sqrt(discriminant))) : 
-            (-0.5 * (b - glm::sqrt(discriminant))); 
-        t0 = quadratic / a; 
-        t1 = c / quadratic; 
-    } 
-    t = t0;
+    else 
+        t = ((-b - glm::sqrt(discriminant)) / (2 * a));
+
+    ////// Scratch Pixel Technique //////
+    // 
+    // else if (discriminant == 0) { 
+    //     t0 = t1 = - 0.5 * b / a; 
+    // } 
+    // else { 
+    //     float quadratic = (b > 0) ? 
+    //         (-0.5 * (b + glm::sqrt(discriminant))) : 
+    //         (-0.5 * (b - glm::sqrt(discriminant))); 
+    //     t0 = quadratic / a; 
+    //     t1 = c / quadratic; 
+    // } 
 
     return true;
 }

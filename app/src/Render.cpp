@@ -1,4 +1,5 @@
 #include "Render.h"
+#include <iostream>
 
 // UI VARIABLES
 glm::vec3 Renderer::lightDirection  = {-1.0f, -1.0f, -1.0f};
@@ -35,7 +36,7 @@ void Renderer::Render(const Camera& camera, const std::vector<std::unique_ptr<Ob
         for (uint32_t x = 0; x < m_FinalImage->GetWidth(); x++) 
         {    
             ray.Direction = camera.GetRayDirections()[x + y * m_FinalImage->GetWidth()];
-			glm::vec4 color = TraceRay(ray, objects, hitObject);
+			glm::vec4 color = TraceRay(ray, objects);
 
             color = glm::clamp(color, glm::vec4(0.0f), glm::vec4(1.0f));
 
@@ -48,38 +49,46 @@ void Renderer::Render(const Camera& camera, const std::vector<std::unique_ptr<Ob
 }
 
 // Shader
-glm::vec4 Renderer::TraceRay(const Ray& ray, const std::vector<std::unique_ptr<Object>> &objects, const Object *hitObject)
+glm::vec4 Renderer::TraceRay(const Ray& ray, const std::vector<std::unique_ptr<Object>> &objects)
 {   
     std::vector<std::unique_ptr<Object>>::const_iterator iter = objects.begin();
 
-    for (; iter != objects.end(); ++iter) { 
-        float tNear = 0;
-        if ((*iter)->intersect(ray.Origin, ray.Direction, tNear)) { 
-            hitObject = iter->get();
-
-            glm::vec3 hitPosition = ray.Origin + ray.Direction * tNear;
-            glm::vec3 hitNormal;
-            
-            hitObject->getSurfaceData(hitPosition, hitNormal);
-    
-            // Create Light
-            glm::vec3 lightDirection = GetLightDirection();
-            glm::normalize(lightDirection);
-
-            // Get light hits
-            float light = glm::max(glm::dot(hitNormal, -lightDirection), 0.0f);
-            // Base Color
-            //glm::vec3 objectColor(1.0f, 1.0f, 1.0f);
-            // Normals
-            //glm::vec3 colorNormals(hitNormal * 0.5f + 0.5f);
-            // Color Lit
-            //glm::vec3 colorLit(objectColor * light);
-
-            // Return hit object
-            return glm::vec4(hitNormal, 1.0f);
+    for (; iter != objects.end(); ++iter) {
+        float t = INFINITY;
+        if((*iter)->intersect(ray.Origin, ray.Direction, t)) {
+            //hitObject = iter->get();
+            //tNear = t;
+            return RenderColor(ray, t, iter->get());
         } 
     } 
     return glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+}
+
+glm::vec4 Renderer::RenderColor(const Ray& ray, float &tNear, Object *hitObject) 
+{  
+    glm::vec4 hitColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+    glm::vec3 hitPosition = ray.Origin + ray.Direction * tNear;
+    glm::vec3 hitNormal;
+    hitObject->getSurfaceData(hitPosition, hitNormal);
+
+    // Create Light
+    glm::vec3 lightDirection = GetLightDirection();
+    glm::normalize(lightDirection);
+
+    // Get light hits
+    float light = glm::max(glm::dot(hitNormal, -lightDirection), 0.0f);
+    // Base Color
+    glm::vec3 objectColor(1.0f, 1.0f, 1.0f);
+    // Normals
+    glm::vec3 colorNormals(hitNormal * 0.5f + 0.5f);
+    // Color Lit
+    glm::vec3 colorLit(objectColor * light);
+
+    // Return hit object
+    hitColor = glm::vec4(hitNormal, 1.0f);
+ 
+    return hitColor;
 }
 
 // Color to Uint32_t
