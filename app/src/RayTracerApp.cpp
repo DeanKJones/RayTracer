@@ -65,6 +65,8 @@ public:
 
 		std::vector<std::unique_ptr<Object>> objects;
 
+		// Bug where the sphere at 0,0,0 renders above the two outer spheres
+		// Not sure where this comes from 
 		objects.push_back(std::unique_ptr<Object>(new Sphere(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f, glm::vec3(1.0f, 0.0f, 0.0f))));
 		objects.push_back(std::unique_ptr<Object>(new Sphere(glm::vec3(-1.0f, 0.0f, 0.0f), 0.2f, glm::vec3(1.0f, 0.0f, 0.0f))));
 		objects.push_back(std::unique_ptr<Object>(new Sphere(glm::vec3(1.0f, 0.0f, 0.0f), 0.2f, glm::vec3(1.0f, 0.0f, 0.0f))));
