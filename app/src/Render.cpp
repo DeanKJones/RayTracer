@@ -95,7 +95,11 @@ glm::vec4 Renderer::RenderColor(const Ray& ray, const std::vector<std::unique_pt
     
         return hitColor;
     }
-    return glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+    glm::vec3 unitVector = glm::normalize(ray.Direction);
+    float t = 0.5 * (unitVector.y + 1.0f);
+    
+    glm::vec4 backgroundColor(((1.0f - t) * glm::vec3(1.0f, 1.0f, 1.0f)) + (t * glm::vec3(0.5f, 0.7f, 1.0f)), 1.0f);
+    return backgroundColor;
 }
 
 // Color to Uint32_t
