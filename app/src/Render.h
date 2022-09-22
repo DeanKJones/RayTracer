@@ -21,8 +21,8 @@ public:
     std::shared_ptr<Core::Image> getFinalImage() const { return m_FinalImage; }
 
 private:
-    glm::vec4 TraceRay(const Ray& ray, const std::vector<std::unique_ptr<Object>> &objects);
-    glm::vec4 RenderColor(const Ray& ray, float &tNear, Object *hitObject);
+    bool TraceRay(const Ray& ray, const std::vector<std::unique_ptr<Object>> &objects, float &tNear, const Object *&hitObject);
+    glm::vec4 RenderColor(const Ray& ray, const std::vector<std::unique_ptr<Object>> &objects);
     uint32_t ConvertRGBA(glm::vec4 color);
 
 private:
