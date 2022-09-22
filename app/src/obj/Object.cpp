@@ -35,9 +35,11 @@ bool Sphere::intersect(const glm::vec3 &origin, const glm::vec3 &rayDirection, f
 }
 
 
-void Sphere::getSurfaceData(const glm::vec3 &position, glm::vec3 &normal) const
+void Sphere::getSurfaceData(const glm::vec3 &hitPosition, glm::vec3 &normal, glm::vec3 &surfaceColor) const
 {
-    normal = glm::normalize(position - sphereCenter); 
+    glm::vec3 objectCenter = getSpherePosition();
+    normal = glm::normalize(hitPosition - objectCenter); 
+    surfaceColor = getSphereColor();
 }
 
 
@@ -45,11 +47,9 @@ bool Sphere::solveQuadratic(const float &a, const float &b, const float &c, floa
 {
     /*  Quadratic Formula
     *         ___________
-    *   -b +-/ b^2 - 4ac
+    *   -b +-/ b^2 - 4ac   =  t
     *           2a
     */  
-
-   float t0, t1;
 
     float discriminant = (b * b) - (4.0f * a * c);
     if (discriminant < 0.0f)

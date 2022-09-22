@@ -66,8 +66,7 @@ bool Renderer::TraceRay(const Ray& ray, const std::vector<std::unique_ptr<Object
 
 glm::vec4 Renderer::RenderColor(const Ray& ray, const std::vector<std::unique_ptr<Object>> &objects) 
 {  
-    glm::vec4 hitColor(1.0f, 1.0f, 1.0f, 1.0f);
-
+    // Create object and hit distance
     float tNear;
     const Object *hitObject = nullptr;
 
@@ -75,7 +74,9 @@ glm::vec4 Renderer::RenderColor(const Ray& ray, const std::vector<std::unique_pt
 
         glm::vec3 hitPosition = ray.Origin + ray.Direction * tNear;
         glm::vec3 hitNormal;
-        hitObject->getSurfaceData(hitPosition, hitNormal);
+        glm::vec3 hitColor;
+
+        hitObject->getSurfaceData(hitPosition, hitNormal, hitColor);
 
         // Create Light
         glm::vec3 lightDirection = GetLightDirection();
@@ -83,18 +84,18 @@ glm::vec4 Renderer::RenderColor(const Ray& ray, const std::vector<std::unique_pt
 
         // Get light hits
         float light = glm::max(glm::dot(hitNormal, -lightDirection), 0.0f);
-        // Base Color
-        glm::vec3 objectColor(1.0f, 1.0f, 1.0f);
+
         // Normals
         glm::vec3 colorNormals(hitNormal * 0.5f + 0.5f);
         // Color Lit
-        glm::vec3 colorLit(objectColor * light);
+        glm::vec3 colorLit(hitColor * light);
 
-        // Return hit object
-        hitColor = glm::vec4(colorNormals, 1.0f);
+        // Return object color
+        glm::vec4 objectColor(colorLit, 1.0f);
     
-        return hitColor;
+        return objectColor;
     }
+
     glm::vec3 unitVector = glm::normalize(ray.Direction);
     float t = 0.5 * (unitVector.y + 1.0f);
     
