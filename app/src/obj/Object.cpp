@@ -1,12 +1,14 @@
 #include "Object.h"
 
-////// UI VARIABLES /////
+////// GLOBAL VARIABLES /////
+int Object::nextID = 0;
 
 Sphere::Sphere(glm::vec3 pPos, float pRadius, glm::vec3 pColor)
 {
     sphereCenter = pPos;
     radius = pRadius;
     color = pColor;
+    ID = ++nextID;
 }
 
 

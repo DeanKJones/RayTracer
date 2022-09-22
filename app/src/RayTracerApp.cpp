@@ -7,6 +7,8 @@
 #include "Render.h"
 #include "Camera.h"
 
+#include "string.h"
+
 using namespace Core;
 
 class ExampleLayer : public Core::Layer
@@ -29,14 +31,19 @@ public:
 		}
 
 		ImGui::Separator();
-
 		ImGui::Text("Sphere Color: ");
+		for(int i = 0; i < m_Objects.size(); ++i){
+			auto objectID = m_Objects[i]->ID;
+			std::string t = std::to_string(objectID);
+			const char *text = t.c_str();
+			ImGui::Text(text);
+			//ImGui::ColorEdit3("", (float*)&)
+		}
 		//ImGui::ColorPicker3("", (float*)&Renderer::sphereColor);
 		ImGui::NewLine();
 
 		ImGui::Text("Light Direction: ");
 		ImGui::InputFloat3("", (float*)&Renderer::lightDirection);
-	
 		ImGui::End();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
@@ -63,14 +70,13 @@ public:
 		m_Render.onResize(m_viewportWidth, m_viewportHeight);
 		m_Camera.OnResize(m_viewportWidth, m_viewportHeight);
 
-		std::vector<std::unique_ptr<Object>> objects;
-
 		// Create Objects
-		objects.push_back(std::unique_ptr<Object>(new Sphere(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f, glm::vec3(1.0f, 0.0f, 0.0f))));
-		objects.push_back(std::unique_ptr<Object>(new Sphere(glm::vec3(-1.0f, 0.0f, 0.0f), 0.2f, glm::vec3(0.0f, 1.0f, 0.0f))));
-		objects.push_back(std::unique_ptr<Object>(new Sphere(glm::vec3(1.0f, 0.0f, 0.0f), 0.2f, glm::vec3(0.0f, 0.0f, 1.0f))));
-
-		m_Render.Render(m_Camera, objects);
+		if(m_Objects.size() == 0){
+			m_Objects.push_back(std::unique_ptr<Object>(new Sphere(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f, glm::vec3(1.0f, 0.0f, 0.0f))));
+			m_Objects.push_back(std::unique_ptr<Object>(new Sphere(glm::vec3(-1.0f, 0.0f, 0.0f), 0.2f, glm::vec3(0.0f, 1.0f, 0.0f))));
+			m_Objects.push_back(std::unique_ptr<Object>(new Sphere(glm::vec3(1.0f, 0.0f, 0.0f), 0.2f, glm::vec3(0.0f, 0.0f, 1.0f))));
+		}
+		m_Render.Render(m_Camera, m_Objects);
 
 		m_lastRenderTime = m_timer.ElapsedMillis();
 	}
@@ -78,6 +84,7 @@ public:
 private:
 	Renderer m_Render;
 	Camera m_Camera;
+	std::vector<std::unique_ptr<Object>> m_Objects;
 
 	float m_lastRenderTime = 0.0f;
 	uint32_t m_viewportWidth = 0, m_viewportHeight = 0;

@@ -10,6 +10,12 @@ public:
 
     virtual bool intersect(const glm::vec3 &, const glm::vec3 &, float &) const = 0;
     virtual void getSurfaceData(const glm::vec3 &, glm::vec3 &, glm::vec3 &) const = 0;
+
+// Create Object IDs
+protected:
+    static int nextID;
+public:
+    int ID;
 };
 
 class Sphere : public Object

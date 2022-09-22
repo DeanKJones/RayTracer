@@ -28,7 +28,7 @@ void Renderer::Render(const Camera& camera, const std::vector<std::unique_ptr<Ob
 	ray.Origin = camera.GetPosition();
     
     const Object *hitObject = nullptr;
-
+    
     // Aspect Ratio
     float aspectRatio = (float)m_FinalImage->GetWidth() / (float)m_FinalImage->GetHeight();
 
@@ -92,6 +92,7 @@ glm::vec4 Renderer::RenderColor(const Ray& ray, const std::vector<std::unique_pt
 
         // Return object color
         glm::vec4 objectColor(colorLit, 1.0f);
+        glm::vec4 objectNormal(colorNormals, 1.0f);
     
         return objectColor;
     }
@@ -99,6 +100,7 @@ glm::vec4 Renderer::RenderColor(const Ray& ray, const std::vector<std::unique_pt
     glm::vec3 unitVector = glm::normalize(ray.Direction);
     float t = 0.5 * (unitVector.y + 1.0f);
     
+    //backgroundColor = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
     glm::vec4 backgroundColor(((1.0f - t) * glm::vec3(1.0f, 1.0f, 1.0f)) + (t * glm::vec3(0.5f, 0.7f, 1.0f)), 1.0f);
     return backgroundColor;
 }
