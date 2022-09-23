@@ -2,7 +2,7 @@
 #include <iostream>
 
 // UI VARIABLES
-glm::vec3 Renderer::lightDirection  = {-1.0f, -1.0f, -1.0f};
+glm::vec3 Renderer::lightDirection  = {1.0f, -1.0f, -1.0f};
 
 void Renderer::onResize(uint32_t width, uint32_t height)
 {
@@ -18,7 +18,6 @@ void Renderer::onResize(uint32_t width, uint32_t height)
     }
     delete[] m_imageData;
     m_imageData = new uint32_t[width * height];
-
 }
 
 // Render
@@ -100,7 +99,7 @@ glm::vec4 Renderer::RenderColor(const Ray& ray, const std::vector<std::unique_pt
     glm::vec3 unitVector = glm::normalize(ray.Direction);
     float t = 0.5 * (unitVector.y + 1.0f);
     
-    //backgroundColor = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+    //glm::vec4 backgroundColor = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
     glm::vec4 backgroundColor(((1.0f - t) * glm::vec3(1.0f, 1.0f, 1.0f)) + (t * glm::vec3(0.5f, 0.7f, 1.0f)), 1.0f);
     return backgroundColor;
 }

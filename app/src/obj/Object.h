@@ -1,6 +1,7 @@
 #pragma once
 
 #include "glm/glm.hpp"
+#include <vector>
 
 class Object
 {
@@ -33,10 +34,10 @@ public:
     // Getters
     glm::vec3 getSpherePosition() const { return sphereCenter; }
     float getSphereRadius() const { return radius; }
-    glm::vec3 getSphereColor() const { return color; }
+    glm::vec3 getSphereColor() const { return color[ID]; }
 
 public:
     glm::vec3 sphereCenter;
     float radius;
-    glm::vec3 color;
+    static std::vector<glm::vec3> color;
 };

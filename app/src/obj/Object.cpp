@@ -2,13 +2,14 @@
 
 ////// GLOBAL VARIABLES /////
 int Object::nextID = 0;
+std::vector<glm::vec3> Sphere::color {};
 
 Sphere::Sphere(glm::vec3 pPos, float pRadius, glm::vec3 pColor)
 {
     sphereCenter = pPos;
     radius = pRadius;
-    color = pColor;
-    ID = ++nextID;
+    color.push_back(pColor);
+    ID = nextID++;
 }
 
 

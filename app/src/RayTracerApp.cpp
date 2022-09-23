@@ -31,14 +31,32 @@ public:
 		}
 
 		ImGui::Separator();
-		ImGui::Text("Sphere Color: ");
-		for(int i = 0; i < m_Objects.size(); ++i){
-			auto objectID = m_Objects[i]->ID;
-			std::string t = std::to_string(objectID);
-			const char *text = t.c_str();
-			ImGui::Text(text);
-			//ImGui::ColorEdit3("", (float*)&)
+		// ImGui::Text("Sphere Color: ");
+		// for(int i = 0; i < m_Objects.size(); i++){
+		// 	auto objectID = m_Objects[i]->ID;
+		// 	std::string t = std::to_string(objectID);
+		// 	const char *text = t.c_str();
+		// 	ImGui::Text(text);
+		// 	ImGui::ColorEdit3("Color: ", (float*)&Sphere::color[objectID]);
+		// 	ImGui::Separator();
+		// }
+
+		//if (ImGui::Selectable())
+
+		if (m_Objects.size() != 0){
+			int current_item = 0;
+			for(int i = 0; i < m_Objects.size(); ++i){
+				bool is_selected = (current_item == m_Objects[i]->ID);
+				if (ImGui::Selectable("Sphere: ", is_selected)){
+					int objectID = m_Objects[i]->ID;
+					current_item = objectID;
+				}
+				if (is_selected){
+					ImGui::SetItemDefaultFocus();
+				}
+			}
 		}
+
 		//ImGui::ColorPicker3("", (float*)&Renderer::sphereColor);
 		ImGui::NewLine();
 
