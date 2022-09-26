@@ -27,12 +27,16 @@ bool Sphere::intersect(const glm::vec3 &origin, const glm::vec3 &rayDirection, f
     float b = 2.0f * glm::dot((diff), rayDirection);
     float c = glm::dot(diff, diff) - radius * radius;
 
-    if(!solveQuadratic(a, b, c, t)) 
-        return false;
-    else {
-        tNear = t;
-        return true;
+    if(solveQuadratic(a, b, c, t)) {
+        if (t <= 0){
+            return false;
+        }
+        else {
+            tNear = t;
+            return true;
+        }
     }
+    return false;
 }
 
 

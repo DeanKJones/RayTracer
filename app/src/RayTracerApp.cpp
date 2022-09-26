@@ -22,22 +22,29 @@ public:
 		{
 			Sphere sphere;
 			sphere.position = {1.0f, 0.0f, 0.0f};
-			sphere.albedo = {0.0f, 0.0f, 1.0f};
-			sphere.radius = {0.2};
+			sphere.albedo 	= {0.0f, 0.0f, 1.0f};
+			sphere.radius 	= {0.2};
 			m_Scene.spheres.push_back(sphere);
 		}
 		{
 			Sphere sphere;
 			sphere.position = {0.0f, 0.0f, 0.0f};
-			sphere.albedo = {0.0f, 1.0f, 0.0f};
-			sphere.radius = {0.2};
+			sphere.albedo 	= {0.0f, 1.0f, 0.0f};
+			sphere.radius 	= {0.2f};
 			m_Scene.spheres.push_back(sphere);
 		}
 		{
 			Sphere sphere;
 			sphere.position = {-1.0f, 0.0f, 0.0f};
-			sphere.albedo = {1.0f, 0.0f, 0.0f};
-			sphere.radius = {0.2};
+			sphere.albedo 	= {1.0f, 0.0f, 0.0f};
+			sphere.radius 	= {0.2f};
+			m_Scene.spheres.push_back(sphere);
+		}
+		{
+			Sphere sphere;
+			sphere.position = {0.0f, -50.2f, 0.0f};
+			sphere.albedo 	= {0.5f, 0.5f, 0.5f};
+			sphere.radius 	= {50.0f};
 			m_Scene.spheres.push_back(sphere);
 		}
 	}
