@@ -21,7 +21,7 @@ void Renderer::onResize(uint32_t width, uint32_t height)
 }
 
 // Render
-void Renderer::Render(const Camera& camera, const std::vector<std::unique_ptr<Object>> &objects)
+void Renderer::Render(const Camera& camera, const Scene& scene)
 {
     Ray ray;
 	ray.Origin = camera.GetPosition();
@@ -35,7 +35,7 @@ void Renderer::Render(const Camera& camera, const std::vector<std::unique_ptr<Ob
         for (uint32_t x = 0; x < m_FinalImage->GetWidth(); x++) 
         {    
             ray.Direction = camera.GetRayDirections()[x + y * m_FinalImage->GetWidth()];
-			glm::vec4 color = RenderColor(ray, objects);
+			glm::vec4 color = RenderColor(ray, scene);
 
             color = glm::clamp(color, glm::vec4(0.0f), glm::vec4(1.0f));
 
@@ -48,28 +48,27 @@ void Renderer::Render(const Camera& camera, const std::vector<std::unique_ptr<Ob
 }
 
 // Shader
-bool Renderer::TraceRay(const Ray& ray, const std::vector<std::unique_ptr<Object>> &objects, float &tNear, const Object *&hitObject)
+bool Renderer::TraceRay(const Ray& ray, const Scene& scene, float &tNear, const Object *&hitObject)
 {   
-    std::vector<std::unique_ptr<Object>>::const_iterator iter = objects.begin();
-    tNear = INFINITY;
+    tNear = MAXFLOAT;
 
-    for (; iter != objects.end(); ++iter) {
+    for (const Sphere& sphere : scene.spheres) {
         float t = MAXFLOAT;
-        if((*iter)->intersect(ray.Origin, ray.Direction, t) && t < tNear) {
-            hitObject = iter->get();
+        if(sphere.intersect(ray.Origin, ray.Direction, t) && t < tNear) {
+            hitObject = &sphere;
             tNear = t;
         } 
     } 
     return (hitObject != nullptr);
 }
 
-glm::vec4 Renderer::RenderColor(const Ray& ray, const std::vector<std::unique_ptr<Object>> &objects) 
+glm::vec4 Renderer::RenderColor(const Ray& ray, const Scene& scene) 
 {  
     // Create object and hit distance
     float tNear;
     const Object *hitObject = nullptr;
 
-    if(TraceRay(ray, objects, tNear, hitObject)) {
+    if(TraceRay(ray, scene, tNear, hitObject)) {
 
         glm::vec3 hitPosition = ray.Origin + ray.Direction * tNear;
         glm::vec3 hitNormal;

@@ -1,17 +1,10 @@
 #include "Object.h"
 
-////// GLOBAL VARIABLES /////
-int Object::nextID = 0;
-std::vector<glm::vec3> Sphere::color {};
-std::vector<glm::vec3> Sphere::sphereCenter {};
-std::vector<float> Sphere::radius {};
-
 Sphere::Sphere(glm::vec3 pPos, float pRadius, glm::vec3 pColor)
 {
-    sphereCenter.push_back(pPos);
-    radius.push_back(pRadius);
-    color.push_back(pColor);
-    ID = nextID++;
+    position = pPos;
+    radius = pRadius;
+    albedo = pColor;
 }
 
 
@@ -28,9 +21,10 @@ bool Sphere::intersect(const glm::vec3 &origin, const glm::vec3 &rayDirection, f
     glm::vec3 sphereCenter = getSpherePosition();
     float radius = getSphereRadius();
 
-    glm::vec3 diff = origin - sphereCenter;
+    // The sphere center is subtracted from the ray origin to allow for the sphere to move and get hit by rays
+    glm::vec3 diff = origin - sphereCenter; 
     float a = glm::dot(rayDirection, rayDirection);
-    float b = 2.0f * glm::dot((diff), rayDirection);  // rayOrigin - spherePosition allows the sphere to move
+    float b = 2.0f * glm::dot((diff), rayDirection);
     float c = glm::dot(diff, diff) - radius * radius;
 
     if(!solveQuadratic(a, b, c, t)) 
@@ -64,19 +58,8 @@ bool Sphere::solveQuadratic(const float &a, const float &b, const float &c, floa
 
     else 
         t = ((-b - glm::sqrt(discriminant)) / (2 * a));
-
-    ////// Scratch Pixel Technique //////
-    // 
-    // else if (discriminant == 0) { 
-    //     t0 = t1 = - 0.5 * b / a; 
-    // } 
-    // else { 
-    //     float quadratic = (b > 0) ? 
-    //         (-0.5 * (b + glm::sqrt(discriminant))) : 
-    //         (-0.5 * (b - glm::sqrt(discriminant))); 
-    //     t0 = quadratic / a; 
-    //     t1 = c / quadratic; 
-    // } 
+        // Unused
+        //tFar = ((-b + glm::sqrt(discriminant)) / (2 * a));
 
     return true;
 }

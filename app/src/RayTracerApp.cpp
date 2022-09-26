@@ -8,6 +8,7 @@
 #include "Camera.h"
 
 #include "string.h"
+#include "glm/gtc/type_ptr.hpp"
 
 using namespace Core;
 
@@ -15,7 +16,31 @@ class ExampleLayer : public Core::Layer
 {
 public:
 	ExampleLayer()
-		: m_Camera(45.0f, 0.1f, 100.0f) {}
+		: m_Camera(45.0f, 0.1f, 100.0f) 
+	{
+		// Scene Description
+		{
+			Sphere sphere;
+			sphere.position = {1.0f, 0.0f, 0.0f};
+			sphere.albedo = {0.0f, 0.0f, 1.0f};
+			sphere.radius = {0.2};
+			m_Scene.spheres.push_back(sphere);
+		}
+		{
+			Sphere sphere;
+			sphere.position = {0.0f, 0.0f, 0.0f};
+			sphere.albedo = {0.0f, 1.0f, 0.0f};
+			sphere.radius = {0.2};
+			m_Scene.spheres.push_back(sphere);
+		}
+		{
+			Sphere sphere;
+			sphere.position = {-1.0f, 0.0f, 0.0f};
+			sphere.albedo = {1.0f, 0.0f, 0.0f};
+			sphere.radius = {0.2};
+			m_Scene.spheres.push_back(sphere);
+		}
+	}
 
 	virtual void OnUpdate(float ts) override
 	{
@@ -34,14 +59,14 @@ public:
 
 		// Scene //
 		ImGui::Begin("Scene");
-		for(int i = 0; i < m_Objects.size(); i++){
+		for(int i = 0; i < m_Scene.spheres.size(); i++){
 			ImGui::PushID(i);
 
-			int objectID = m_Objects[i]->ID;
+			Sphere& sphere = m_Scene.spheres[i];
 
-			ImGui::ColorEdit3(": Color", (float*)&Sphere::color[objectID]);
-			ImGui::DragFloat3(": Position", (float*)&Sphere::sphereCenter[objectID], 0.1f);
-			ImGui::DragFloat(": Size", (float*)&Sphere::radius[objectID], 0.1f);
+			ImGui::ColorEdit3(": Color", glm::value_ptr(sphere.albedo));
+			ImGui::DragFloat3(": Position", glm::value_ptr(sphere.position), 0.1f);
+			ImGui::DragFloat(": Size", &sphere.radius, 0.1f);
 			
 			ImGui::Separator();
 			ImGui::PopID();
@@ -75,14 +100,7 @@ public:
 
 		m_Render.onResize(m_viewportWidth, m_viewportHeight);
 		m_Camera.OnResize(m_viewportWidth, m_viewportHeight);
-
-		// Create Objects
-		if(m_Objects.size() == 0){
-			m_Objects.push_back(std::unique_ptr<Object>(new Sphere(glm::vec3(0.0f, 0.0f, 0.0f), 0.2f, glm::vec3(1.0f, 0.0f, 0.0f))));
-			m_Objects.push_back(std::unique_ptr<Object>(new Sphere(glm::vec3(-1.0f, 0.0f, 0.0f), 0.2f, glm::vec3(0.0f, 1.0f, 0.0f))));
-			m_Objects.push_back(std::unique_ptr<Object>(new Sphere(glm::vec3(1.0f, 0.0f, 0.0f), 0.2f, glm::vec3(0.0f, 0.0f, 1.0f))));
-		}
-		m_Render.Render(m_Camera, m_Objects);
+		m_Render.Render(m_Camera, m_Scene);
 
 		m_lastRenderTime = m_timer.ElapsedMillis();
 	}
@@ -90,7 +108,7 @@ public:
 private:
 	Renderer m_Render;
 	Camera m_Camera;
-	std::vector<std::unique_ptr<Object>> m_Objects;
+	Scene m_Scene;
 
 	float m_lastRenderTime = 0.0f;
 	uint32_t m_viewportWidth = 0, m_viewportHeight = 0;

@@ -11,12 +11,6 @@ public:
 
     virtual bool intersect(const glm::vec3 &, const glm::vec3 &, float &) const = 0;
     virtual void getSurfaceData(const glm::vec3 &, glm::vec3 &, glm::vec3 &) const = 0;
-
-// Create Object IDs
-protected:
-    static int nextID;
-public:
-    int ID;
 };
 
 class Sphere : public Object
@@ -32,12 +26,12 @@ public:
     bool solveQuadratic(const float &a, const float &b, const float &c, float &t) const;
 
     // Getters
-    glm::vec3 getSpherePosition() const { return sphereCenter[ID]; }
-    float getSphereRadius() const { return radius[ID]; }
-    glm::vec3 getSphereColor() const { return color[ID]; }
+    glm::vec3 getSpherePosition() const { return position; }
+    float getSphereRadius() const { return radius; }
+    glm::vec3 getSphereColor() const { return albedo; }
 
 public:
-    static std::vector<glm::vec3> sphereCenter;
-    static std::vector<float> radius;
-    static std::vector<glm::vec3> color;
+    glm::vec3 position;
+    float radius;
+    glm::vec3 albedo;
 };
