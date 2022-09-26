@@ -3,11 +3,13 @@
 ////// GLOBAL VARIABLES /////
 int Object::nextID = 0;
 std::vector<glm::vec3> Sphere::color {};
+std::vector<glm::vec3> Sphere::sphereCenter {};
+std::vector<float> Sphere::radius {};
 
 Sphere::Sphere(glm::vec3 pPos, float pRadius, glm::vec3 pColor)
 {
-    sphereCenter = pPos;
-    radius = pRadius;
+    sphereCenter.push_back(pPos);
+    radius.push_back(pRadius);
     color.push_back(pColor);
     ID = nextID++;
 }
@@ -23,6 +25,8 @@ bool Sphere::intersect(const glm::vec3 &origin, const glm::vec3 &rayDirection, f
     // t = Hit Distance
 
     float t;
+    glm::vec3 sphereCenter = getSpherePosition();
+    float radius = getSphereRadius();
 
     glm::vec3 diff = origin - sphereCenter;
     float a = glm::dot(rayDirection, rayDirection);

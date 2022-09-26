@@ -54,7 +54,7 @@ bool Renderer::TraceRay(const Ray& ray, const std::vector<std::unique_ptr<Object
     tNear = INFINITY;
 
     for (; iter != objects.end(); ++iter) {
-        float t = INFINITY;
+        float t = MAXFLOAT;
         if((*iter)->intersect(ray.Origin, ray.Direction, t) && t < tNear) {
             hitObject = iter->get();
             tNear = t;
@@ -80,7 +80,6 @@ glm::vec4 Renderer::RenderColor(const Ray& ray, const std::vector<std::unique_pt
         // Create Light
         glm::vec3 lightDirection = GetLightDirection();
         glm::normalize(lightDirection);
-
         // Get light hits
         float light = glm::max(glm::dot(hitNormal, -lightDirection), 0.0f);
 

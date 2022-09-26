@@ -24,46 +24,34 @@ public:
 
 	virtual void OnUIRender() override
 	{
+		// Settings //
 		ImGui::Begin("Settings");
 		ImGui::Text("Last Render: %.3fms", m_lastRenderTime);
 		if (ImGui::Button("Render")) {
 			RenderImage();
 		}
+		ImGui::End();
 
-		ImGui::Separator();
-		// ImGui::Text("Sphere Color: ");
-		// for(int i = 0; i < m_Objects.size(); i++){
-		// 	auto objectID = m_Objects[i]->ID;
-		// 	std::string t = std::to_string(objectID);
-		// 	const char *text = t.c_str();
-		// 	ImGui::Text(text);
-		// 	ImGui::ColorEdit3("Color: ", (float*)&Sphere::color[objectID]);
-		// 	ImGui::Separator();
-		// }
+		// Scene //
+		ImGui::Begin("Scene");
+		for(int i = 0; i < m_Objects.size(); i++){
+			ImGui::PushID(i);
 
-		//if (ImGui::Selectable())
+			int objectID = m_Objects[i]->ID;
 
-		if (m_Objects.size() != 0){
-			int current_item = 0;
-			for(int i = 0; i < m_Objects.size(); ++i){
-				bool is_selected = (current_item == m_Objects[i]->ID);
-				if (ImGui::Selectable("Sphere: ", is_selected)){
-					int objectID = m_Objects[i]->ID;
-					current_item = objectID;
-				}
-				if (is_selected){
-					ImGui::SetItemDefaultFocus();
-				}
-			}
+			ImGui::ColorEdit3(": Color", (float*)&Sphere::color[objectID]);
+			ImGui::DragFloat3(": Position", (float*)&Sphere::sphereCenter[objectID], 0.1f);
+			ImGui::DragFloat(": Size", (float*)&Sphere::radius[objectID], 0.1f);
+			
+			ImGui::Separator();
+			ImGui::PopID();
 		}
-
-		//ImGui::ColorPicker3("", (float*)&Renderer::sphereColor);
-		ImGui::NewLine();
 
 		ImGui::Text("Light Direction: ");
 		ImGui::InputFloat3("", (float*)&Renderer::lightDirection);
 		ImGui::End();
 
+		// Viewport //
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 		ImGui::Begin("Viewport");
 

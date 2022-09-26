@@ -32,12 +32,12 @@ public:
     bool solveQuadratic(const float &a, const float &b, const float &c, float &t) const;
 
     // Getters
-    glm::vec3 getSpherePosition() const { return sphereCenter; }
-    float getSphereRadius() const { return radius; }
+    glm::vec3 getSpherePosition() const { return sphereCenter[ID]; }
+    float getSphereRadius() const { return radius[ID]; }
     glm::vec3 getSphereColor() const { return color[ID]; }
 
 public:
-    glm::vec3 sphereCenter;
-    float radius;
+    static std::vector<glm::vec3> sphereCenter;
+    static std::vector<float> radius;
     static std::vector<glm::vec3> color;
 };
