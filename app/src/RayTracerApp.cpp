@@ -35,15 +35,15 @@ public:
 		}
 		{
 			Sphere sphere;
-			sphere.position = {-1.0f, 0.0f, 0.0f};
+			sphere.position = {-1.0f, 0.1f, 0.0f};
 			sphere.albedo 	= {1.0f, 0.0f, 0.0f};
-			sphere.radius 	= {0.2f};
+			sphere.radius 	= {0.4f};
 			m_Scene.spheres.push_back(sphere);
 		}
 		{
 			Sphere sphere;
 			sphere.position = {0.0f, -50.2f, 0.0f};
-			sphere.albedo 	= {0.5f, 0.5f, 0.5f};
+			sphere.albedo 	= {0.9f, 0.81f, 0.73f};
 			sphere.radius 	= {50.0f};
 			m_Scene.spheres.push_back(sphere);
 		}
@@ -60,6 +60,9 @@ public:
 		ImGui::Begin("Settings");
 		ImGui::Text("Last Render: %.3fms", m_lastRenderTime);
 		if (ImGui::Button("Render")) {
+			RenderImage();
+		}	
+		if (ImGui::Checkbox("Render each frame: ", (bool*)&m_renderEachFrame)) {
 			RenderImage();
 		}
 		ImGui::End();
@@ -79,8 +82,19 @@ public:
 			ImGui::PopID();
 		}
 
+		ImGui::Text("Turn on Light Bouncing: ");
+		ImGui::Checkbox("", (bool*)&Renderer::doGI);
+		ImGui::Separator();
+
 		ImGui::Text("Light Direction: ");
-		ImGui::InputFloat3("", (float*)&Renderer::lightDirection);
+		ImGui::DragFloat3("", (float*)&Renderer::lightDirection);
+
+		// Samples per pixel lock at 1.0f, values below 1 will be ignored
+		ImGui::Text("Samples per pixel ");
+		ImGui::InputInt(": Samples", (int*)&Renderer::samplesPerPixel);
+
+		ImGui::Text("Ray Bounce Depth ");
+		ImGui::InputInt(": Ray Bounces", (int*)&Renderer::bounceDepth);
 		ImGui::End();
 
 		// Viewport //
@@ -97,8 +111,6 @@ public:
 		}
 		ImGui::End();
 		ImGui::PopStyleVar();
-
-		RenderImage();
 	}
 
 	void RenderImage()
@@ -118,6 +130,7 @@ private:
 	Scene m_Scene;
 
 	float m_lastRenderTime = 0.0f;
+	bool m_renderEachFrame = false;
 	uint32_t m_viewportWidth = 0, m_viewportHeight = 0;
 };
 
