@@ -62,7 +62,8 @@ public:
 		if (ImGui::Button("Render")) {
 			RenderImage();
 		}	
-		if (ImGui::Checkbox("Render each frame: ", (bool*)&m_renderEachFrame)) {
+		ImGui::Checkbox("Render each frame: ", (bool*)&Renderer::renderEachFrame);
+		if (Renderer::renderEachFrame) {
 			RenderImage();
 		}
 		ImGui::End();
@@ -130,7 +131,6 @@ private:
 	Scene m_Scene;
 
 	float m_lastRenderTime = 0.0f;
-	bool m_renderEachFrame = false;
 	uint32_t m_viewportWidth = 0, m_viewportHeight = 0;
 };
 

@@ -25,6 +25,7 @@ public:
     int GetSamplesPerPixel() const { return samplesPerPixel; }
     int GetBounceDepth() const { return bounceDepth; }
     bool GetGiTag() const { return doGI; }
+    bool GetRenderMode() const { return renderEachFrame; }
 
 private:
     // Passing hitObject by a reference to a pointer of type const Object
@@ -43,4 +44,5 @@ public:
     static int samplesPerPixel;
     static int bounceDepth;
     static bool doGI;
+    static bool renderEachFrame;
 };

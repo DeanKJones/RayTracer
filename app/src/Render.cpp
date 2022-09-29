@@ -6,6 +6,7 @@ glm::vec3 Renderer::lightDirection  = {1.0f, -1.0f, -1.0f};
 int Renderer::samplesPerPixel = 15.0f;
 int Renderer::bounceDepth = 10.0f;
 bool Renderer::doGI = false;
+bool Renderer::renderEachFrame = false;
 
 
 void Renderer::onResize(uint32_t width, uint32_t height)
@@ -44,6 +45,10 @@ void Renderer::Render(const Camera& camera, const Scene& scene)
                 samplesPerPixel = 1;
 
             for (uint32_t s = 0; s < samplesPerPixel; ++s){
+
+                if (renderEachFrame){
+                    samplesPerPixel = 1;
+                }
 
                 // Set ray origin back to camera after ray bounces around the scene
                 ray.Origin = camera.GetPosition();
@@ -124,7 +129,8 @@ glm::vec4 Renderer::RenderColor(Ray& ray, const Scene& scene, int depth)
 
         // Do GI check before rendering
         bool GI = GetGiTag();
-        if(GI){
+        bool eachFrame = GetRenderMode();
+        if(GI && !eachFrame){
             // Set new random position for ray bounces
             glm::vec3 newRayTarget = hitPosition + hitNormal + Core::Random::InUnitSphere();
             ray.Origin = hitPosition;
