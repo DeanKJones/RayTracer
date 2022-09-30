@@ -21,23 +21,23 @@ public:
 		// Scene Description
 		{
 			Sphere sphere;
-			sphere.position = {1.0f, 0.0f, 0.0f};
+			sphere.position = {0.3f, 0.3f, 0.2f};
 			sphere.albedo 	= {0.0f, 0.0f, 1.0f};
-			sphere.radius 	= {0.2};
+			sphere.radius 	= {0.3};
 			m_Scene.spheres.push_back(sphere);
 		}
 		{
 			Sphere sphere;
-			sphere.position = {0.0f, 0.0f, 0.0f};
+			sphere.position = {0.0f, 0.0f, 1.4f};
 			sphere.albedo 	= {0.0f, 1.0f, 0.0f};
-			sphere.radius 	= {0.2f};
+			sphere.radius 	= {0.1f};
 			m_Scene.spheres.push_back(sphere);
 		}
 		{
 			Sphere sphere;
-			sphere.position = {-1.0f, 0.1f, 0.0f};
+			sphere.position = {-0.7f, 0.5f, -0.1f};
 			sphere.albedo 	= {1.0f, 0.0f, 0.0f};
-			sphere.radius 	= {0.4f};
+			sphere.radius 	= {0.7f};
 			m_Scene.spheres.push_back(sphere);
 		}
 		{
@@ -84,11 +84,14 @@ public:
 		}
 
 		ImGui::Text("Turn on Light Bouncing: ");
-		ImGui::Checkbox("", (bool*)&Renderer::doGI);
+		ImGui::Checkbox(": GI", (bool*)&Renderer::doGI);
+
+		ImGui::Text("Lambertian Model ");
+		ImGui::Checkbox(": In Unit Hemisphere", (bool*)&Renderer::lambertMethod);
 		ImGui::Separator();
 
 		ImGui::Text("Light Direction: ");
-		ImGui::DragFloat3("", (float*)&Renderer::lightDirection);
+		ImGui::DragFloat3(": Direction", (float*)&Renderer::lightDirection);
 
 		// Samples per pixel lock at 1.0f, values below 1 will be ignored
 		ImGui::Text("Samples per pixel ");
@@ -96,6 +99,8 @@ public:
 
 		ImGui::Text("Ray Bounce Depth ");
 		ImGui::InputInt(": Ray Bounces", (int*)&Renderer::bounceDepth);
+
+		// End Window
 		ImGui::End();
 
 		// Viewport //

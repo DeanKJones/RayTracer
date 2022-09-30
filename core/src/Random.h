@@ -43,6 +43,17 @@ namespace Core {
 		{
 			return glm::normalize(Vec3(-1.0f, 1.0f));
 		}
+		static glm::vec3 InUnitHemi(const glm::vec3& normal)
+		{
+			glm::vec3 InUnitSphere = Random::InUnitSphere();
+			if (glm::dot(InUnitSphere, normal) > 0.0f){
+				return InUnitSphere;
+			}
+			else {
+				return -InUnitSphere;
+			}
+		}
+
 	private:
 		static std::mt19937 s_RandomEngine;
 		static std::uniform_int_distribution<std::mt19937::result_type> s_Distribution;

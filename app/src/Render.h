@@ -24,8 +24,10 @@ public:
     glm::vec3 GetLightDirection() const { return lightDirection; }
     int GetSamplesPerPixel() const { return samplesPerPixel; }
     int GetBounceDepth() const { return bounceDepth; }
+
     bool GetGiTag() const { return doGI; }
     bool GetRenderMode() const { return renderEachFrame; }
+    bool GetLambertMethod() const { return lambertMethod; }
 
 private:
     // Passing hitObject by a reference to a pointer of type const Object
@@ -45,4 +47,5 @@ public:
     static int bounceDepth;
     static bool doGI;
     static bool renderEachFrame;
+    static bool lambertMethod;
 };

@@ -7,6 +7,7 @@ int Renderer::samplesPerPixel = 15.0f;
 int Renderer::bounceDepth = 10.0f;
 bool Renderer::doGI = false;
 bool Renderer::renderEachFrame = false;
+bool Renderer::lambertMethod = false;
 
 
 void Renderer::onResize(uint32_t width, uint32_t height)
@@ -55,8 +56,8 @@ void Renderer::Render(const Camera& camera, const Scene& scene)
                 ray.Direction = camera.GetRayDirections()[x + y * m_FinalImage->GetWidth()];
 
                 // Scatter Rays
-                ray.Direction.x += (Core::Random::Float() * 0.0001f);
-                ray.Direction.y += (Core::Random::Float() * 0.0001f);
+                ray.Direction.x += (Core::Random::Float() * 0.00001f);
+                ray.Direction.y += (Core::Random::Float() * 0.00001f);
 
                 int depth = GetBounceDepth();
                 // Render Color
@@ -130,9 +131,18 @@ glm::vec4 Renderer::RenderColor(Ray& ray, const Scene& scene, int depth)
         // Do GI check before rendering
         bool GI = GetGiTag();
         bool eachFrame = GetRenderMode();
+        bool lambertMethod = GetLambertMethod();
+
         if(GI && !eachFrame){
             // Set new random position for ray bounces
-            glm::vec3 newRayTarget = hitPosition + hitNormal + Core::Random::InUnitSphere();
+            // Lambertian Material
+            glm::vec3 newRayTarget(0.0f);
+            if(!lambertMethod){
+                newRayTarget = hitPosition + hitNormal + Core::Random::InUnitSphere();
+            } else {
+                newRayTarget = hitPosition + Core::Random::InUnitHemi(hitNormal);
+            }
+
             ray.Origin = hitPosition;
             ray.Direction = newRayTarget - hitPosition;
             auto rayBounce = RenderColor(ray, scene, depth -1);
