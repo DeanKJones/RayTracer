@@ -1,5 +1,7 @@
 #include "Render.h"
+
 #include <iostream>
+#include <random>
 
 // UI VARIABLES
 glm::vec3 Renderer::lightDirection  = {1.0f, -1.0f, -1.0f};
@@ -34,11 +36,16 @@ void Renderer::Render(const Camera& camera, const Scene& scene)
     
     // Aspect Ratio
     float aspectRatio = (float)m_FinalImage->GetWidth() / (float)m_FinalImage->GetHeight();
+    int pixel_pos;
 
     for (uint32_t y = 0; y < m_FinalImage->GetHeight(); y++) {
         for (uint32_t x = 0; x < m_FinalImage->GetWidth(); x++) 
         {    
-            PerPixel(x, y);
+            glm::vec4 color = PerPixel(x, y);
+
+            // Image Data Pixel Position
+            pixel_pos = x + y * m_FinalImage->GetWidth();
+            m_imageData[pixel_pos] = ConvertRGBA(color, samplesPerPixel);
         }
     }
     m_FinalImage->SetData(m_imageData);
@@ -51,9 +58,7 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
     ray.Origin = m_activeCamera->GetPosition();
     ray.Direction = m_activeCamera->GetRayDirections()[x + y * m_FinalImage->GetWidth()];
 
-    int pixel_pos;
     float multiplier = 1.0f;
-
     glm::vec4 color(0.0f, 0.0f, 0.0f, 0.0f);
 
     int samplesPerPixel = GetSamplesPerPixel();
@@ -66,17 +71,15 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
             samplesPerPixel = 1;
         }
         // Scatter Rays
-        //ray.Direction.x += (Core::Random::Float() * 0.0001f);
-        //ray.Direction.y += (Core::Random::Float() * 0.0001f);
+        ray.Direction.x += (Core::Random::Float() * 0.00001f);
+        ray.Direction.y += (Core::Random::Float() * 0.00001f);
 
         int depth = GetBounceDepth();
         // Render Color
         color += RenderColor(ray, depth) * multiplier;
-
-        // Image Data Pixel Position
-        pixel_pos = x + y * m_FinalImage->GetWidth();
+        multiplier *= 0.7f;
     }
-    m_imageData[pixel_pos] = ConvertRGBA(color, samplesPerPixel);
+    return color;
 }
 
 
@@ -100,7 +103,7 @@ glm::vec4 Renderer::RenderColor(Ray& ray, int depth)
         float t = 0.5 * (unitVector.y + 1.0f);
         glm::vec4 SkyColor(((1.0f - t) * glm::vec3(1.0f, 1.0f, 1.0f)) + (t * glm::vec3(0.5f, 0.7f, 1.0f)), 1.0f);
 
-        RayHitColor = SkyColor;
+        RayHitColor += SkyColor;
         return RayHitColor;
     }
 
@@ -113,13 +116,11 @@ glm::vec4 Renderer::RenderColor(Ray& ray, int depth)
 
     // Normals
     glm::vec3 colorNormals(payload.worldNormal * 0.5f + 0.5f);
-    // Normal Colors
-    glm::vec4 objectNormal(colorNormals, 1.0f);
     // Color Lit
     glm::vec3 colorLit(payload.surfaceColor * light);
 
     // Return object color
-    RayHitColor = glm::vec4(colorLit, 1.0f);
+    RayHitColor = glm::vec4(payload.surfaceColor, 1.0f);
 
     // Do GI check before rendering
     bool GI = GetGiTag();
@@ -136,9 +137,9 @@ glm::vec4 Renderer::RenderColor(Ray& ray, int depth)
             newRayTarget = payload.worldPosition + Core::Random::InUnitHemi(payload.worldNormal);
         }
 
-        ray.Origin = payload.worldPosition;
+        ray.Origin = payload.worldPosition + (payload.worldNormal * 0.0001f);
         ray.Direction = newRayTarget - payload.worldPosition;
-        auto rayBounce = RenderColor(ray, depth - 1);
+        glm::vec4 rayBounce = RenderColor(ray, depth - 1);
         rayBounce *= 0.5f;
         return rayBounce;
     }
@@ -201,10 +202,14 @@ uint32_t Renderer::ConvertRGBA(glm::vec4 color, int& samples)
     auto colorB = color.b;
     auto colorA = color.a;
 
-    auto scale = 1.0 / samples;
-    colorR = glm::sqrt(scale * colorR);
-    colorG = glm::sqrt(scale * colorG);
-    colorB = glm::sqrt(scale * colorB);
+    // auto scale = 1.0 / samples;
+    // colorR = glm::sqrt(scale * colorR);
+    // colorG = glm::sqrt(scale * colorG);
+    // colorB = glm::sqrt(scale * colorB);
+
+    colorR = glm::sqrt(colorR);
+    colorG = glm::sqrt(colorG);
+    colorB = glm::sqrt(colorB);
 
     uint32_t result = 
         ((uint8_t)(colorA * 255.0f) << 24) |
