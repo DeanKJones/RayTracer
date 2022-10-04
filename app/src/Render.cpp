@@ -29,8 +29,8 @@ void Renderer::onResize(uint32_t width, uint32_t height)
 // Render
 void Renderer::Render(const Camera& camera, const Scene& scene)
 {
-    Ray ray;
-    const Object *hitObject = nullptr;
+    m_activeCamera = &camera;
+    m_activeScene = &scene;
     
     // Aspect Ratio
     float aspectRatio = (float)m_FinalImage->GetWidth() / (float)m_FinalImage->GetHeight();
@@ -38,119 +38,159 @@ void Renderer::Render(const Camera& camera, const Scene& scene)
     for (uint32_t y = 0; y < m_FinalImage->GetHeight(); y++) {
         for (uint32_t x = 0; x < m_FinalImage->GetWidth(); x++) 
         {    
-            int p_pos;
-            glm::vec4 color(0.0f, 0.0f, 0.0f, 0.0f);
-
-            int samplesPerPixel = GetSamplesPerPixel();
-            if (samplesPerPixel < 1)
-                samplesPerPixel = 1;
-
-            for (uint32_t s = 0; s < samplesPerPixel; ++s){
-
-                if (renderEachFrame){
-                    samplesPerPixel = 1;
-                }
-
-                // Set ray origin back to camera after ray bounces around the scene
-                ray.Origin = camera.GetPosition();
-                ray.Direction = camera.GetRayDirections()[x + y * m_FinalImage->GetWidth()];
-
-                // Scatter Rays
-                ray.Direction.x += (Core::Random::Float() * 0.00001f);
-                ray.Direction.y += (Core::Random::Float() * 0.00001f);
-
-                int depth = GetBounceDepth();
-                // Render Color
-                color += RenderColor(ray, scene, depth);
-                //color = glm::clamp(color, glm::vec4(0.0f), glm::vec4(1.0f));
-
-                // Image Data Pixel Position
-                p_pos = x + y * m_FinalImage->GetWidth();
-            }
-            m_imageData[p_pos] = ConvertRGBA(color, samplesPerPixel);
+            PerPixel(x, y);
         }
     }
     m_FinalImage->SetData(m_imageData);
 }
 
-// Shader
-bool Renderer::TraceRay(const Ray& ray, const Scene& scene, float &tNear, const Object *&hitObject)
-{   
-    tNear = MAXFLOAT;
+glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
+{
+    Ray ray;
+    // Set ray origin back to camera after ray bounces around the scene
+    ray.Origin = m_activeCamera->GetPosition();
+    ray.Direction = m_activeCamera->GetRayDirections()[x + y * m_FinalImage->GetWidth()];
 
-    for (const Sphere& sphere : scene.spheres) {
-        float t = MAXFLOAT;
-        if(sphere.intersect(ray.Origin, ray.Direction, t) && t < tNear) {
-            hitObject = &sphere;
-            tNear = t;
-        } 
-    } 
-    return (hitObject != nullptr);
+    int pixel_pos;
+    float multiplier = 1.0f;
+
+    glm::vec4 color(0.0f, 0.0f, 0.0f, 0.0f);
+
+    int samplesPerPixel = GetSamplesPerPixel();
+    if (samplesPerPixel < 1)
+        samplesPerPixel = 1;
+
+    for (uint32_t s = 0; s < samplesPerPixel; ++s)
+    {
+        if (renderEachFrame){
+            samplesPerPixel = 1;
+        }
+        // Scatter Rays
+        //ray.Direction.x += (Core::Random::Float() * 0.0001f);
+        //ray.Direction.y += (Core::Random::Float() * 0.0001f);
+
+        int depth = GetBounceDepth();
+        // Render Color
+        color += RenderColor(ray, depth) * multiplier;
+
+        // Image Data Pixel Position
+        pixel_pos = x + y * m_FinalImage->GetWidth();
+    }
+    m_imageData[pixel_pos] = ConvertRGBA(color, samplesPerPixel);
 }
 
-glm::vec4 Renderer::RenderColor(Ray& ray, const Scene& scene, int depth) 
+
+glm::vec4 Renderer::RenderColor(Ray& ray, int depth) 
 {  
     if (depth <= 0){
         return glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
     }
 
     // Set Colors
-    glm::vec3 unitVector = glm::normalize(ray.Direction);
-    float t = 0.5 * (unitVector.y + 1.0f);
-    glm::vec4 RayHitColor(((1.0f - t) * glm::vec3(1.0f, 1.0f, 1.0f)) + (t * glm::vec3(0.5f, 0.7f, 1.0f)), 1.0f);
-
+    glm::vec4 RayHitColor(0.0f);
     // Create object and hit distance
-    float tNear;
-    const Object *hitObject = nullptr;
+    float hitDistance;
+    
+    // Load the weapon and trace ray
+    Renderer::Payload payload = TraceRay(ray);
 
-    if(TraceRay(ray, scene, tNear, hitObject)) {
-        
-        // Set variables to grab surface data
-        glm::vec3 hitPosition = ray.Origin + ray.Direction * tNear;
-        glm::vec3 hitNormal;
-        glm::vec3 hitColor;
+    if (payload.hitDistance < 0){
+        // Set Colors
+        glm::vec3 unitVector = glm::normalize(ray.Direction);
+        float t = 0.5 * (unitVector.y + 1.0f);
+        glm::vec4 SkyColor(((1.0f - t) * glm::vec3(1.0f, 1.0f, 1.0f)) + (t * glm::vec3(0.5f, 0.7f, 1.0f)), 1.0f);
 
-        hitObject->getSurfaceData(hitPosition, hitNormal, hitColor);
-
-        // Create Light
-        glm::vec3 lightDirection = GetLightDirection();
-        glm::normalize(lightDirection);
-        // Get light hits
-        float light = glm::max(glm::dot(hitNormal, -lightDirection), 0.0f);
-
-        // Normals
-        glm::vec3 colorNormals(hitNormal * 0.5f + 0.5f);
-        // Normal Colors
-        glm::vec4 objectNormal(colorNormals, 1.0f);
-        // Color Lit
-        glm::vec3 colorLit(hitColor * light);
-
-        // Return object color
-        RayHitColor = glm::vec4(colorLit, 1.0f);
-
-        // Do GI check before rendering
-        bool GI = GetGiTag();
-        bool eachFrame = GetRenderMode();
-        bool lambertMethod = GetLambertMethod();
-
-        if(GI && !eachFrame){
-            // Set new random position for ray bounces
-            // Lambertian Material
-            glm::vec3 newRayTarget(0.0f);
-            if(!lambertMethod){
-                newRayTarget = hitPosition + hitNormal + Core::Random::InUnitSphere();
-            } else {
-                newRayTarget = hitPosition + Core::Random::InUnitHemi(hitNormal);
-            }
-
-            ray.Origin = hitPosition;
-            ray.Direction = newRayTarget - hitPosition;
-            auto rayBounce = RenderColor(ray, scene, depth -1);
-            rayBounce *= 0.5f;
-            return rayBounce;
-        }
+        RayHitColor = SkyColor;
+        return RayHitColor;
     }
+
+    // Create Light
+    glm::vec3 lightDirection = GetLightDirection();
+    glm::normalize(lightDirection);
+
+    // Get light hits
+    float light = glm::max(glm::dot(payload.worldNormal, -lightDirection), 0.0f);
+
+    // Normals
+    glm::vec3 colorNormals(payload.worldNormal * 0.5f + 0.5f);
+    // Normal Colors
+    glm::vec4 objectNormal(colorNormals, 1.0f);
+    // Color Lit
+    glm::vec3 colorLit(payload.surfaceColor * light);
+
+    // Return object color
+    RayHitColor = glm::vec4(colorLit, 1.0f);
+
+    // Do GI check before rendering
+    bool GI = GetGiTag();
+    bool eachFrame = GetRenderMode();
+    bool lambertMethod = GetLambertMethod();
+
+    if(GI && !eachFrame){
+        // Set new random position for ray bounces
+        // Lambertian Material
+        glm::vec3 newRayTarget(0.0f);
+        if(!lambertMethod){
+            newRayTarget = payload.worldPosition + payload.worldNormal + Core::Random::InUnitSphere();
+        } else {
+            newRayTarget = payload.worldPosition + Core::Random::InUnitHemi(payload.worldNormal);
+        }
+
+        ray.Origin = payload.worldPosition;
+        ray.Direction = newRayTarget - payload.worldPosition;
+        auto rayBounce = RenderColor(ray, depth - 1);
+        rayBounce *= 0.5f;
+        return rayBounce;
+    }
+
     return RayHitColor;
+}
+
+// Shader
+Renderer::Payload Renderer::TraceRay(const Ray& ray)
+{   
+    int closestSphere = -1;
+    float hitDistance = std::numeric_limits<float>::max();
+
+    for (size_t i = 0; i < m_activeScene->spheres.size(); i++) {
+        float t = MAXFLOAT;
+        Sphere activeSphere = m_activeScene->spheres[i];
+        if (activeSphere.intersect(ray.Origin, ray.Direction, t) && t < hitDistance) {
+            hitDistance = t;
+            closestSphere = (int)i;
+        } 
+    } 
+    if (closestSphere < 0){
+        return MissHit(ray);
+    }
+    return ClosestHit(ray, hitDistance, closestSphere);
+}
+
+
+Renderer::Payload Renderer::ClosestHit(const Ray& ray, float hitDistance, int objectIndex)
+{
+    Renderer::Payload payload;
+    payload.hitDistance = hitDistance;
+    payload.objectIndex = objectIndex;
+
+    const Sphere& closestSphere = m_activeScene->spheres[objectIndex];
+
+    glm::vec3 origin = ray.Origin - closestSphere.position;
+    payload.worldPosition = origin + ray.Direction * hitDistance;
+    payload.worldNormal = glm::normalize(payload.worldPosition);
+
+    closestSphere.getSurfaceData(payload.surfaceColor);
+
+    payload.worldPosition += closestSphere.position;
+
+    return payload;
+}
+
+Renderer::Payload Renderer::MissHit(const Ray& ray)
+{
+	Renderer::Payload payload;
+	payload.hitDistance = -1.0f;
+	return payload;
 }
 
 // Color to Uint32_t

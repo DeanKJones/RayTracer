@@ -43,6 +43,7 @@ namespace Core {
 		{
 			return glm::normalize(Vec3(-1.0f, 1.0f));
 		}
+		
 		static glm::vec3 InUnitHemi(const glm::vec3& normal)
 		{
 			glm::vec3 InUnitSphere = Random::InUnitSphere();

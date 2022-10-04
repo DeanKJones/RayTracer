@@ -40,10 +40,8 @@ bool Sphere::intersect(const glm::vec3 &origin, const glm::vec3 &rayDirection, f
 }
 
 
-void Sphere::getSurfaceData(const glm::vec3 &hitPosition, glm::vec3 &normal, glm::vec3 &surfaceColor) const
-{
-    glm::vec3 objectCenter = getSpherePosition();
-    normal = glm::normalize(hitPosition - objectCenter); 
+void Sphere::getSurfaceData(glm::vec3 &surfaceColor) const
+{ 
     surfaceColor = getSphereColor();
 }
 

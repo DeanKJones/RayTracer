@@ -93,7 +93,7 @@ public:
 		ImGui::Text("Light Direction: ");
 		ImGui::DragFloat3(": Direction", (float*)&Renderer::lightDirection);
 
-		// Samples per pixel lock at 1.0f, values below 1 will be ignored
+		// Samples per pixel lock at 1, values below 1 will be ignored
 		ImGui::Text("Samples per pixel ");
 		ImGui::InputInt(": Samples", (int*)&Renderer::samplesPerPixel);
 
