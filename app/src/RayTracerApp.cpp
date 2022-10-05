@@ -24,6 +24,7 @@ public:
 			sphere.position = {0.3f, 0.3f, 0.2f};
 			sphere.albedo 	= {0.0f, 0.0f, 1.0f};
 			sphere.radius 	= {0.3};
+			sphere.material_ptr = std::make_shared<Lambertian>(sphere.albedo);
 			m_Scene.spheres.push_back(sphere);
 		}
 		{
@@ -31,6 +32,7 @@ public:
 			sphere.position = {0.0f, 0.0f, 1.4f};
 			sphere.albedo 	= {0.0f, 1.0f, 0.0f};
 			sphere.radius 	= {0.1f};
+			sphere.material_ptr = std::make_shared<Lambertian>(sphere.albedo);
 			m_Scene.spheres.push_back(sphere);
 		}
 		{
@@ -38,6 +40,7 @@ public:
 			sphere.position = {-0.7f, 0.5f, -0.1f};
 			sphere.albedo 	= {1.0f, 0.0f, 0.0f};
 			sphere.radius 	= {0.7f};
+			sphere.material_ptr = std::make_shared<Lambertian>(sphere.albedo);
 			m_Scene.spheres.push_back(sphere);
 		}
 		{
@@ -45,6 +48,7 @@ public:
 			sphere.position = {0.0f, -50.2f, 0.0f};
 			sphere.albedo 	= {0.9f, 0.81f, 0.73f};
 			sphere.radius 	= {50.0f};
+			sphere.material_ptr = std::make_shared<Lambertian>(sphere.albedo);
 			m_Scene.spheres.push_back(sphere);
 		}
 	}

@@ -1,11 +1,10 @@
 #pragma once
 
 #include "../../core/src/Image.h"
-#include "../../core/src/Random.h"
 
 #include "Camera.h"
-#include "Ray.h"
 #include "Scene.h"
+#include "Material.h"
 
 #include "glm/glm.hpp"
 #include <memory>
@@ -21,17 +20,6 @@ public:
 
 
 private:        // Rendering //
-    // Payload struct to set and grab information from the scene
-    struct Payload 
-    {
-        float hitDistance;
-        glm::vec3 worldPosition;
-        glm::vec3 worldNormal;
-        glm::vec3 surfaceColor;
-
-        int objectIndex;
-    };
-
     glm::vec4 PerPixel(uint32_t x, u_int32_t y);
 
     glm::vec4 RenderColor(Ray& ray, int depth);
@@ -39,7 +27,7 @@ private:        // Rendering //
     Payload ClosestHit(const Ray& ray, float hitDistance, int objectIndex);
     Payload MissHit(const Ray& ray);
 
-    uint32_t ConvertRGBA(glm::vec4 color, int& samples);
+    uint32_t ConvertRGBA(glm::vec4 color);
 
 
 private:        // Image //

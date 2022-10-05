@@ -1,10 +1,11 @@
 #include "Object.h"
 
-Sphere::Sphere(glm::vec3 pPos, float pRadius, glm::vec3 pColor)
+Sphere::Sphere(glm::vec3 pPos, float pRadius, glm::vec3 pColor, std::shared_ptr<Material> material)
 {
     position = pPos;
     radius = pRadius;
     albedo = pColor;
+    material_ptr = material;
 }
 
 
@@ -40,10 +41,10 @@ bool Sphere::intersect(const glm::vec3 &origin, const glm::vec3 &rayDirection, f
 }
 
 
-void Sphere::getSurfaceData(glm::vec3 &surfaceColor) const
-{ 
-    surfaceColor = getSphereColor();
-}
+// std::shared_ptr<Material> Sphere::getSurfaceData() const
+// { 
+//     getMaterialPtr();
+// }
 
 
 bool Sphere::solveQuadratic(const float &a, const float &b, const float &c, float &t) const

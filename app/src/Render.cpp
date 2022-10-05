@@ -1,12 +1,10 @@
 #include "Render.h"
-
-#include <iostream>
 #include <random>
 
 // UI VARIABLES
 glm::vec3 Renderer::lightDirection  = {1.0f, -1.0f, -1.0f};
-int Renderer::samplesPerPixel = 15.0f;
-int Renderer::bounceDepth = 10.0f;
+int Renderer::samplesPerPixel = 5.0f;
+int Renderer::bounceDepth = 2.0f;
 bool Renderer::doGI = false;
 bool Renderer::renderEachFrame = false;
 bool Renderer::lambertMethod = false;
@@ -45,7 +43,7 @@ void Renderer::Render(const Camera& camera, const Scene& scene)
 
             // Image Data Pixel Position
             pixel_pos = x + y * m_FinalImage->GetWidth();
-            m_imageData[pixel_pos] = ConvertRGBA(color, samplesPerPixel);
+            m_imageData[pixel_pos] = ConvertRGBA(color);
         }
     }
     m_FinalImage->SetData(m_imageData);
@@ -71,11 +69,12 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
             samplesPerPixel = 1;
         }
         // Scatter Rays
-        ray.Direction.x += (Core::Random::Float() * 0.00001f);
-        ray.Direction.y += (Core::Random::Float() * 0.00001f);
+        ray.Direction.x += (Core::Random::Float() * 0.0001f);
+        ray.Direction.y += (Core::Random::Float() * 0.0001f);
 
         int depth = GetBounceDepth();
         // Render Color
+        //color += RenderColor(ray, depth);
         color += RenderColor(ray, depth) * multiplier;
         multiplier *= 0.7f;
     }
@@ -91,11 +90,8 @@ glm::vec4 Renderer::RenderColor(Ray& ray, int depth)
 
     // Set Colors
     glm::vec4 RayHitColor(0.0f);
-    // Create object and hit distance
-    float hitDistance;
-    
     // Load the weapon and trace ray
-    Renderer::Payload payload = TraceRay(ray);
+    Payload payload = TraceRay(ray);
 
     if (payload.hitDistance < 0){
         // Set Colors
@@ -120,7 +116,7 @@ glm::vec4 Renderer::RenderColor(Ray& ray, int depth)
     glm::vec3 colorLit(payload.surfaceColor * light);
 
     // Return object color
-    RayHitColor = glm::vec4(payload.surfaceColor, 1.0f);
+    RayHitColor = glm::vec4(1.0f);
 
     // Do GI check before rendering
     bool GI = GetGiTag();
@@ -128,27 +124,21 @@ glm::vec4 Renderer::RenderColor(Ray& ray, int depth)
     bool lambertMethod = GetLambertMethod();
 
     if(GI && !eachFrame){
-        // Set new random position for ray bounces
-        // Lambertian Material
-        glm::vec3 newRayTarget(0.0f);
-        if(!lambertMethod){
-            newRayTarget = payload.worldPosition + payload.worldNormal + Core::Random::InUnitSphere();
-        } else {
-            newRayTarget = payload.worldPosition + Core::Random::InUnitHemi(payload.worldNormal);
+        Ray scattered;
+        glm::vec3 attenuation;
+
+        if (payload.materialPtr->scatter(ray, payload, attenuation, scattered))
+        {
+            glm::vec4 attenColor(attenuation, 1.0f);
+            return attenColor * RenderColor(scattered, depth - 1);
         }
-
-        ray.Origin = payload.worldPosition + (payload.worldNormal * 0.0001f);
-        ray.Direction = newRayTarget - payload.worldPosition;
-        glm::vec4 rayBounce = RenderColor(ray, depth - 1);
-        rayBounce *= 0.5f;
-        return rayBounce;
+        return glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
     }
-
     return RayHitColor;
 }
 
 // Shader
-Renderer::Payload Renderer::TraceRay(const Ray& ray)
+Payload Renderer::TraceRay(const Ray& ray)
 {   
     int closestSphere = -1;
     float hitDistance = std::numeric_limits<float>::max();
@@ -168,9 +158,9 @@ Renderer::Payload Renderer::TraceRay(const Ray& ray)
 }
 
 
-Renderer::Payload Renderer::ClosestHit(const Ray& ray, float hitDistance, int objectIndex)
+Payload Renderer::ClosestHit(const Ray& ray, float hitDistance, int objectIndex)
 {
-    Renderer::Payload payload;
+    Payload payload;
     payload.hitDistance = hitDistance;
     payload.objectIndex = objectIndex;
 
@@ -180,22 +170,21 @@ Renderer::Payload Renderer::ClosestHit(const Ray& ray, float hitDistance, int ob
     payload.worldPosition = origin + ray.Direction * hitDistance;
     payload.worldNormal = glm::normalize(payload.worldPosition);
 
-    closestSphere.getSurfaceData(payload.surfaceColor);
-
+    payload.materialPtr = closestSphere.getMaterialPtr();
     payload.worldPosition += closestSphere.position;
 
     return payload;
 }
 
-Renderer::Payload Renderer::MissHit(const Ray& ray)
+Payload Renderer::MissHit(const Ray& ray)
 {
-	Renderer::Payload payload;
+    Payload payload;
 	payload.hitDistance = -1.0f;
 	return payload;
 }
 
 // Color to Uint32_t
-uint32_t Renderer::ConvertRGBA(glm::vec4 color, int& samples) 
+uint32_t Renderer::ConvertRGBA(glm::vec4 color) 
 {
     auto colorR = color.r;
     auto colorG = color.g;
