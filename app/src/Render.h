@@ -19,7 +19,7 @@ public:
     void Render(const Camera& camera, const Scene& scene);
 
 
-private:        // Rendering //
+private:     // Rendering //
     glm::vec4 PerPixel(uint32_t x, u_int32_t y);
 
     glm::vec4 RenderColor(Ray& ray, int depth);
@@ -38,7 +38,7 @@ private:        // Scene //
     const Scene* m_activeScene = nullptr;
     const Camera* m_activeCamera = nullptr;
 
-public:         // Getter Functions //
+public:    // Getter Functions //
     std::shared_ptr<Core::Image> getFinalImage() const { return m_FinalImage; }
     
     glm::vec3 GetLightDirection() const { return lightDirection; }
@@ -50,7 +50,7 @@ public:         // Getter Functions //
     bool GetLambertMethod() const { return lambertMethod; }
 
 
-public:         // Exposable UI //
+public:      // Exposable UI //
     static glm::vec3 lightDirection;
     static int samplesPerPixel;
     static int bounceDepth;

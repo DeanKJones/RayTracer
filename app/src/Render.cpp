@@ -56,7 +56,6 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
     ray.Origin = m_activeCamera->GetPosition();
     ray.Direction = m_activeCamera->GetRayDirections()[x + y * m_FinalImage->GetWidth()];
 
-    float multiplier = 1.0f;
     glm::vec4 color(0.0f, 0.0f, 0.0f, 0.0f);
 
     int samplesPerPixel = GetSamplesPerPixel();
@@ -74,9 +73,7 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
 
         int depth = GetBounceDepth();
         // Render Color
-        //color += RenderColor(ray, depth);
-        color += RenderColor(ray, depth) * multiplier;
-        multiplier *= 0.7f;
+        color += RenderColor(ray, depth);
     }
     return color;
 }
@@ -85,7 +82,7 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
 glm::vec4 Renderer::RenderColor(Ray& ray, int depth) 
 {  
     if (depth <= 0){
-        return glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+        return glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
     }
 
     // Set Colors
@@ -103,21 +100,6 @@ glm::vec4 Renderer::RenderColor(Ray& ray, int depth)
         return RayHitColor;
     }
 
-    // Create Light
-    glm::vec3 lightDirection = GetLightDirection();
-    glm::normalize(lightDirection);
-
-    // Get light hits
-    float light = glm::max(glm::dot(payload.worldNormal, -lightDirection), 0.0f);
-
-    // Normals
-    glm::vec3 colorNormals(payload.worldNormal * 0.5f + 0.5f);
-    // Color Lit
-    glm::vec3 colorLit(payload.surfaceColor * light);
-
-    // Return object color
-    RayHitColor = glm::vec4(1.0f);
-
     // Do GI check before rendering
     bool GI = GetGiTag();
     bool eachFrame = GetRenderMode();
@@ -130,10 +112,18 @@ glm::vec4 Renderer::RenderColor(Ray& ray, int depth)
         if (payload.materialPtr->scatter(ray, payload, attenuation, scattered))
         {
             glm::vec4 attenColor(attenuation, 1.0f);
-            return attenColor * RenderColor(scattered, depth - 1);
+            float multiplier = 1.0f;
+            glm::vec4 bounceColor = (attenColor * RenderColor(scattered, depth - 1)) * multiplier;
+            multiplier *= 0.7f;
+            return bounceColor;
         }
         return glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
     }
+    // Normals
+    glm::vec3 colorNormals(payload.worldNormal * 0.5f + 0.5f);
+    // Return object color
+    RayHitColor = glm::vec4(colorNormals, 1.0f);
+
     return RayHitColor;
 }
 
@@ -171,6 +161,7 @@ Payload Renderer::ClosestHit(const Ray& ray, float hitDistance, int objectIndex)
     payload.worldNormal = glm::normalize(payload.worldPosition);
 
     payload.materialPtr = closestSphere.getMaterialPtr();
+    // Add sphere position back
     payload.worldPosition += closestSphere.position;
 
     return payload;
@@ -191,14 +182,15 @@ uint32_t Renderer::ConvertRGBA(glm::vec4 color)
     auto colorB = color.b;
     auto colorA = color.a;
 
-    // auto scale = 1.0 / samples;
-    // colorR = glm::sqrt(scale * colorR);
-    // colorG = glm::sqrt(scale * colorG);
-    // colorB = glm::sqrt(scale * colorB);
+    int samples = GetSamplesPerPixel();
+    auto scale = 1.0 / samples;
+    colorR = glm::sqrt(scale * colorR);
+    colorG = glm::sqrt(scale * colorG);
+    colorB = glm::sqrt(scale * colorB);
 
-    colorR = glm::sqrt(colorR);
-    colorG = glm::sqrt(colorG);
-    colorB = glm::sqrt(colorB);
+    // colorR = glm::sqrt(colorR);
+    // colorG = glm::sqrt(colorG);
+    // colorB = glm::sqrt(colorB);
 
     uint32_t result = 
         ((uint8_t)(colorA * 255.0f) << 24) |

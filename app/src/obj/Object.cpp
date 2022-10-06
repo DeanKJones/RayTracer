@@ -41,12 +41,6 @@ bool Sphere::intersect(const glm::vec3 &origin, const glm::vec3 &rayDirection, f
 }
 
 
-// std::shared_ptr<Material> Sphere::getSurfaceData() const
-// { 
-//     getMaterialPtr();
-// }
-
-
 bool Sphere::solveQuadratic(const float &a, const float &b, const float &c, float &t) const
 {
     /*  Quadratic Formula
