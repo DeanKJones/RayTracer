@@ -4,7 +4,7 @@ Sphere::Sphere(glm::vec3 pPos, float pRadius, glm::vec3 pColor, std::shared_ptr<
 {
     position = pPos;
     radius = pRadius;
-    albedo = pColor;
+    //albedo = pColor;
     material_ptr = material;
 }
 

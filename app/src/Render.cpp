@@ -3,8 +3,8 @@
 
 // UI VARIABLES
 glm::vec3 Renderer::lightDirection  = {1.0f, -1.0f, -1.0f};
-int Renderer::samplesPerPixel = 5.0f;
-int Renderer::bounceDepth = 2.0f;
+int Renderer::samplesPerPixel = 10.0f;
+int Renderer::bounceDepth = 3.0f;
 bool Renderer::doGI = false;
 bool Renderer::renderEachFrame = false;
 bool Renderer::lambertMethod = false;
@@ -57,6 +57,7 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
     ray.Direction = m_activeCamera->GetRayDirections()[x + y * m_FinalImage->GetWidth()];
 
     glm::vec4 color(0.0f, 0.0f, 0.0f, 0.0f);
+    float multiplier = 1.0f;
 
     int samplesPerPixel = GetSamplesPerPixel();
     if (samplesPerPixel < 1)
@@ -73,13 +74,13 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
 
         int depth = GetBounceDepth();
         // Render Color
-        color += RenderColor(ray, depth);
+        color += RenderColor(ray, depth, multiplier);
     }
     return color;
 }
 
 
-glm::vec4 Renderer::RenderColor(Ray& ray, int depth) 
+glm::vec4 Renderer::RenderColor(Ray& ray, int depth, float multiplier) 
 {  
     if (depth <= 0){
         return glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -112,8 +113,7 @@ glm::vec4 Renderer::RenderColor(Ray& ray, int depth)
         if (payload.materialPtr->scatter(ray, payload, attenuation, scattered))
         {
             glm::vec4 attenColor(attenuation, 1.0f);
-            float multiplier = 1.0f;
-            glm::vec4 bounceColor = (attenColor * RenderColor(scattered, depth - 1)) * multiplier;
+            glm::vec4 bounceColor = (attenColor * RenderColor(scattered, depth - 1, multiplier)) * multiplier;
             multiplier *= 0.7f;
             return bounceColor;
         }

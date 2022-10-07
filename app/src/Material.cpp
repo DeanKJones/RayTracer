@@ -1,6 +1,7 @@
 #include "Material.h"
 #include "Payload.h"
 
+
 // LAMBERTIAN MATERIALS
 
 bool Lambertian::scatter(
@@ -14,7 +15,6 @@ bool Lambertian::scatter(
     }
 
     scattered.Origin = payload.worldPosition + (payload.worldNormal * 0.0001f);
-    //scattered.Direction = scatterDirection - payload.worldPosition;
     scattered.Direction = scatterDirection;
 
     colorAttenuation = albedo;
