@@ -35,7 +35,7 @@ bool Metal::scatter(
     const Ray& ray, const Payload& payload, glm::vec3& colorAttenuation, Ray& scattered) const
 {
     glm::vec3 rayVector = glm::normalize(ray.Direction);
-    glm::vec3 reflected = reflect(rayVector, payload.worldNormal); 
+    glm::vec3 reflected = reflect(ray.Direction, payload.worldNormal); 
 
     scattered.Origin = payload.worldPosition + (payload.worldNormal * 0.00001f);
     scattered.Direction = reflected; 

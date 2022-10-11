@@ -38,7 +38,7 @@ public:
 		{
 			Sphere sphereBig;
 			sphereBig.position = {-0.7f, 0.5f, -0.1f};
-			sphereBig.albedo   = {1.0f, 0.0f, 0.0f};
+			sphereBig.albedo   = {0.75f, 0.75f, 0.75f};
 			sphereBig.radius   = {0.7f};
 			sphereBig.material_ptr = std::make_shared<Metal>(sphereBig.albedo);
 			m_Scene.spheres.push_back(sphereBig);

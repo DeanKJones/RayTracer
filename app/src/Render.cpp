@@ -55,7 +55,8 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
     ray.Origin = m_activeCamera->GetPosition();
     ray.Direction = m_activeCamera->GetRayDirections()[x + y * m_FinalImage->GetWidth()];
 
-    glm::vec4 color(0.0f, 0.0f, 0.0f, 0.0f);
+    // Set Pixel Color with the Alpha at 1
+    glm::vec4 color(0.0f, 0.0f, 0.0f, 1.0f);
 
     int samplesPerPixel = GetSamplesPerPixel();
     if (samplesPerPixel < 1)
@@ -79,16 +80,18 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
 
         int depth = GetBounceDepth();
         // Render Color
-        color += RenderColor(ray, depth);
+        glm::vec3 renderedColor;
+        renderedColor += RenderColor(ray, depth);
+        color = glm::vec4(renderedColor, 1.0f);
     }
     return color;
 }
 
 
-glm::vec4 Renderer::RenderColor(Ray& ray, int depth) 
+glm::vec3 Renderer::RenderColor(Ray& ray, int depth) 
 {  
     // Set Colors
-    glm::vec4 RayHitColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glm::vec3 RayHitColor(0.0f, 0.0f, 0.0f);
 
     if (depth <= 0){
         return RayHitColor;
@@ -102,7 +105,7 @@ glm::vec4 Renderer::RenderColor(Ray& ray, int depth)
         // Set Colors
         glm::vec3 unitVector = glm::normalize(ray.Direction);
         float t = 0.5 * (unitVector.y + 1.0f);
-        glm::vec4 SkyColor(((1.0f - t) * glm::vec3(1.0f, 1.0f, 1.0f)) + (t * glm::vec3(0.5f, 0.7f, 1.0f)), 1.0f);
+        glm::vec3 SkyColor(((1.0f - t) * glm::vec3(1.0f, 1.0f, 1.0f)) + (t * glm::vec3(0.5f, 0.7f, 1.0f)));
 
         RayHitColor = SkyColor;
         return RayHitColor;
@@ -118,8 +121,7 @@ glm::vec4 Renderer::RenderColor(Ray& ray, int depth)
 
         if (payload.materialPtr->scatter(ray, payload, attenuation, scattered))
         {
-            glm::vec4 attenColor(attenuation, 1.0f);
-            RayHitColor = (attenColor * RenderColor(scattered, depth - 1));
+            RayHitColor = (attenuation * RenderColor(scattered, depth - 1));
             return RayHitColor;
         }
         return RayHitColor;
@@ -127,7 +129,7 @@ glm::vec4 Renderer::RenderColor(Ray& ray, int depth)
     // Normals
     glm::vec3 colorNormals(payload.worldNormal * 0.5f + 0.5f);
     // Return object color
-    RayHitColor = glm::vec4(colorNormals, 1.0f);
+    RayHitColor = colorNormals;
 
     return RayHitColor;
 }

@@ -22,7 +22,7 @@ public:
 private:     // Rendering //
     glm::vec4 PerPixel(uint32_t x, u_int32_t y);
 
-    glm::vec4 RenderColor(Ray& ray, int depth);
+    glm::vec3 RenderColor(Ray& ray, int depth);
     Payload TraceRay(const Ray& ray);
     Payload ClosestHit(const Ray& ray, float hitDistance, int objectIndex);
     Payload MissHit(const Ray& ray);
