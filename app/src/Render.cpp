@@ -189,7 +189,16 @@ uint32_t Renderer::ConvertRGBA(glm::vec4 color)
     auto colorB = color.b;
     auto colorA = color.a;
 
-    int samples = GetSamplesPerPixel();
+    // To avoid each frame rendering from being dimmed 
+    bool eachFrame = GetRenderMode();
+    int samples;
+
+    if(eachFrame){
+        samples = 1;
+    } else {
+        samples = GetSamplesPerPixel();
+    }
+    
     auto scale = 1.0 / samples;
     colorR = glm::sqrt(scale * colorR);
     colorG = glm::sqrt(scale * colorG);
