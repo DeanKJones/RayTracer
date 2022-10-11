@@ -7,7 +7,6 @@ int Renderer::samplesPerPixel = 10.0f;
 int Renderer::bounceDepth = 3.0f;
 bool Renderer::doGI = false;
 bool Renderer::renderEachFrame = false;
-bool Renderer::lambertMethod = false;
 
 
 void Renderer::onResize(uint32_t width, uint32_t height)
@@ -57,7 +56,6 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
     ray.Direction = m_activeCamera->GetRayDirections()[x + y * m_FinalImage->GetWidth()];
 
     glm::vec4 color(0.0f, 0.0f, 0.0f, 0.0f);
-    float multiplier = 1.0f;
 
     int samplesPerPixel = GetSamplesPerPixel();
     if (samplesPerPixel < 1)
@@ -69,42 +67,50 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
             samplesPerPixel = 1;
         }
         // Scatter Rays
+       /*   There is an error in here that is not fixed for now:
+        *   Since the ray scattering is a random float being added to the direction of the 
+        *   ray each sample, the new scattered ray eventually leaves the pixel. This can be seen 
+        *   by adding several dozen samples and rendering the image. The image will have blurs to the
+        *   right side of objects. The image also becomes darker, this is due to the samples dividing 
+        *   each pixel by an amount that is too much for that pixel's accumulated color.
+        */
         ray.Direction.x += (Core::Random::Float() * 0.0001f);
         ray.Direction.y += (Core::Random::Float() * 0.0001f);
 
         int depth = GetBounceDepth();
         // Render Color
-        color += RenderColor(ray, depth, multiplier);
+        color += RenderColor(ray, depth);
     }
     return color;
 }
 
 
-glm::vec4 Renderer::RenderColor(Ray& ray, int depth, float multiplier) 
+glm::vec4 Renderer::RenderColor(Ray& ray, int depth) 
 {  
+    // Set Colors
+    glm::vec4 RayHitColor(0.0f, 0.0f, 0.0f, 1.0f);
+
     if (depth <= 0){
-        return glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+        return RayHitColor;
     }
 
-    // Set Colors
-    glm::vec4 RayHitColor(0.0f);
-    // Load the weapon and trace ray
+    // Load the weapon and trace the ray
     Payload payload = TraceRay(ray);
 
+    // No Hit -> Return Sky
     if (payload.hitDistance < 0){
         // Set Colors
         glm::vec3 unitVector = glm::normalize(ray.Direction);
         float t = 0.5 * (unitVector.y + 1.0f);
         glm::vec4 SkyColor(((1.0f - t) * glm::vec3(1.0f, 1.0f, 1.0f)) + (t * glm::vec3(0.5f, 0.7f, 1.0f)), 1.0f);
 
-        RayHitColor += SkyColor;
+        RayHitColor = SkyColor;
         return RayHitColor;
     }
 
     // Do GI check before rendering
     bool GI = GetGiTag();
     bool eachFrame = GetRenderMode();
-    bool lambertMethod = GetLambertMethod();
 
     if(GI && !eachFrame){
         Ray scattered;
@@ -113,11 +119,10 @@ glm::vec4 Renderer::RenderColor(Ray& ray, int depth, float multiplier)
         if (payload.materialPtr->scatter(ray, payload, attenuation, scattered))
         {
             glm::vec4 attenColor(attenuation, 1.0f);
-            glm::vec4 bounceColor = (attenColor * RenderColor(scattered, depth - 1, multiplier)) * multiplier;
-            multiplier *= 0.7f;
-            return bounceColor;
+            RayHitColor = (attenColor * RenderColor(scattered, depth - 1));
+            return RayHitColor;
         }
-        return glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+        return RayHitColor;
     }
     // Normals
     glm::vec3 colorNormals(payload.worldNormal * 0.5f + 0.5f);
@@ -187,10 +192,6 @@ uint32_t Renderer::ConvertRGBA(glm::vec4 color)
     colorR = glm::sqrt(scale * colorR);
     colorG = glm::sqrt(scale * colorG);
     colorB = glm::sqrt(scale * colorB);
-
-    // colorR = glm::sqrt(colorR);
-    // colorG = glm::sqrt(colorG);
-    // colorB = glm::sqrt(colorB);
 
     uint32_t result = 
         ((uint8_t)(colorA * 255.0f) << 24) |

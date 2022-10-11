@@ -14,7 +14,7 @@ bool Lambertian::scatter(
         scatterDirection = payload.worldNormal;
     }
 
-    scattered.Origin = payload.worldPosition + (payload.worldNormal * 0.0001f);
+    scattered.Origin = payload.worldPosition + (payload.worldNormal * 0.00001f);
     scattered.Direction = scatterDirection;
 
     colorAttenuation = albedo;
@@ -37,7 +37,7 @@ bool Metal::scatter(
     glm::vec3 rayVector = glm::normalize(ray.Direction);
     glm::vec3 reflected = reflect(rayVector, payload.worldNormal); 
 
-    scattered.Origin = payload.worldPosition + (payload.worldNormal * 0.0001f);
+    scattered.Origin = payload.worldPosition + (payload.worldNormal * 0.00001f);
     scattered.Direction = reflected; 
     colorAttenuation = albedo;
 
