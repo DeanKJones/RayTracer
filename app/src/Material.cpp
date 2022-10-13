@@ -1,13 +1,23 @@
 #include "Material.h"
 #include "Payload.h"
 
+// Globals
+bool Lambertian::lambertHemi = false;
 
 // LAMBERTIAN MATERIALS
 
 bool Lambertian::scatter(
     const Ray& ray, const Payload& payload, glm::vec3& colorAttenuation, Ray& scattered) const 
 {
-    auto scatterDirection = payload.worldNormal + Core::Random::InUnitSphere();
+
+    glm::vec3 scatterDirection;
+    bool lambertMode = GetLambertModel();
+
+    if (lambertMode){
+        scatterDirection = payload.worldNormal + Core::Random::InUnitHemi(payload.worldNormal);
+    } else {
+        scatterDirection = payload.worldNormal + Core::Random::InUnitSphere();
+    }
 
     // Need to catch degenerate ray scatters
     if(nearZero(scatterDirection)){

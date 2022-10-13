@@ -89,6 +89,9 @@ public:
 
 		ImGui::Text("Turn on Light Bouncing: ");
 		ImGui::Checkbox(": GI", (bool*)&Renderer::doGI);
+
+		ImGui::Text("Use Lambert Hemisphere Model: ");
+		ImGui::Checkbox(": Scattering Type", (bool*)&Lambertian::lambertHemi);
 		ImGui::Separator();
 
 		ImGui::Text("Light Direction: ");

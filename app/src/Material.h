@@ -28,6 +28,10 @@ public:
 
 private:
     glm::vec3 albedo;
+
+public:
+    bool GetLambertModel() const { return lambertHemi; }
+    static bool lambertHemi;
 };
 
 class Metal : public Material

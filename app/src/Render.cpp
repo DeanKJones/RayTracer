@@ -121,7 +121,9 @@ glm::vec3 Renderer::RenderColor(Ray& ray, int depth)
 
         if (payload.materialPtr->scatter(ray, payload, attenuation, scattered))
         {
-            RayHitColor = (attenuation * RenderColor(scattered, depth - 1));
+            // Incorrect attenuation value, multiplying by a fall off over time makes cleaner images. 
+            // Attenuation should decrease over bounces?
+            RayHitColor = (attenuation * RenderColor(scattered, depth - 1)) * 0.75f;
             return RayHitColor;
         }
         return RayHitColor;
