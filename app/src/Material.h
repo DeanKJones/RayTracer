@@ -37,7 +37,9 @@ public:
 class Metal : public Material
 {
 public:
-    Metal(const glm::vec3 &pColor) : albedo(pColor) {}
+    Metal(const glm::vec3 &pColor, float pRoughness) : 
+            albedo(pColor),
+            roughness(pRoughness < 1 ? pRoughness : 1) {}
 
     virtual bool scatter(
         const Ray& ray, const Payload& payload, glm::vec3& colorAttenuation, Ray& scattered
@@ -47,4 +49,6 @@ public:
 
 private:
     glm::vec3 albedo;
+    // Using float since glm doesn't support double
+    float roughness;
 };

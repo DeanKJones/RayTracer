@@ -40,8 +40,16 @@ public:
 			sphereBig.position = {-0.7f, 0.5f, -0.1f};
 			sphereBig.albedo   = {0.75f, 0.75f, 0.75f};
 			sphereBig.radius   = {0.7f};
-			sphereBig.material_ptr = std::make_shared<Metal>(sphereBig.albedo);
+			sphereBig.material_ptr = std::make_shared<Metal>(sphereBig.albedo, 0.01f);
 			m_Scene.spheres.push_back(sphereBig);
+		}
+		{
+			Sphere metalSmall;
+			metalSmall.position = {0.6f, 0.1f, 0.8f};
+			metalSmall.albedo   = {0.9f, 0.91f, 0.12f};
+			metalSmall.radius   = {0.3f};
+			metalSmall.material_ptr = std::make_shared<Metal>(metalSmall.albedo, 0.4f);
+			m_Scene.spheres.push_back(metalSmall);
 		}
 		{
 			Sphere ground;
@@ -79,6 +87,7 @@ public:
 
 			Sphere& sphere = m_Scene.spheres[i];
 
+			// Changing albedo here does nothing as the albedo is now stored in the Material pointer
 			ImGui::ColorEdit3(": Color", glm::value_ptr(sphere.albedo));
 			ImGui::DragFloat3(": Position", glm::value_ptr(sphere.position), 0.1f);
 			ImGui::DragFloat(": Size", &sphere.radius, 0.1f);
