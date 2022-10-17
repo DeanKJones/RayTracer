@@ -9,25 +9,26 @@ struct Payload;
 class Material 
 {
 public:
+    Material(glm::vec3 pAlbedo) : albedo(pAlbedo) {};
+
     virtual bool scatter(
         const Ray& ray, const Payload& payload, glm::vec3& colorAttenuation, Ray& scattered
         ) const = 0;
 
+public:
+    glm::vec3 albedo;
 };
 
 class Lambertian : public Material 
 {
 public:
-    Lambertian(const glm::vec3 &pColor) : albedo(pColor) {}
+    Lambertian(const glm::vec3 &pColor) : Material(pColor) {}
     
     virtual bool scatter(
         const Ray& ray, const Payload& payload, glm::vec3& colorAttenuation, Ray& scattered
         ) const override;
     
     bool nearZero(glm::vec3& nearingZero) const;
-
-private:
-    glm::vec3 albedo;
 
 public:
     bool GetLambertModel() const { return lambertHemi; }
@@ -38,7 +39,7 @@ class Metal : public Material
 {
 public:
     Metal(const glm::vec3 &pColor, float pRoughness) : 
-            albedo(pColor),
+            Material(pColor),
             roughness(pRoughness < 1 ? pRoughness : 1) {}
 
     virtual bool scatter(
@@ -47,8 +48,7 @@ public:
 
     glm::vec3 reflect(const glm::vec3 &vector, const glm::vec3 &normal) const;
 
-private:
-    glm::vec3 albedo;
+public:
     // Using float since glm doesn't support double
     float roughness;
 };

@@ -87,8 +87,8 @@ public:
 
 			Sphere& sphere = m_Scene.spheres[i];
 
-			// Changing albedo here does nothing as the albedo is now stored in the Material pointer
-			ImGui::ColorEdit3(": Color", glm::value_ptr(sphere.albedo));
+			ImGui::ColorEdit3(": Color", glm::value_ptr(sphere.material_ptr->albedo));
+            //ImGui::ColorEdit3(": Color", &(reinterpret_cast<Metal*>(sphere.material_ptr.get())->roughness));
 			ImGui::DragFloat3(": Position", glm::value_ptr(sphere.position), 0.1f);
 			ImGui::DragFloat(": Size", &sphere.radius, 0.1f);
 			
