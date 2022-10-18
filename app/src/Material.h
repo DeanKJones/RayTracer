@@ -9,6 +9,9 @@ struct Payload;
 class Material 
 {
 public:
+    Material() = default;
+    virtual ~Material() = default;
+
     Material(glm::vec3 pAlbedo) : albedo(pAlbedo) {};
 
     virtual bool scatter(
@@ -22,6 +25,9 @@ public:
 class Lambertian : public Material 
 {
 public:
+    Lambertian() = default;
+    ~Lambertian() override = default;
+
     Lambertian(const glm::vec3 &pColor) : Material(pColor) {}
     
     virtual bool scatter(
@@ -38,6 +44,9 @@ public:
 class Metal : public Material
 {
 public:
+    Metal() = default;
+    ~Metal() override = default;
+
     Metal(const glm::vec3 &pColor, float pRoughness) : 
             Material(pColor),
             roughness(pRoughness < 1 ? pRoughness : 1) {}

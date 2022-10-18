@@ -88,7 +88,16 @@ public:
 			Sphere& sphere = m_Scene.spheres[i];
 
 			ImGui::ColorEdit3(": Color", glm::value_ptr(sphere.material_ptr->albedo));
-            //ImGui::ColorEdit3(": Color", &(reinterpret_cast<Metal*>(sphere.material_ptr.get())->roughness));
+
+            std::string typeidName = typeid(*(sphere.material_ptr.get())).name();
+            //std::cout << typeidName << "\n";
+
+            if(typeidName.find("Metal") != std::string::npos)
+            {
+                auto sphereRoughness = &(reinterpret_cast<Metal*>(sphere.material_ptr.get())->roughness);
+                ImGui::DragFloat(": Roughness", sphereRoughness, 0.05f, 0.0f, 1.0f);
+            }
+
 			ImGui::DragFloat3(": Position", glm::value_ptr(sphere.position), 0.1f);
 			ImGui::DragFloat(": Size", &sphere.radius, 0.1f);
 			
