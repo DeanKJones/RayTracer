@@ -22,6 +22,7 @@ public:
     glm::vec3 albedo;
 };
 
+
 class Lambertian : public Material 
 {
 public:
@@ -40,6 +41,7 @@ public:
     bool GetLambertModel() const { return lambertHemi; }
     static bool lambertHemi;
 };
+
 
 class Metal : public Material
 {
@@ -60,4 +62,22 @@ public:
 public:
     // Using float since glm doesn't support double
     float roughness;
+};
+
+
+class Dielectric : public Material
+{
+public:
+    Dielectric() = default;
+    ~Dielectric() override = default;
+
+    Dielectric(glm::vec3 pColor, float pIR) : Material(pColor), indexOfRefraction(pIR) {}
+    virtual bool scatter(
+            const Ray& ray, const Payload& payload, glm::vec3& colorAttenuation, Ray& scattered
+            ) const override;
+
+    glm::vec3 refract(const glm::vec3& uv, const glm::vec3& normal, float etaiOverEtat) const;
+
+private:
+    float indexOfRefraction;
 };

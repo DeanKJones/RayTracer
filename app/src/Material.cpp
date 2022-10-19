@@ -60,3 +60,34 @@ glm::vec3 Metal::reflect(const glm::vec3 &vector, const glm::vec3 &normal) const
 {
     return vector - 2 * glm::dot(vector, normal) * normal;
 }
+
+
+// DIELECTRIC MATERIALS
+
+bool Dielectric::scatter(
+    const Ray &ray, const Payload &payload, glm::vec3 &colorAttenuation, Ray &scattered) const
+{
+    // Maybe try passing albedo color here to see the types of results
+    colorAttenuation = glm::vec3(1.0f, 1.0f, 1.0f);
+    float refraction_ratio = payload.frontFace ? (1.0f / indexOfRefraction) : indexOfRefraction;
+
+    glm::vec3 unitDirection = glm::normalize(ray.Direction);
+    glm::vec3 refracted = refract(unitDirection, payload.worldNormal, refraction_ratio);
+
+    scattered.Origin = payload.worldPosition;
+    scattered.Direction = refracted;
+
+    return true;
+}
+
+glm::vec3 Dielectric::refract(const glm::vec3 &uv, const glm::vec3 &normal, float etaiOverEtat) const
+{
+    float cosTheta = fmin(glm::dot(-uv, normal), 1.0f);
+
+    glm::vec3 outPerpendicular = etaiOverEtat * (uv + cosTheta * normal);
+    float perpLengthSquared = glm::sqrt(outPerpendicular.length());
+    // Forced to cast to float to avoid fabs storing values as double
+    glm::vec3 outParallel = -glm::sqrt((float)fabs(1.0 - perpLengthSquared)) * normal;
+
+    return outPerpendicular + outParallel;
+}

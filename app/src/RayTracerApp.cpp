@@ -51,6 +51,14 @@ public:
 			metalSmall.material_ptr = std::make_shared<Metal>(metalSmall.albedo, 0.4f);
 			m_Scene.spheres.push_back(metalSmall);
 		}
+        {
+            Sphere glassSmall;
+            glassSmall.position = {-0.3f, 0.1f, 0.8f};
+            glassSmall.albedo   = {1.0f, 1.0f, 1.0f};
+            glassSmall.radius   = {0.2f};
+            glassSmall.material_ptr = std::make_shared<Dielectric>(glassSmall.albedo, 1.5f);
+            m_Scene.spheres.push_back(glassSmall);
+        }
 		{
 			Sphere ground;
 			ground.position = {0.0f, -50.2f, 0.0f};
@@ -88,9 +96,7 @@ public:
 			Sphere& sphere = m_Scene.spheres[i];
 
 			ImGui::ColorEdit3(": Color", glm::value_ptr(sphere.material_ptr->albedo));
-
             std::string typeidName = typeid(*(sphere.material_ptr.get())).name();
-            //std::cout << typeidName << "\n";
 
             if(typeidName.find("Metal") != std::string::npos)
             {
