@@ -1,10 +1,9 @@
 #include "Object.h"
 
-Sphere::Sphere(glm::vec3 pPos, float pRadius, glm::vec3 pColor, std::shared_ptr<Material> material)
+Sphere::Sphere(glm::vec3 pPos, float pRadius, std::shared_ptr<Material> material)
 {
     position = pPos;
     radius = pRadius;
-    albedo = pColor;
     material_ptr = material;
 }
 

@@ -22,7 +22,7 @@ public:
     Sphere() {};
     ~Sphere() {};
 
-    Sphere(glm::vec3 pPos, float pRadius, glm::vec3 pColor, std::shared_ptr<Material> material);
+    Sphere(glm::vec3 pPos, float pRadius, std::shared_ptr<Material> material);
 
     bool intersect(const glm::vec3 &origin, const glm::vec3 &rayDirection, float &tNear) const override;
     bool solveQuadratic(const float &a, const float &b, const float &c, float &t) const;
