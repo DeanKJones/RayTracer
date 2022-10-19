@@ -24,18 +24,16 @@ public:
 
     Sphere(glm::vec3 pPos, float pRadius, glm::vec3 pColor, std::shared_ptr<Material> material);
 
-    bool intersect(const glm::vec3 &origin, const glm::vec3 &rayDirection, float &tNear) const;
+    bool intersect(const glm::vec3 &origin, const glm::vec3 &rayDirection, float &tNear) const override;
     bool solveQuadratic(const float &a, const float &b, const float &c, float &t) const;
 
     // Getters
     glm::vec3 getSpherePosition() const { return position; }
     float getSphereRadius() const { return radius; }
-    glm::vec3 getSphereColor() const { return albedo; }
     std::shared_ptr<Material> getMaterialPtr() const { return material_ptr; }
 
 public:
     glm::vec3 position;
     float radius;
-    glm::vec3 albedo;
     std::shared_ptr<Material> material_ptr;
 };
