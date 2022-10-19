@@ -12,6 +12,8 @@ public:
     virtual ~Object() {};
 
     virtual bool intersect(const glm::vec3 &, const glm::vec3 &, float &) const = 0;
+
+    std::string objectName;
 };
 
 class Sphere : public Object

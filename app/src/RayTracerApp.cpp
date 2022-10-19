@@ -7,7 +7,7 @@
 #include "Render.h"
 #include "Camera.h"
 
-#include "string.h"
+#include "utils/Utilities.h"
 #include "glm/gtc/type_ptr.hpp"
 
 using namespace Core;
@@ -21,6 +21,7 @@ public:
 		// Scene Description
 		{
 			Sphere sphere;
+            sphere.objectName = "Blue Sphere";
 			sphere.position = {0.3f, 0.3f, 0.2f};
 			sphere.albedo 	= {0.0f, 0.0f, 0.9f};
 			sphere.radius 	= {0.3};
@@ -28,44 +29,49 @@ public:
 			m_Scene.spheres.push_back(sphere);
 		}
 		{
-			Sphere sphereSmall;
-			sphereSmall.position = {0.0f, 0.0f, 1.4f};
-			sphereSmall.albedo 	 = {0.0f, 0.9f, 0.0f};
-			sphereSmall.radius 	 = {0.1f};
-			sphereSmall.material_ptr = std::make_shared<Lambertian>(sphereSmall.albedo);
-			m_Scene.spheres.push_back(sphereSmall);
+			Sphere sphere;
+            sphere.objectName = "Green Sphere";
+            sphere.position = {0.0f, 0.0f, 1.4f};
+            sphere.albedo 	 = {0.0f, 0.9f, 0.0f};
+            sphere.radius 	 = {0.1f};
+            sphere.material_ptr = std::make_shared<Lambertian>(sphere.albedo);
+			m_Scene.spheres.push_back(sphere);
 		}
 		{
-			Sphere sphereBig;
-			sphereBig.position = {-0.7f, 0.5f, -0.1f};
-			sphereBig.albedo   = {0.75f, 0.75f, 0.75f};
-			sphereBig.radius   = {0.7f};
-			sphereBig.material_ptr = std::make_shared<Metal>(sphereBig.albedo, 0.01f);
-			m_Scene.spheres.push_back(sphereBig);
+			Sphere sphere;
+            sphere.objectName = "Big Metal Sphere";
+            sphere.position = {-0.7f, 0.5f, -0.1f};
+            sphere.albedo   = {0.75f, 0.75f, 0.75f};
+            sphere.radius   = {0.7f};
+            sphere.material_ptr = std::make_shared<Metal>(sphere.albedo, 0.01f);
+			m_Scene.spheres.push_back(sphere);
 		}
 		{
-			Sphere metalSmall;
-			metalSmall.position = {0.6f, 0.1f, 0.8f};
-			metalSmall.albedo   = {0.9f, 0.91f, 0.12f};
-			metalSmall.radius   = {0.3f};
-			metalSmall.material_ptr = std::make_shared<Metal>(metalSmall.albedo, 0.4f);
-			m_Scene.spheres.push_back(metalSmall);
+			Sphere sphere;
+            sphere.objectName = "Small Metal Sphere";
+            sphere.position = {0.6f, 0.1f, 0.8f};
+            sphere.albedo   = {0.9f, 0.91f, 0.12f};
+            sphere.radius   = {0.3f};
+            sphere.material_ptr = std::make_shared<Metal>(sphere.albedo, 0.4f);
+			m_Scene.spheres.push_back(sphere);
 		}
         {
-            Sphere glassSmall;
-            glassSmall.position = {-0.3f, 0.1f, 0.8f};
-            glassSmall.albedo   = {1.0f, 1.0f, 1.0f};
-            glassSmall.radius   = {0.2f};
-            glassSmall.material_ptr = std::make_shared<Dielectric>(glassSmall.albedo, 1.5f);
-            m_Scene.spheres.push_back(glassSmall);
+            Sphere sphere;
+            sphere.objectName = "Glass Sphere";
+            sphere.position = {-0.3f, 0.1f, 0.8f};
+            sphere.albedo   = {1.0f, 1.0f, 1.0f};
+            sphere.radius   = {0.2f};
+            sphere.material_ptr = std::make_shared<Dielectric>(sphere.albedo, 1.5f);
+            m_Scene.spheres.push_back(sphere);
         }
 		{
-			Sphere ground;
-			ground.position = {0.0f, -50.2f, 0.0f};
-			ground.albedo 	= {0.9f, 0.81f, 0.73f};
-			ground.radius 	= {50.0f};
-			ground.material_ptr = std::make_shared<Lambertian>(ground.albedo);
-			m_Scene.spheres.push_back(ground);
+			Sphere sphere;
+            sphere.objectName = "Ground";
+            sphere.position = {0.0f, -50.2f, 0.0f};
+            sphere.albedo 	= {0.9f, 0.81f, 0.73f};
+            sphere.radius 	= {50.0f};
+            sphere.material_ptr = std::make_shared<Lambertian>(sphere.albedo);
+			m_Scene.spheres.push_back(sphere);
 		}
 	}
 
@@ -90,26 +96,42 @@ public:
 
 		// Scene //
 		ImGui::Begin("Scene");
-		for(int i = 0; i < m_Scene.spheres.size(); i++){
-			ImGui::PushID(i);
 
-			Sphere& sphere = m_Scene.spheres[i];
+        // Listbox
+        static int currentItem = 1;
+        ImGui::ListBox(
+                "Scene Objects\n\nSelect an item \nto edit it's \nparameters.",
+                &currentItem,
+                sphereGetter,
+                m_Scene.spheres.data(),
+                m_Scene.spheres.size(),
+                6
+                );
+        // Draw Item Parameters
+        if(currentItem >= 0) {
+            ImGui::Separator();
 
-			ImGui::ColorEdit3(": Color", glm::value_ptr(sphere.material_ptr->albedo));
-            std::string typeidName = typeid(*(sphere.material_ptr.get())).name();
+            Sphere &sphere = m_Scene.spheres[currentItem];
 
-            if(typeidName.find("Metal") != std::string::npos)
-            {
-                auto sphereRoughness = &(reinterpret_cast<Metal*>(sphere.material_ptr.get())->roughness);
+            char *objName = sphere.objectName.data();
+            ImGui::Text("%s is selected", objName);
+
+            ImGui::Separator();
+
+            ImGui::ColorEdit3(": Color", glm::value_ptr(sphere.material_ptr->albedo));
+            std::string typeidName = typeid(*(sphere.material_ptr)).name();
+
+            if (typeidName.find("Metal") != std::string::npos) {
+                auto sphereRoughness = &(reinterpret_cast<Metal *>(sphere.material_ptr.get())->roughness);
                 ImGui::DragFloat(": Roughness", sphereRoughness, 0.05f, 0.0f, 1.0f);
             }
 
-			ImGui::DragFloat3(": Position", glm::value_ptr(sphere.position), 0.1f);
-			ImGui::DragFloat(": Size", &sphere.radius, 0.1f);
-			
-			ImGui::Separator();
-			ImGui::PopID();
-		}
+            ImGui::DragFloat3(": Position", glm::value_ptr(sphere.position), 0.1f);
+            ImGui::DragFloat(": Size", &sphere.radius, 0.1f);
+
+            ImGui::Separator();
+            // No need to set and pop IDs - listbox handles it already
+        }
 
 		ImGui::Text("Turn on Light Bouncing: ");
 		ImGui::Checkbox(": GI", (bool*)&Renderer::doGI);
