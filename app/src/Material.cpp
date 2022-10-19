@@ -68,7 +68,7 @@ bool Dielectric::scatter(
     const Ray &ray, const Payload &payload, glm::vec3 &colorAttenuation, Ray &scattered) const
 {
     // Maybe try passing albedo color here to see the types of results
-    colorAttenuation = glm::vec3(1.0f, 1.0f, 1.0f);
+    colorAttenuation = albedo;
     float refraction_ratio = payload.frontFace ? (1.0f / indexOfRefraction) : indexOfRefraction;
 
     glm::vec3 unitDirection = glm::normalize(ray.Direction);
