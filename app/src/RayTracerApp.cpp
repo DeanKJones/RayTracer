@@ -98,7 +98,7 @@ public:
 		ImGui::Begin("Scene");
 
         // Listbox
-        static int currentItem = 1;
+        static int currentItem = 0;
         ImGui::ListBox(
                 "Scene Objects\n\nSelect an item \nto edit it's \nparameters.",
                 &currentItem,
@@ -107,6 +107,7 @@ public:
                 m_Scene.spheres.size(),
                 6
                 );
+
         // Draw Item Parameters
         if(currentItem >= 0) {
             ImGui::Separator();
@@ -130,7 +131,6 @@ public:
             ImGui::DragFloat(": Size", &sphere.radius, 0.1f);
 
             ImGui::Separator();
-            // No need to set and pop IDs - listbox handles it already
         }
 
 		ImGui::Text("Turn on Light Bouncing: ");

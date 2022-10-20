@@ -4,7 +4,7 @@
 // UI VARIABLES
 glm::vec3 Renderer::lightDirection  = {1.0f, -1.0f, -1.0f};
 int Renderer::samplesPerPixel = 10.0f;
-int Renderer::bounceDepth = 3.0f;
+int Renderer::bounceDepth = 5.0f;
 bool Renderer::doGI = false;
 bool Renderer::renderEachFrame = false;
 

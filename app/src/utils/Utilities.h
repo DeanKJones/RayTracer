@@ -4,14 +4,11 @@
 // Listbox Object Getter
 bool sphereGetter(void* data, int index, const char** output)
 {
-    Object* objects = (Object*)data;
-    Object& currentObject = objects[index];
+    // When using Object* sphere names render incorrectly
+    Sphere* objects = (Sphere*)data;
+    Sphere& currentObject = objects[index];
 
-    // not getting the right name
-    std::string* name = &currentObject.objectName;
-    std::string nameDeRef = *name;
-
-    *output = name->data();
+    *output = currentObject.objectName.c_str();
 
     return true;
 }

@@ -11,6 +11,8 @@ public:
     Object() {};
     virtual ~Object() {};
 
+    
+
     virtual bool intersect(const glm::vec3 &, const glm::vec3 &, float &) const = 0;
 
     std::string objectName;
@@ -19,7 +21,7 @@ public:
 class Sphere : public Object
 {
 public:
-    Sphere() {};
+    Sphere() : Object() {};
     ~Sphere() {};
 
     Sphere(glm::vec3 pPos, float pRadius, std::shared_ptr<Material> material);
