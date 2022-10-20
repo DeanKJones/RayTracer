@@ -9,7 +9,6 @@ struct Payload
     float hitDistance;
     glm::vec3 worldPosition;
     glm::vec3 worldNormal;
-    glm::vec3 surfaceColor;
 
     bool frontFace;
     inline void setFaceNormal(const Ray& ray, const glm::vec3 outwardNormal)

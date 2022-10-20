@@ -1,24 +1,21 @@
 #include "Object.h"
 
-Sphere::Sphere(glm::vec3 pPos, float pRadius, std::shared_ptr<Material> material)
-{
-    position = pPos;
-    radius = pRadius;
-    material_ptr = material;
-}
-
+Sphere::Sphere(std::string pName, glm::vec3 pPosition, std::shared_ptr<Material> pMaterial, float pRadius) :
+                Object(pName, pPosition, pMaterial), radius(pRadius) {}
 
 bool Sphere::intersect(const glm::vec3 &origin, const glm::vec3 &rayDirection, float &tNear) const
 {
-    // (bx^2 + bx^2)t^2 + (2(axbx + ayby))t + (ax^2 + ay^2 - r^2) = 0
-    // Where: 
-    // a = Ray Origin
-    // b = Ray Direction
-    // r = Radius
-    // t = Hit Distance
+    // Preparing quadratic
+    /* (bx^2 + bx^2)t^2 + (2(axbx + ayby))t + (ax^2 + ay^2 - r^2) = 0
+    * Where:
+    * a = Ray Origin
+    * b = Ray Direction
+    * r = Radius
+    * t = Hit Distance
+    */
 
     float t;
-    glm::vec3 sphereCenter = getSpherePosition();
+    glm::vec3 sphereCenter = getObjectPosition();
     float radius = getSphereRadius();
 
     // The sphere center is subtracted from the ray origin to allow for the sphere to move and get hit by rays
@@ -42,6 +39,7 @@ bool Sphere::intersect(const glm::vec3 &origin, const glm::vec3 &rayDirection, f
 
 bool Sphere::solveQuadratic(const float &a, const float &b, const float &c, float &t) const
 {
+    // Quadratic
     /*  Quadratic Formula
     *         ___________
     *   -b +-/ b^2 - 4ac   =  t

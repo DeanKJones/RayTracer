@@ -32,7 +32,7 @@ void Renderer::Render(const Camera& camera, const Scene& scene)
     m_activeScene = &scene;
     
     // Aspect Ratio
-    float aspectRatio = (float)m_FinalImage->GetWidth() / (float)m_FinalImage->GetHeight();
+    //float aspectRatio = (float)m_FinalImage->GetWidth() / (float)m_FinalImage->GetHeight();
     int pixel_pos;
 
     for (uint32_t y = 0; y < m_FinalImage->GetHeight(); y++) {
@@ -67,12 +67,13 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
         if (renderEachFrame){
             samplesPerPixel = 1;
         }
+
         // Scatter Rays
        /*   There is an error in here that is not fixed for now:
-        *   Since the ray scattering is a random float being added to the direction of the 
-        *   ray each sample, the new scattered ray eventually leaves the pixel. This can be seen 
+        *   Since the ray scattering is a random float being added to the direction of the
+        *   ray each sample, the new scattered ray eventually leaves the pixel. This can be seen
         *   by adding several dozen samples and rendering the image. The image will have blurs to the
-        *   right side of objects. The image also becomes darker, this is due to the samples dividing 
+        *   right side of objects. The image also becomes darker, this is due to the samples dividing
         *   each pixel by an amount that is too much for that pixel's accumulated color.
         */
         ray.Direction.x += (Core::Random::Float() * 0.0001f);
@@ -128,8 +129,9 @@ glm::vec3 Renderer::RenderColor(Ray& ray, int depth)
     }
     // Normals
     glm::vec3 colorNormals(payload.worldNormal * 0.5f + 0.5f);
-    // Return object color
-    RayHitColor = colorNormals;
+    glm::vec3 colorAlbedo(payload.materialPtr->albedo);
+
+    RayHitColor = colorAlbedo;
 
     return RayHitColor;
 }
