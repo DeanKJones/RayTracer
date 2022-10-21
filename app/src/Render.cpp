@@ -7,6 +7,7 @@ int Renderer::samplesPerPixel = 10.0f;
 int Renderer::bounceDepth = 5.0f;
 bool Renderer::doGI = false;
 bool Renderer::renderEachFrame = false;
+bool Renderer::renderNormals = false;
 
 
 void Renderer::onResize(uint32_t width, uint32_t height)
@@ -127,12 +128,14 @@ glm::vec3 Renderer::RenderColor(Ray& ray, int depth)
         }
         return RayHitColor;
     }
-    // Normals
-    glm::vec3 colorNormals(payload.worldNormal * 0.5f + 0.5f);
-    glm::vec3 colorAlbedo(payload.materialPtr->albedo);
 
-    RayHitColor = colorAlbedo;
-
+    if (renderNormals){
+        glm::vec3 colorNormals(payload.worldNormal * 0.5f + 0.5f);
+        RayHitColor = colorNormals;
+    } else {
+        glm::vec3 colorAlbedo(payload.materialPtr->albedo);
+        RayHitColor = colorAlbedo;
+    }
     return RayHitColor;
 }
 

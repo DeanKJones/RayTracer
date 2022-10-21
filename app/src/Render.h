@@ -47,6 +47,7 @@ public:    // Getter Functions //
 
     bool GetGiTag() const { return doGI; }
     bool GetRenderMode() const { return renderEachFrame; }
+    bool GetRenderNormals() const { return renderNormals; }
 
 
 public:      // Exposable UI //
@@ -55,4 +56,5 @@ public:      // Exposable UI //
     static int bounceDepth;
     static bool doGI;
     static bool renderEachFrame;
+    static bool renderNormals;
 };

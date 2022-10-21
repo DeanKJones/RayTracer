@@ -87,11 +87,15 @@ public:
 		ImGui::Text("Last Render: %.3fms", m_lastRenderTime);
 		if (ImGui::Button("Render")) {
 			RenderImage();
-		}	
+		}
+
+        ImGui::Separator();
 		ImGui::Checkbox("Render each frame: ", (bool*)&Renderer::renderEachFrame);
 		if (Renderer::renderEachFrame) {
 			RenderImage();
 		}
+        ImGui::Checkbox("Display Normals", (bool*)&Renderer::renderNormals);
+
 		ImGui::End();
 
 		// Scene //
