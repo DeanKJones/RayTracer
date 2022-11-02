@@ -15,8 +15,8 @@ using namespace Core;
 class ExampleLayer : public Core::Layer
 {
 public:
-	ExampleLayer()
-		: m_Camera(45.0f, 0.1f, 100.0f) 
+	ExampleLayer()  // Camera defined once, holds parameters here
+		: m_Camera(45.0f, 0.1f, 100.0f)
 	{
 		// Scene Description
 		{
@@ -90,17 +90,42 @@ public:
 		}
 
         ImGui::Separator();
-		ImGui::Checkbox("Render each frame: ", (bool*)&Renderer::renderEachFrame);
+		ImGui::Checkbox(": Render each frame ", (bool*)&Renderer::renderEachFrame);
 		if (Renderer::renderEachFrame) {
 			RenderImage();
 		}
-        ImGui::Checkbox("Display Normals", (bool*)&Renderer::renderNormals);
+        ImGui::Checkbox(": Display Normals", (bool*)&Renderer::renderNormals);
+        ImGui::Separator();
+
+        ImGui::Text("Turn on Light Bouncing: ");
+        ImGui::Checkbox(": GI", (bool*)&Renderer::doGI);
+
+        ImGui::Text("Use Lambert Hemisphere Model: ");
+        ImGui::Checkbox(": Scattering Type", (bool*)&Lambertian::lambertHemi);
+        ImGui::Separator();
+
+        // Samples per pixel lock at 1, values below 1 will be ignored
+        ImGui::Text("Samples per pixel ");
+        ImGui::InputInt(": Samples", (int*)&Renderer::samplesPerPixel);
+
+        ImGui::Text("Ray Bounce Depth ");
+        ImGui::InputInt(": Ray Bounces", (int*)&Renderer::bounceDepth);
 
 		ImGui::End();
 
+
+        // Camera
+        ImGui::Begin("Camera");
+        ImGui::Text("Camera Settings: ");
+        ImGui::DragFloat(" : Field of View", &m_Camera.m_VerticalFOV, 1.0f);
+        ImGui::DragFloat(" : Near Clip", &m_Camera.m_NearClip, 0.1f);
+        ImGui::DragFloat(" : Far Clip", &m_Camera.m_FarClip, 1.0f);
+
+        ImGui::End();
+
+
 		// Scene //
 		ImGui::Begin("Scene");
-
         // Listbox
         static int currentItem = 0;
         ImGui::ListBox(
@@ -136,23 +161,6 @@ public:
 
             ImGui::Separator();
         }
-
-		ImGui::Text("Turn on Light Bouncing: ");
-		ImGui::Checkbox(": GI", (bool*)&Renderer::doGI);
-
-		ImGui::Text("Use Lambert Hemisphere Model: ");
-		ImGui::Checkbox(": Scattering Type", (bool*)&Lambertian::lambertHemi);
-		ImGui::Separator();
-
-		ImGui::Text("Light Direction: ");
-		ImGui::DragFloat3(": Direction", (float*)&Renderer::lightDirection);
-
-		// Samples per pixel lock at 1, values below 1 will be ignored
-		ImGui::Text("Samples per pixel ");
-		ImGui::InputInt(": Samples", (int*)&Renderer::samplesPerPixel);
-
-		ImGui::Text("Ray Bounce Depth ");
-		ImGui::InputInt(": Ray Bounces", (int*)&Renderer::bounceDepth);
 
 		// End Window
 		ImGui::End();

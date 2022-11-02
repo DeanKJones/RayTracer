@@ -4,6 +4,13 @@
 // Globals
 bool Lambertian::lambertHemi = false;
 
+// MATERIAL FUNCTIONS
+glm::vec3 Material::reflect(const glm::vec3 &vector, const glm::vec3 &normal) const
+{
+    return vector - 2 * glm::dot(vector, normal) * normal;
+}
+
+
 // LAMBERTIAN MATERIALS
 
 bool Lambertian::scatter(
@@ -56,12 +63,6 @@ bool Metal::scatter(
     return (glm::dot(scattered.Direction, payload.worldNormal) > 0);
 }
 
-glm::vec3 Metal::reflect(const glm::vec3 &vector, const glm::vec3 &normal) const
-{
-    return vector - 2 * glm::dot(vector, normal) * normal;
-}
-
-
 // DIELECTRIC MATERIALS
 
 bool Dielectric::scatter(
@@ -72,10 +73,21 @@ bool Dielectric::scatter(
     float refraction_ratio = payload.frontFace ? (1.0f / indexOfRefraction) : indexOfRefraction;
 
     glm::vec3 unitDirection = glm::normalize(ray.Direction);
-    glm::vec3 refracted = refract(unitDirection, payload.worldNormal, refraction_ratio);
+
+    double cos_theta = glm::min(glm::dot(-unitDirection, payload.worldNormal), 1.0f);
+    double sin_theta = glm::sqrt(1.0f - cos_theta * cos_theta);
+
+    bool cannot_refract = refraction_ratio * sin_theta > 1.0f;
+    glm::vec3 direction;
+
+    if (cannot_refract || reflectance(cos_theta, refraction_ratio) > Core::Random::Float()) {
+        direction = reflect(unitDirection, payload.worldNormal);
+    } else {
+        direction = refract(unitDirection, payload.worldNormal, refraction_ratio);
+    }
 
     scattered.Origin = payload.worldPosition;
-    scattered.Direction = refracted;
+    scattered.Direction = direction;
 
     return true;
 }
@@ -90,4 +102,12 @@ glm::vec3 Dielectric::refract(const glm::vec3 &uv, const glm::vec3 &normal, floa
     glm::vec3 outParallel = -glm::sqrt((float)fabs(1.0 - perpLengthSquared)) * normal;
 
     return outPerpendicular + outParallel;
+}
+
+double Dielectric::reflectance(double cosine, double ref_idx)
+{
+    // Schlicks approximation for reflectance
+    double r0 = (1 - ref_idx) / (1 + ref_idx);
+    r0 = r0 * r0;
+    return r0 + (1 - r0) * glm::pow((1 - cosine), 5);
 }
