@@ -10,6 +10,8 @@
 #include "utils/Utilities.h"
 #include "glm/gtc/type_ptr.hpp"
 
+#include <string>
+
 using namespace Core;
 
 class ExampleLayer : public Core::Layer
@@ -146,6 +148,12 @@ public:
             char *objName = sphere.objectName.data();
             ImGui::Text("%s is selected", objName);
 
+            // Remove Objects
+            if (ImGui::Button("Remove")) {
+                Sphere currentSphere = m_Scene.spheres[currentItem];
+                m_Scene.spheres.erase(m_Scene.spheres.begin() + (currentItem));
+            }
+
             ImGui::Separator();
 
             ImGui::ColorEdit3(": Color", glm::value_ptr(sphere.material_ptr->albedo));
@@ -160,6 +168,21 @@ public:
             ImGui::DragFloat(": Size", &sphere.radius, 0.1f);
 
             ImGui::Separator();
+        }
+
+        // Add Objects
+        // Remove Objects
+        if (ImGui::Button("Add Sphere")) {
+
+            Sphere newSphere;
+            std::string name = "Sphere";
+            newSphere.objectName = name;
+            newSphere.position = {0.0f, 0.0f, 0.0f};
+            newSphere.radius = {0.5f};
+            glm::vec3 albedo = {0.8f, 0.8f, 0.8f};
+            newSphere.material_ptr = std::make_shared<Lambertian>(albedo);
+
+            m_Scene.spheres.push_back(newSphere);
         }
 
 		// End Window
