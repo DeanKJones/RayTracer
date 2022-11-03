@@ -15,7 +15,7 @@ using namespace Core;
 class ExampleLayer : public Core::Layer
 {
 public:
-	ExampleLayer()  // Camera defined once, holds parameters here
+	ExampleLayer() // Camera defined once, holds parameters here
 		: m_Camera(45.0f, 0.1f, 100.0f)
 	{
 		// Scene Description
@@ -88,13 +88,6 @@ public:
 		if (ImGui::Button("Render")) {
 			RenderImage();
 		}
-
-        ImGui::Separator();
-		ImGui::Checkbox(": Render each frame ", (bool*)&Renderer::renderEachFrame);
-		if (Renderer::renderEachFrame) {
-			RenderImage();
-		}
-        ImGui::Checkbox(": Display Normals", (bool*)&Renderer::renderNormals);
         ImGui::Separator();
 
         ImGui::Text("Turn on Light Bouncing: ");
@@ -110,6 +103,13 @@ public:
 
         ImGui::Text("Ray Bounce Depth ");
         ImGui::InputInt(": Ray Bounces", (int*)&Renderer::bounceDepth);
+
+        ImGui::Separator();
+        ImGui::Checkbox(": Render each frame ", (bool*)&Renderer::renderEachFrame);
+        if (Renderer::renderEachFrame) {
+            RenderImage();
+        }
+        ImGui::Checkbox(": Display Normals", (bool*)&Renderer::renderNormals);
 
 		ImGui::End();
 
