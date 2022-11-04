@@ -23,55 +23,55 @@ public:
 		// Scene Description
 		{
 			Sphere sphere;
-            sphere.objectName = "Blue Sphere";
-			sphere.position = {0.3f, 0.3f, 0.2f};
+            sphere.objectName   = "Blue Sphere";
+			sphere.position     = {0.3f, 0.3f, 0.2f};
             glm::vec3 albedo 	= {0.0f, 0.0f, 0.9f};
-			sphere.radius 	= {0.3};
+			sphere.radius 	    = {0.3};
 			sphere.material_ptr = std::make_shared<Lambertian>(albedo);
 			m_Scene.spheres.push_back(sphere);
 		}
 		{
 			Sphere sphere;
-            sphere.objectName = "Green Sphere";
-            sphere.position = {0.0f, 0.0f, 1.4f};
-            glm::vec3 albedo 	 = {0.0f, 0.9f, 0.0f};
-            sphere.radius 	 = {0.1f};
+            sphere.objectName   = "Green Sphere";
+            sphere.position     = {0.0f, 0.0f, 1.4f};
+            glm::vec3 albedo 	= {0.0f, 0.9f, 0.0f};
+            sphere.radius 	    = {0.1f};
             sphere.material_ptr = std::make_shared<Lambertian>(albedo);
 			m_Scene.spheres.push_back(sphere);
 		}
 		{
 			Sphere sphere;
-            sphere.objectName = "Big Metal Sphere";
-            sphere.position = {-0.7f, 0.5f, -0.1f};
-            glm::vec3 albedo   = {0.75f, 0.75f, 0.75f};
-            sphere.radius   = {0.7f};
+            sphere.objectName   = "Big Metal Sphere";
+            sphere.position     = {-0.7f, 0.5f, -0.1f};
+            glm::vec3 albedo    = {0.75f, 0.75f, 0.75f};
+            sphere.radius       = {0.7f};
             sphere.material_ptr = std::make_shared<Metal>(albedo, 0.01f);
 			m_Scene.spheres.push_back(sphere);
 		}
 		{
 			Sphere sphere;
-            sphere.objectName = "Small Metal Sphere";
-            sphere.position = {0.6f, 0.1f, 0.8f};
-            glm::vec3 albedo   = {0.9f, 0.91f, 0.12f};
-            sphere.radius   = {0.3f};
+            sphere.objectName   = "Small Metal Sphere";
+            sphere.position     = {0.6f, 0.1f, 0.8f};
+            glm::vec3 albedo    = {0.9f, 0.91f, 0.12f};
+            sphere.radius       = {0.3f};
             sphere.material_ptr = std::make_shared<Metal>(albedo, 0.4f);
 			m_Scene.spheres.push_back(sphere);
 		}
         {
             Sphere sphere;
-            sphere.objectName = "Glass Sphere";
-            sphere.position = {-0.3f, 0.1f, 0.8f};
-            glm::vec3 albedo   = {1.0f, 1.0f, 1.0f};
-            sphere.radius   = {0.2f};
+            sphere.objectName   = "Glass Sphere";
+            sphere.position     = {-0.3f, 0.1f, 0.8f};
+            glm::vec3 albedo    = {1.0f, 1.0f, 1.0f};
+            sphere.radius       = {0.2f};
             sphere.material_ptr = std::make_shared<Dielectric>(albedo, 1.5f);
             m_Scene.spheres.push_back(sphere);
         }
 		{
 			Sphere sphere;
-            sphere.objectName = "Ground";
-            sphere.position = {0.0f, -50.2f, 0.0f};
+            sphere.objectName   = "Ground";
+            sphere.position     = {0.0f, -50.2f, 0.0f};
             glm::vec3 albedo 	= {0.9f, 0.81f, 0.73f};
-            sphere.radius 	= {50.0f};
+            sphere.radius 	    = {50.0f};
             sphere.material_ptr = std::make_shared<Lambertian>(albedo);
 			m_Scene.spheres.push_back(sphere);
 		}
@@ -171,7 +171,6 @@ public:
         }
 
         // Add Objects
-        // Remove Objects
         if (ImGui::Button("Add Sphere")) {
 
             Sphere newSphere;
