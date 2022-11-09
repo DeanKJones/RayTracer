@@ -64,11 +64,14 @@ bool Metal::scatter(
 }
 
 // DIELECTRIC MATERIALS
+/*
+ * Glass materials behave strangely with the amount of bounces given
+ * TODO: Solve sometime
+ */
 
 bool Dielectric::scatter(
     const Ray &ray, const Payload &payload, glm::vec3 &colorAttenuation, Ray &scattered) const
 {
-    // Maybe try passing albedo color here to see the types of results
     colorAttenuation = albedo;
     float refraction_ratio = payload.frontFace ? (1.0f / indexOfRefraction) : indexOfRefraction;
 
@@ -95,9 +98,12 @@ bool Dielectric::scatter(
 glm::vec3 Dielectric::refract(const glm::vec3 &uv, const glm::vec3 &normal, float etaiOverEtat) const
 {
     float cosTheta = fmin(glm::dot(-uv, normal), 1.0f);
-
     glm::vec3 outPerpendicular = etaiOverEtat * (uv + cosTheta * normal);
-    float perpLengthSquared = glm::sqrt(outPerpendicular.length());
+
+    float perpX = outPerpendicular.x;
+    float perpY = outPerpendicular.y;
+    float perpZ = outPerpendicular.z;
+    float perpLengthSquared = (perpX * perpX) + (perpY * perpY) + (perpZ * perpZ);
     // Forced to cast to float to avoid fabs storing values as double
     glm::vec3 outParallel = -glm::sqrt((float)fabs(1.0 - perpLengthSquared)) * normal;
 

@@ -28,7 +28,7 @@ public:
             glm::vec3 albedo 	= {0.0f, 0.0f, 0.9f};
 			sphere.radius 	    = {0.3};
 			sphere.material_ptr = std::make_shared<Lambertian>(albedo);
-			m_Scene.spheres.push_back(sphere);
+			//m_Scene.spheres.push_back(sphere);
 		}
 		{
 			Sphere sphere;
@@ -37,7 +37,7 @@ public:
             glm::vec3 albedo 	= {0.0f, 0.9f, 0.0f};
             sphere.radius 	    = {0.1f};
             sphere.material_ptr = std::make_shared<Lambertian>(albedo);
-			m_Scene.spheres.push_back(sphere);
+			//m_Scene.spheres.push_back(sphere);
 		}
 		{
 			Sphere sphere;
@@ -46,7 +46,7 @@ public:
             glm::vec3 albedo    = {0.75f, 0.75f, 0.75f};
             sphere.radius       = {0.7f};
             sphere.material_ptr = std::make_shared<Metal>(albedo, 0.01f);
-			m_Scene.spheres.push_back(sphere);
+			//m_Scene.spheres.push_back(sphere);
 		}
 		{
 			Sphere sphere;
@@ -55,7 +55,7 @@ public:
             glm::vec3 albedo    = {0.9f, 0.91f, 0.12f};
             sphere.radius       = {0.3f};
             sphere.material_ptr = std::make_shared<Metal>(albedo, 0.4f);
-			m_Scene.spheres.push_back(sphere);
+			//m_Scene.spheres.push_back(sphere);
 		}
         {
             Sphere sphere;

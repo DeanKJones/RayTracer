@@ -118,12 +118,12 @@ glm::vec3 Renderer::RenderColor(Ray& ray, int depth)
     bool eachFrame = GetRenderMode();
 
     if(GI && !eachFrame){
-        Ray scattered;
+        Ray scatteredRay;
         glm::vec3 attenuation;
 
-        if (payload.materialPtr->scatter(ray, payload, attenuation, scattered))
+        if (payload.materialPtr->scatter(ray, payload, attenuation, scatteredRay))
         {
-            RayHitColor = (attenuation * RenderColor(scattered, depth - 1)) * 0.75f;
+            RayHitColor = (attenuation * RenderColor(scatteredRay, depth - 1)) * 0.75f;
             return RayHitColor;
         }
         return RayHitColor;
