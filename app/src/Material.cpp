@@ -67,6 +67,8 @@ bool Metal::scatter(
 /*
  * Glass materials behave strangely with the amount of bounces given
  * TODO: Solve sometime
+ * First render after the scene's init will render glass incorrectly
+ * rendering the scene again (with or without changes) will then correct the glass material
  */
 
 bool Dielectric::scatter(
