@@ -14,11 +14,11 @@
 
 using namespace Core;
 
-class ExampleLayer : public Core::Layer
+class RenderLayer : public Core::Layer
 {
 public:
-	ExampleLayer() // Camera defined once, holds parameters here
-		: m_Camera(45.0f, 0.1f, 100.0f)
+	RenderLayer() // Scene definition
+		//: m_Camera(45.0f, 0.1f, 100.0f)
 	{
 		// Scene Description
 		{
@@ -28,7 +28,7 @@ public:
             glm::vec3 albedo 	= {0.0f, 0.0f, 0.9f};
 			sphere.radius 	    = {0.3};
 			sphere.material_ptr = std::make_shared<Lambertian>(albedo);
-			//m_Scene.spheres.push_back(sphere);
+			m_Scene.spheres.push_back(sphere);
 		}
 		{
 			Sphere sphere;
@@ -37,7 +37,7 @@ public:
             glm::vec3 albedo 	= {0.0f, 0.9f, 0.0f};
             sphere.radius 	    = {0.1f};
             sphere.material_ptr = std::make_shared<Lambertian>(albedo);
-			//m_Scene.spheres.push_back(sphere);
+			m_Scene.spheres.push_back(sphere);
 		}
 		{
 			Sphere sphere;
@@ -46,7 +46,7 @@ public:
             glm::vec3 albedo    = {0.75f, 0.75f, 0.75f};
             sphere.radius       = {0.7f};
             sphere.material_ptr = std::make_shared<Metal>(albedo, 0.01f);
-			//m_Scene.spheres.push_back(sphere);
+			m_Scene.spheres.push_back(sphere);
 		}
 		{
 			Sphere sphere;
@@ -55,7 +55,7 @@ public:
             glm::vec3 albedo    = {0.9f, 0.91f, 0.12f};
             sphere.radius       = {0.3f};
             sphere.material_ptr = std::make_shared<Metal>(albedo, 0.4f);
-			//m_Scene.spheres.push_back(sphere);
+			m_Scene.spheres.push_back(sphere);
 		}
         {
             Sphere sphere;
@@ -119,9 +119,9 @@ public:
         // Camera
         ImGui::Begin("Camera");
         ImGui::Text("Camera Settings: ");
-        ImGui::DragFloat(" : Field of View", &m_Camera.m_VerticalFOV, 1.0f);
-        ImGui::DragFloat(" : Near Clip", &m_Camera.m_NearClip, 0.1f);
-        ImGui::DragFloat(" : Far Clip", &m_Camera.m_FarClip, 1.0f);
+        ImGui::DragFloat(" : Field of View", &m_Camera.m_VerticalFOV, 1.0f, 0.0f, 150.0f);
+        ImGui::DragFloat(" : Near Clip", &m_Camera.m_NearClip, 0.05f, 0.0001f, 1.0f);
+        ImGui::DragFloat(" : Far Clip", &m_Camera.m_FarClip, 1.0f, 0.0f, 10000.0f);
 
         ImGui::End();
 
@@ -216,7 +216,7 @@ public:
 
 private:
 	Renderer m_Render;
-	Camera m_Camera;
+	Camera m_Camera {45.0f, 0.01f, 100.0f};
 	Scene m_Scene;
 
 	float m_lastRenderTime = 0.0f;
@@ -229,7 +229,7 @@ Core::Application* Core::CreateApplication(int argc, char** argv)
 	spec.Name = "Ray Tracer Application";
 
 	Core::Application* app = new Core::Application(spec);
-	app->PushLayer<ExampleLayer>();
+	app->PushLayer<RenderLayer>();
 	app->SetMenubarCallback([app]()
 	{
 		if (ImGui::BeginMenu("File"))
