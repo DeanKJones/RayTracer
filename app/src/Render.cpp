@@ -70,15 +70,7 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
         }
 
         // Scatter Rays
-       /*   There is an error in here that is not fixed for now:
-        *   Since the ray scattering is a random float being added to the direction of the
-        *   ray each sample, the new scattered ray eventually leaves the pixel. This can be seen
-        *   by adding several dozen samples and rendering the image. The image will have blurs to the
-        *   right side of objects. The image also becomes darker, this is due to the samples dividing
-        *   each pixel by an amount that is too much for that pixel's accumulated color.
-        */
-        ray.Direction.x += (Core::Random::Float() * 0.0001f);
-        ray.Direction.y += (Core::Random::Float() * 0.0001f);
+        ray.Direction += Core::Random::Vec3(-0.0001f, 0.0001f);
 
         int depth = GetBounceDepth();
         // Render Color
@@ -194,7 +186,7 @@ uint32_t Renderer::ConvertRGBA(glm::vec4 color)
     auto colorB = color.b;
     auto colorA = color.a;
 
-    // To avoid each frame rendering from being dimmed 
+    // To avoid eachFrame render from being dimmed
     bool eachFrame = GetRenderMode();
     int samples;
 
