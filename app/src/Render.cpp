@@ -1,15 +1,6 @@
 #include "Render.h"
 #include <random>
 
-// UI VARIABLES
-glm::vec3 Renderer::lightDirection  = {1.0f, -1.0f, -1.0f};
-int Renderer::samplesPerPixel = 10.0f;
-int Renderer::bounceDepth = 5.0f;
-bool Renderer::doGI = false;
-bool Renderer::renderEachFrame = false;
-bool Renderer::renderNormals = false;
-
-
 void Renderer::onResize(uint32_t width, uint32_t height)
 {
     if(m_FinalImage) {
@@ -24,6 +15,9 @@ void Renderer::onResize(uint32_t width, uint32_t height)
     }
     delete[] m_imageData;
     m_imageData = new uint32_t[width * height];
+
+    delete[] m_accumulationData;
+    m_accumulationData = new glm::vec4[width * height];
 }
 
 // Render
@@ -31,22 +25,33 @@ void Renderer::Render(const Camera& camera, const Scene& scene)
 {
     m_activeCamera = &camera;
     m_activeScene = &scene;
-    
-    // Aspect Ratio
-    //float aspectRatio = (float)m_FinalImage->GetWidth() / (float)m_FinalImage->GetHeight();
-    int pixel_pos;
+
+    if (m_frameIndex == 1) {
+        memset(m_accumulationData, 0,
+               m_FinalImage->GetWidth() * m_FinalImage->GetHeight() * sizeof(glm::vec4));
+    }
 
     for (uint32_t y = 0; y < m_FinalImage->GetHeight(); y++) {
         for (uint32_t x = 0; x < m_FinalImage->GetWidth(); x++) 
-        {    
+        {
             glm::vec4 color = PerPixel(x, y);
+            m_accumulationData[x + y * m_FinalImage->GetWidth()] += color;
 
+            glm::vec4 accumulatedColor = m_accumulationData[x + y * m_FinalImage->GetWidth()];
+            accumulatedColor /= (float)m_frameIndex;
+
+            accumulatedColor = glm::clamp(accumulatedColor,glm::vec4(0.0f), glm::vec4(1.0f));
             // Image Data Pixel Position
-            pixel_pos = x + y * m_FinalImage->GetWidth();
-            m_imageData[pixel_pos] = ConvertRGBA(color);
+            m_imageData[x + y * m_FinalImage->GetWidth()] = ConvertRGBA(accumulatedColor);
         }
     }
     m_FinalImage->SetData(m_imageData);
+
+    if (m_settings.accumulate){
+        m_frameIndex++;
+    } else {
+        m_frameIndex = 1;
+    }
 }
 
 glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
@@ -59,25 +64,15 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
     // Set Pixel Color with the Alpha at 1
     glm::vec4 color(0.0f, 0.0f, 0.0f, 1.0f);
 
-    int samplesPerPixel = GetSamplesPerPixel();
-    if (samplesPerPixel < 1)
-        samplesPerPixel = 1;
+    // Scatter Rays
+    ray.Direction += Core::Random::Vec3(-0.0001f, 0.0001f);
 
-    for (uint32_t s = 0; s < samplesPerPixel; ++s)
-    {
-        if (renderEachFrame){
-            samplesPerPixel = 1;
-        }
+    int depth = m_settings.bounceDepth;
+    // Render Color
+    glm::vec3 renderedColor;
+    renderedColor = RenderColor(ray, depth);
+    color = glm::vec4(renderedColor, 1.0f);
 
-        // Scatter Rays
-        ray.Direction += Core::Random::Vec3(-0.0001f, 0.0001f);
-
-        int depth = GetBounceDepth();
-        // Render Color
-        glm::vec3 renderedColor;
-        renderedColor += RenderColor(ray, depth);
-        color = glm::vec4(renderedColor, 1.0f);
-    }
     return color;
 }
 
@@ -106,10 +101,9 @@ glm::vec3 Renderer::RenderColor(Ray& ray, int depth)
     }
 
     // Do GI check before rendering
-    bool GI = GetGiTag();
-    bool eachFrame = GetRenderMode();
+    bool GI = m_settings.doGI;
 
-    if(GI && !eachFrame){
+    if(GI){
         Ray scatteredRay;
         glm::vec3 attenuation;
 
@@ -121,7 +115,7 @@ glm::vec3 Renderer::RenderColor(Ray& ray, int depth)
         return RayHitColor;
     }
 
-    if (renderNormals){
+    if (m_settings.renderNormals){
         glm::vec3 colorNormals(payload.worldNormal * 0.5f + 0.5f);
         RayHitColor = colorNormals;
     } else {
@@ -186,25 +180,10 @@ uint32_t Renderer::ConvertRGBA(glm::vec4 color)
     auto colorB = color.b;
     auto colorA = color.a;
 
-    // To avoid eachFrame render from being dimmed
-    bool eachFrame = GetRenderMode();
-    int samples;
-
-    if(eachFrame){
-        samples = 1;
-    } else {
-        samples = GetSamplesPerPixel();
-    }
-    
-    auto scale = 1.0 / samples;
-    colorR = glm::sqrt(scale * colorR);
-    colorG = glm::sqrt(scale * colorG);
-    colorB = glm::sqrt(scale * colorB);
-
     uint32_t result = 
         ((uint8_t)(colorA * 255.0f) << 24) |
-        ((uint8_t)(glm::clamp(colorB, 0.0f, 0.999f) * 255.0f) << 16) |
-        ((uint8_t)(glm::clamp(colorG, 0.0f, 0.999f) * 255.0f) << 8)  |
-        ((uint8_t)(glm::clamp(colorR, 0.0f, 0.999f) * 255.0f));
+        ((uint8_t)(colorB * 255.0f) << 16) |
+        ((uint8_t)(colorG * 255.0f) << 8)  |
+        ((uint8_t)(colorR * 255.0f));
     return result;
 }

@@ -79,39 +79,53 @@ public:
 
 	virtual void OnUpdate(float ts) override
 	{
-		m_Camera.OnUpdate(ts);
+        if (m_Camera.OnUpdate(ts)) {
+            m_Render.ResetFrameIndex();
+        }
 	}
 
 	virtual void OnUIRender() override
 	{
 		// Settings //
 		ImGui::Begin("Settings");
+
 		ImGui::Text("Last Render: %.3fms", m_lastRenderTime);
 		if (ImGui::Button("Render")) {
 			RenderImage();
 		}
+
+        ImGui::SameLine();
+        ImGui::Checkbox(": Render each frame ", &m_Render.GetSettings().renderEachFrame);
+        if (m_Render.GetSettings().renderEachFrame
+                && m_Render.GetSettings().samples > m_Render.GetFrameIndex()) {
+            RenderImage();
+        }
+
+        if (ImGui::Button("Reset")) {
+            m_Render.ResetFrameIndex();
+        }
+
         ImGui::Separator();
 
         ImGui::Text("Turn on Light Bouncing: ");
-        ImGui::Checkbox(": GI", (bool*)&Renderer::doGI);
+        ImGui::Checkbox(": GI", &m_Render.GetSettings().doGI);
+
+        ImGui::Text("Accumulate samples over time: ");
+        ImGui::Checkbox(": Accumulate", &m_Render.GetSettings().accumulate);
 
         ImGui::Text("Use Lambert Hemisphere Model: ");
         ImGui::Checkbox(": Scattering Type", (bool*)&Lambertian::lambertHemi);
         ImGui::Separator();
 
         // Samples per pixel lock at 1, values below 1 will be ignored
-        ImGui::Text("Samples per pixel ");
-        ImGui::InputInt(": Samples", (int*)&Renderer::samplesPerPixel);
+        ImGui::Text("Maximum number of samples: ");
+        ImGui::InputInt(": Samples", &m_Render.GetSettings().samples);
 
-        ImGui::Text("Ray Bounce Depth ");
-        ImGui::InputInt(": Ray Bounces", (int*)&Renderer::bounceDepth);
+        ImGui::Text("Ray Bounce Depth: ");
+        ImGui::InputInt(": Ray Bounces", &m_Render.GetSettings().bounceDepth);
 
         ImGui::Separator();
-        ImGui::Checkbox(": Render each frame ", (bool*)&Renderer::renderEachFrame);
-        if (Renderer::renderEachFrame) {
-            RenderImage();
-        }
-        ImGui::Checkbox(": Display Normals", (bool*)&Renderer::renderNormals);
+        ImGui::Checkbox(": Display Normals", &m_Render.GetSettings().renderNormals);
 
 		ImGui::End();
 
