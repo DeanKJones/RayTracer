@@ -19,7 +19,7 @@ public:
         int samples = 50;
         int bounceDepth = 5;
         bool doGI = false;
-        bool renderEachFrame = true;
+        bool renderEachFrame = false; // default false to avoid crash on start up
         bool renderNormals = false;
     };
 
