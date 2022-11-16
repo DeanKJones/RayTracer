@@ -65,7 +65,6 @@ bool Metal::scatter(
 
 // DIELECTRIC MATERIALS
 /*
- * Glass materials behave strangely with the amount of bounces given
  * TODO: Solve sometime
  * First render after the scene's init will render glass incorrectly
  * rendering the scene again (with or without changes) will then correct the glass material
@@ -88,7 +87,7 @@ bool Dielectric::scatter(
     if (cannot_refract || reflectance(cos_theta, refraction_ratio) > Core::Random::Float()) {
         direction = reflect(unitDirection, payload.worldNormal);
     } else {
-        direction = refract(unitDirection, payload.worldNormal, refraction_ratio);
+        refract(unitDirection, payload.worldNormal, refraction_ratio, direction);
     }
 
     scattered.Origin = payload.worldPosition;
@@ -111,6 +110,21 @@ glm::vec3 Dielectric::refract(const glm::vec3 &uv, const glm::vec3 &normal, floa
 
     return outPerpendicular + outParallel;
 }
+
+bool Dielectric::refract(const glm::vec3 &inVector, const glm::vec3 &normal, float NiOverNt,
+                         glm::vec3 outVector) const
+ {
+    //glm::vec3 nV = glm::normalize(inVector);
+    float dot = glm::dot(inVector, normal);
+    float discriminant = 1.0f - (NiOverNt * NiOverNt * (1 - dot * dot));
+
+    if (discriminant > 0){
+        outVector = NiOverNt * (inVector - (normal * dot)) - (normal * glm::sqrt(discriminant));
+        return true;
+    } else {
+        return false;
+    }
+ }
 
 double Dielectric::reflectance(double cosine, double ref_idx)
 {

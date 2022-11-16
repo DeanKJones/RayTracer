@@ -77,6 +77,7 @@ public:
             ) const override;
 
     glm::vec3 refract(const glm::vec3& uv, const glm::vec3& normal, float etaiOverEtat) const;
+    bool refract(const glm::vec3& inVector, const glm::vec3& normal, float NiOverNt, glm::vec3 outVector) const;
     static double reflectance(double cosine, double ref_idx);
 
 private:
