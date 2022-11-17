@@ -18,7 +18,7 @@ class RenderLayer : public Core::Layer
 {
 public:
 	RenderLayer() // Scene definition
-		//: m_Camera(45.0f, 0.1f, 100.0f)
+		: m_Camera(45.0f, 0.1f, 100.0f)
 	{
 		// Scene Description
 		{
@@ -230,7 +230,7 @@ public:
 
 private:
 	Renderer m_Render;
-	Camera m_Camera {45.0f, 0.01f, 100.0f};
+	Camera m_Camera;
 	Scene m_Scene;
 
 	float m_lastRenderTime = 0.0f;
