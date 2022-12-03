@@ -52,12 +52,12 @@ bool Metal::scatter(
     const Ray& ray, const Payload& payload, glm::vec3& colorAttenuation, Ray& scattered) const
 {
     glm::vec3 rayVector = glm::normalize(ray.Direction);
-    glm::vec3 reflected = reflect(ray.Direction, payload.worldNormal); 
+    glm::vec3 reflected = reflect(ray.Direction, payload.worldNormal);
 
     reflected = reflected + (roughness * Core::Random::InUnitSphere());
 
     scattered.Origin = payload.worldPosition + (payload.worldNormal * 0.00001f);
-    scattered.Direction = reflected; 
+    scattered.Direction = reflected;
     colorAttenuation = albedo;
 
     return (glm::dot(scattered.Direction, payload.worldNormal) > 0);
@@ -74,14 +74,15 @@ bool Dielectric::scatter(
     const Ray &ray, const Payload &payload, glm::vec3 &colorAttenuation, Ray &scattered) const
 {
     colorAttenuation = albedo;
-    float refraction_ratio = payload.frontFace ? (1.0f / indexOfRefraction) : indexOfRefraction;
+    float refraction_ratio = payload.frontFace(ray.Direction, payload.worldNormal)
+                            ? (1.0f / indexOfRefraction) : indexOfRefraction;
 
     glm::vec3 unitDirection = glm::normalize(ray.Direction);
 
     double cos_theta = glm::min(glm::dot(-unitDirection, payload.worldNormal), 1.0f);
     double sin_theta = glm::sqrt(1.0f - cos_theta * cos_theta);
-
     bool cannot_refract = refraction_ratio * sin_theta > 1.0f;
+
     glm::vec3 direction;
 
     if (cannot_refract || reflectance(cos_theta, refraction_ratio) > Core::Random::Float()) {
@@ -96,35 +97,22 @@ bool Dielectric::scatter(
     return true;
 }
 
-glm::vec3 Dielectric::refract(const glm::vec3 &uv, const glm::vec3 &normal, float etaiOverEtat) const
+void Dielectric::refract(const glm::vec3 &incident, const glm::vec3 &normal, float &ior, glm::vec3 &refracted) const
 {
-    float cosTheta = fmin(glm::dot(-uv, normal), 1.0f);
-    glm::vec3 outPerpendicular = etaiOverEtat * (uv + cosTheta * normal);
+    float eta = ior;
+    float cosThetaI = glm::dot(incident, normal);
+    float sinThetaI = glm::sqrt(1.0f - cosThetaI * cosThetaI);
+    float sinThetaT = eta * sinThetaI;
 
-    float perpX = outPerpendicular.x;
-    float perpY = outPerpendicular.y;
-    float perpZ = outPerpendicular.z;
-    float perpLengthSquared = (perpX * perpX) + (perpY * perpY) + (perpZ * perpZ);
-    // Forced to cast to float to avoid fabs storing values as double
-    glm::vec3 outParallel = -glm::sqrt((float)fabs(1.0 - perpLengthSquared)) * normal;
-
-    return outPerpendicular + outParallel;
+    if (sinThetaT >= 1.0f) {
+        refracted = glm::vec3(0.0f, 0.0f, 0.0f);
+    }
+    else {
+        float cosThetaT = glm::sqrt(1.0f - sinThetaT * sinThetaT);
+        refracted = eta * incident + (eta * cosThetaI - cosThetaT) * normal;
+    }
 }
 
-bool Dielectric::refract(const glm::vec3 &inVector, const glm::vec3 &normal, float NiOverNt,
-                         glm::vec3 outVector) const
- {
-    //glm::vec3 nV = glm::normalize(inVector);
-    float dot = glm::dot(inVector, normal);
-    float discriminant = 1.0f - (NiOverNt * NiOverNt * (1 - dot * dot));
-
-    if (discriminant > 0){
-        outVector = NiOverNt * (inVector - (normal * dot)) - (normal * glm::sqrt(discriminant));
-        return true;
-    } else {
-        return false;
-    }
- }
 
 double Dielectric::reflectance(double cosine, double ref_idx)
 {

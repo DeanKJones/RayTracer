@@ -63,7 +63,7 @@ public:
             sphere.position     = {-0.3f, 0.1f, 0.8f};
             glm::vec3 albedo    = {1.0f, 1.0f, 1.0f};
             sphere.radius       = {0.2f};
-            sphere.material_ptr = std::make_shared<Dielectric>(albedo, 1.5f);
+            sphere.material_ptr = std::make_shared<Dielectric>(albedo, 1.52f);
             m_Scene.spheres.push_back(sphere);
         }
 		{

@@ -10,12 +10,12 @@ struct Payload
     glm::vec3 worldPosition;
     glm::vec3 worldNormal;
 
-    bool frontFace;
-    inline void setFaceNormal(const Ray& ray, const glm::vec3 outwardNormal)
-    {
-        frontFace = glm::dot(ray.Direction, outwardNormal) < 0;
-        worldNormal = frontFace ? outwardNormal : -outwardNormal;
-    };
+    static bool frontFace(const glm::vec3& direction, const glm::vec3& normal) {
+        if (glm::dot(direction, normal) < 0)
+            return true;
+        else
+            return false;
+    }
 
     std::shared_ptr<Material> materialPtr;
 

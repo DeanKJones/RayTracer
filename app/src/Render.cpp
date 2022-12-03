@@ -65,7 +65,7 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
     glm::vec4 color(0.0f, 0.0f, 0.0f, 1.0f);
 
     // Scatter Rays
-    ray.Direction += Core::Random::Vec3(-0.0001f, 0.0001f);
+    ray.Direction += Core::Random::Vec3(-0.0005f, 0.0005f);
 
     int depth = m_settings.bounceDepth;
     // Render Color
@@ -154,8 +154,12 @@ Payload Renderer::ClosestHit(const Ray& ray, float hitDistance, int objectIndex)
 
     const Sphere& closestSphere = m_activeScene->spheres[objectIndex];
 
+//    glm::vec3 outwardNormal = (payload.worldPosition - closestSphere.position) / closestSphere.radius;
+//    payload.setFaceNormal(ray, outwardNormal);
+
     glm::vec3 origin = ray.Origin - closestSphere.position;
     payload.worldPosition = origin + ray.Direction * hitDistance;
+
     payload.worldNormal = glm::normalize(payload.worldPosition);
 
     payload.materialPtr = closestSphere.getMaterialPtr();
