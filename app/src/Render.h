@@ -46,6 +46,8 @@ private:        // Image //
     std::shared_ptr<Core::Image> m_FinalImage;
     Settings m_settings;
 
+    std::vector<uint32_t> m_ImageHorizontalIter, m_ImageVerticalIter;
+
     uint32_t* m_imageData = nullptr;
     glm::vec4* m_accumulationData = nullptr;
 
