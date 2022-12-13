@@ -4,7 +4,7 @@ project(RayTracerLib)
 # ========= setup ================
 set(CMAKE_CXX_STANDARD 17)
 
-# for cmake modules if u wnat to add some libraries
+# for cmake modules if you want to add some libraries
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/modules")
 
 # flags for gcc or clang
@@ -32,15 +32,18 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(GLFW_VULKAN_STATIC ON CACHE BOOL "" FORCE)
 add_subdirectory(external/glfw)
 
-# glm
+#glm
 set(BUILD_TESTING OFF)
 add_subdirectory(external/glm)
 
-# imgui
+#imgui
 add_subdirectory(external/imgui)
 
 #stb-image
 add_subdirectory(external/stb_image)
+
+#stb-image
+add_subdirectory(external/libomp)
 # ===============================
 
 # ========== Core =============
@@ -62,6 +65,7 @@ target_link_libraries(core PUBLIC glfw)
 target_link_libraries(core PUBLIC imgui)
 target_link_libraries(core PUBLIC glm)
 target_link_libraries(core PUBLIC stbimage)
+target_link_libraries(core PUBLIC libomp)
 # =================================
 
 # ========== include dir ==========
