@@ -40,9 +40,8 @@ void Renderer::Render(const Camera& camera, const Scene& scene)
                m_FinalImage->GetWidth() * m_FinalImage->GetHeight() * sizeof(glm::vec4));
     }
 
-#define MT 1
+#define MT 0
 #if MT
-
     std::for_each(m_ImageVerticalIter.begin(), m_ImageVerticalIter.end(),
                   [this](uint32_t y)
     {
@@ -64,15 +63,14 @@ void Renderer::Render(const Camera& camera, const Scene& scene)
 #else
 
     for (uint32_t y = 0; y < m_FinalImage->GetHeight(); y++) {
-        for (uint32_t x = 0; x < m_FinalImage->GetWidth(); x++) 
-        {
+        for (uint32_t x = 0; x < m_FinalImage->GetWidth(); x++) {
             glm::vec4 color = PerPixel(x, y);
             m_accumulationData[x + y * m_FinalImage->GetWidth()] += color;
 
             glm::vec4 accumulatedColor = m_accumulationData[x + y * m_FinalImage->GetWidth()];
-            accumulatedColor /= (float)m_frameIndex;
+            accumulatedColor /= (float) m_frameIndex;
 
-            accumulatedColor = glm::clamp(accumulatedColor,glm::vec4(0.0f), glm::vec4(1.0f));
+            accumulatedColor = glm::clamp(accumulatedColor, glm::vec4(0.0f), glm::vec4(1.0f));
             // Image Data Pixel Position
             m_imageData[x + y * m_FinalImage->GetWidth()] = ConvertRGBA(accumulatedColor);
         }
@@ -189,17 +187,17 @@ Payload Renderer::ClosestHit(const Ray& ray, float hitDistance, int objectIndex)
 
     const Sphere& closestSphere = m_activeScene->spheres[objectIndex];
 
-//    glm::vec3 outwardNormal = (payload.worldPosition - closestSphere.position) / closestSphere.radius;
-//    payload.setFaceNormal(ray, outwardNormal);
+    payload.hitPosition = ray.at(payload.hitDistance);
+
+    glm::vec3 outwardNormal = (payload.hitPosition - closestSphere.position) / closestSphere.radius;
+    payload.setFaceNormal(ray.Direction, outwardNormal);
 
     glm::vec3 origin = ray.Origin - closestSphere.position;
-    payload.worldPosition = origin + ray.Direction * hitDistance;
-
-    payload.worldNormal = glm::normalize(payload.worldPosition);
+    payload.hitPosition = origin + ray.Direction * hitDistance;
 
     payload.materialPtr = closestSphere.getMaterialPtr();
     // Add sphere position back
-    payload.worldPosition += closestSphere.position;
+    payload.hitPosition += closestSphere.position;
 
     return payload;
 }

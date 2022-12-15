@@ -7,17 +7,15 @@
 struct Payload 
 {
     float hitDistance;
-    glm::vec3 worldPosition;
+    glm::vec3 hitPosition;
     glm::vec3 worldNormal;
 
-    static bool frontFace(const glm::vec3& direction, const glm::vec3& normal) {
-        if (glm::dot(direction, normal) < 0)
-            return true;
-        else
-            return false;
+    bool frontFace;
+    inline void setFaceNormal(const glm::vec3& direction, const glm::vec3& outwardNormal) {
+        frontFace = glm::dot(direction, outwardNormal) < 0;
+        worldNormal = frontFace ? outwardNormal : -outwardNormal;
     }
 
     std::shared_ptr<Material> materialPtr;
-
     int objectIndex;
 };
