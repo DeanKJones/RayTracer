@@ -16,11 +16,12 @@ public:
     struct Settings
     {
         bool accumulate = false;
-        int samples = 50;
-        int bounceDepth = 5;
+        int  samples = 50;
+        int  bounceDepth = 5;
         bool doGI = false;
         bool renderEachFrame = false; // default false to avoid crash on start up
         bool renderNormals = false;
+        int  threadCount = 1;
     };
 
 public:
