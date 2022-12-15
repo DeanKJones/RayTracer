@@ -56,7 +56,7 @@ file(
 	"${PROJECT_SOURCE_DIR}/src/input/*.h" "${PROJECT_SOURCE_DIR}/src/input/*.cpp"
 )
 
-add_library(core STATIC ${APP_SRC})
+add_library(core STATIC ${APP_SRC} src/Parallel.h src/Parallel.cpp)
 # =================================
 
 # ========= linking deps ==========

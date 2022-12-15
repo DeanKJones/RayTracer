@@ -5,8 +5,16 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z")
-message(Cmake Flags: ${CMAKE_CXX_FLAGS})
+set(GCC_COVERAGE_COMPILE_FLAGS)
+SET(CMAKE_CXX_FLAGS  "${GCC_COVERAGE_COMPILE_FLAGS}")
+
+if(UNIX)
+	set(tools "/opt/homebrew/bin")
+	set(CMAKE_C_COMPILER "${tools}/gcc-12")
+	message(Cmake C compiler: ${CMAKE_C_COMPILER})
+	set(CMAKE_CXX_COMPILER "${tools}/g++-12")
+	message(Cmake CXX compiler: ${CMAKE_CXX_COMPILER})
+endif(UNIX)
 
 # Create Project
 cmake_minimum_required(VERSION 3.22.2)
