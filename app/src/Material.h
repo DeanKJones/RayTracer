@@ -18,7 +18,7 @@ public:
         const Ray& ray, const Payload& payload, glm::vec3& colorAttenuation, Ray& scattered
         ) const = 0;
 
-    glm::vec3 reflect(const glm::vec3 &vector, const glm::vec3 &normal) const;
+    glm::vec3 reflect(const glm::vec3 &incident, const glm::vec3 &normal) const;
 
 public:
     glm::vec3 albedo;
@@ -77,9 +77,11 @@ public:
             ) const override;
 
     void refract(const glm::vec3 &incident, const glm::vec3 &normal, float &ior, glm::vec3 &refracted) const;
+    glm::vec3 refract2(const glm::vec3& uv, const glm::vec3& n, float etai_over_etat) const;
+    glm::vec3 refract3(glm::vec3 i, glm::vec3 n, float eta, glm::vec3 outRay) const;
 
     static double reflectance(double cosine, double ref_idx);
 
-private:
+public:
     float indexOfRefraction;
 };
