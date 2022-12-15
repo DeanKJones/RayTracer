@@ -1,5 +1,7 @@
 #include "Parallel.h"
 
+#include "../../app/src/Render.h"
+
 /* Local Definitions */
 static std::vector<std::thread> threads;
 static bool shutdownThreads = false;

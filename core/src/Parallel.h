@@ -4,8 +4,6 @@
 #include <iostream>
 #include "thread"
 
-#include "../../app/src/Render.h"
-
 class parallelForLoop
 {
 public:
