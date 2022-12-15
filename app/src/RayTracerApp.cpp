@@ -116,6 +116,9 @@ public:
         ImGui::Text("Use Lambert Hemisphere Model: ");
         ImGui::Checkbox(": Scattering Type", (bool*)&Lambertian::lambertHemi);
         ImGui::Separator();
+        ImGui::Checkbox(": Display Normals", &m_Render.GetSettings().renderNormals);
+
+        ImGui::Separator();
 
         // Samples per pixel lock at 1, values below 1 will be ignored
         ImGui::Text("Maximum number of samples: ");
@@ -123,9 +126,6 @@ public:
 
         ImGui::Text("Ray Bounce Depth: ");
         ImGui::InputInt(": Ray Bounces", &m_Render.GetSettings().bounceDepth);
-
-        ImGui::Separator();
-        ImGui::Checkbox(": Display Normals", &m_Render.GetSettings().renderNormals);
 
 		ImGui::End();
 
@@ -176,6 +176,10 @@ public:
             if (typeidName.find("Metal") != std::string::npos) {
                 auto sphereRoughness = &(reinterpret_cast<Metal *>(sphere.material_ptr.get())->roughness);
                 ImGui::DragFloat(": Roughness", sphereRoughness, 0.05f, 0.0f, 1.0f);
+            }
+            if (typeidName.find("Dielectric") != std::string::npos) {
+                auto sphereIOR = &(reinterpret_cast<Dielectric *>(sphere.material_ptr.get())->indexOfRefraction);
+                ImGui::DragFloat(": IOR", sphereIOR, 0.05f, 0.0f, 1.0f);
             }
 
             ImGui::DragFloat3(": Position", glm::value_ptr(sphere.position), 0.1f);
