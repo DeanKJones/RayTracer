@@ -15,10 +15,10 @@ class Renderer
 public:
     struct Settings
     {
-        bool accumulate = false;
+        bool accumulate = true;
         int  samples = 50;
         int  bounceDepth = 5;
-        bool doGI = false;
+        bool doGI = true;
         bool renderEachFrame = false; // default false to avoid crash on start up
         bool renderNormals = false;
         int  threadCount = 1;
