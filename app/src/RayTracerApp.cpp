@@ -28,7 +28,7 @@ public:
             glm::vec3 albedo 	= {0.0f, 0.0f, 0.9f};
 			sphere.radius 	    = {0.3};
 			sphere.material_ptr = std::make_shared<Lambertian>(albedo);
-			m_Scene.spheres.push_back(sphere);
+			m_Scene.objects.push_back(sphere);
 		}
 		{
 			Sphere sphere;
@@ -37,7 +37,7 @@ public:
             glm::vec3 albedo 	= {0.0f, 0.9f, 0.0f};
             sphere.radius 	    = {0.1f};
             sphere.material_ptr = std::make_shared<Lambertian>(albedo);
-			m_Scene.spheres.push_back(sphere);
+			m_Scene.objects.push_back(sphere);
 		}
 		{
 			Sphere sphere;
@@ -46,7 +46,7 @@ public:
             glm::vec3 albedo    = {0.75f, 0.75f, 0.75f};
             sphere.radius       = {0.7f};
             sphere.material_ptr = std::make_shared<Metal>(albedo, 0.01f);
-			m_Scene.spheres.push_back(sphere);
+			m_Scene.objects.push_back(sphere);
 		}
 		{
 			Sphere sphere;
@@ -55,7 +55,7 @@ public:
             glm::vec3 albedo    = {0.9f, 0.91f, 0.12f};
             sphere.radius       = {0.3f};
             sphere.material_ptr = std::make_shared<Metal>(albedo, 0.4f);
-			m_Scene.spheres.push_back(sphere);
+			m_Scene.objects.push_back(sphere);
 		}
         {
             Sphere sphere;
@@ -64,7 +64,7 @@ public:
             glm::vec3 albedo    = {1.0f, 1.0f, 1.0f};
             sphere.radius       = {0.2f};
             sphere.material_ptr = std::make_shared<Dielectric>(albedo, 1.52f);
-            m_Scene.spheres.push_back(sphere);
+            m_Scene.objects.push_back(sphere);
         }
 		{
 			Sphere sphere;
@@ -73,7 +73,7 @@ public:
             glm::vec3 albedo 	= {0.9f, 0.81f, 0.73f};
             sphere.radius 	    = {50.0f};
             sphere.material_ptr = std::make_shared<Lambertian>(albedo);
-			m_Scene.spheres.push_back(sphere);
+			m_Scene.objects.push_back(sphere);
 		}
 	}
 
@@ -149,8 +149,8 @@ public:
                 "Scene Objects\n\nSelect an item \nto edit it's \nparameters.",
                 &currentItem,
                 sphereGetter,
-                m_Scene.spheres.data(),
-                m_Scene.spheres.size(),
+                m_Scene.objects.data(),
+                m_Scene.objects.size(),
                 6
                 );
 
@@ -158,15 +158,15 @@ public:
         if(currentItem >= 0) {
             ImGui::Separator();
 
-            Sphere &sphere = m_Scene.spheres[currentItem];
+            Sphere &sphere = m_Scene.objects[currentItem];
 
             char *objName = sphere.objectName.data();
             ImGui::Text("%s is selected", objName);
 
             // Remove Objects
             if (ImGui::Button("Remove")) {
-                Sphere currentSphere = m_Scene.spheres[currentItem];
-                m_Scene.spheres.erase(m_Scene.spheres.begin() + (currentItem));
+                Sphere currentSphere = m_Scene.objects[currentItem];
+                m_Scene.objects.erase(m_Scene.objects.begin() + (currentItem));
             }
 
             ImGui::Separator();
@@ -200,7 +200,7 @@ public:
             glm::vec3 albedo = {0.8f, 0.8f, 0.8f};
             newSphere.material_ptr = std::make_shared<Lambertian>(albedo);
 
-            m_Scene.spheres.push_back(newSphere);
+            m_Scene.objects.push_back(newSphere);
         }
 
 		// End Window

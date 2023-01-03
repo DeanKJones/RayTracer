@@ -169,9 +169,9 @@ Payload Renderer::TraceRay(const Ray& ray)
     int closestSphere = -1;
     float hitDistance = std::numeric_limits<float>::max();
 
-    for (size_t i = 0; i < m_activeScene->spheres.size(); i++) {
+    for (size_t i = 0; i < m_activeScene->objects.size(); i++) {
         float t = MAXFLOAT;
-        Sphere activeSphere = m_activeScene->spheres[i];
+        Sphere activeSphere = m_activeScene->objects[i];
         if (activeSphere.intersect(ray.Origin, ray.Direction, t) && t < hitDistance) {
             hitDistance = t;
             closestSphere = (int)i;
@@ -190,7 +190,7 @@ Payload Renderer::ClosestHit(const Ray& ray, float hitDistance, int objectIndex)
     payload.hitDistance = hitDistance;
     payload.objectIndex = objectIndex;
 
-    const Sphere& closestSphere = m_activeScene->spheres[objectIndex];
+    const Sphere& closestSphere = m_activeScene->objects[objectIndex];
 
     payload.hitPosition = ray.at(hitDistance);
 
