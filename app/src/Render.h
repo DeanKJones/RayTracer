@@ -6,6 +6,8 @@
 #include "Scene.h"
 #include "Material.h"
 
+#include "Payload.h"
+
 #include "glm/glm.hpp"
 #include <memory>
 #include <cstdlib>
