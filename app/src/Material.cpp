@@ -1,5 +1,6 @@
 #include "Material.h"
 #include "Payload.h"
+#include <random>
 
 // Globals
 bool Lambertian::lambertHemi = false;
@@ -76,20 +77,19 @@ bool Dielectric::scatter(
     colorAttenuation = albedo;
 
     // eta = srcIOR / destIOR
-    float eta = payload.frontFace
-                            ? (1.0f / indexOfRefraction) : indexOfRefraction;
-    //refraction_ratio = 1.0f;
+    //float eta = payload.frontFace ? (1.0f / indexOfRefraction) : indexOfRefraction;
+    float eta = 1.0f;
 
     glm::vec3 incidentRay = glm::normalize(ray.Direction);
     //glm::vec3 incidentRay = glm::abs(ray.Direction);
 
-    double cos_theta = fmin(glm::dot(-incidentRay, payload.worldNormal), 1.0f);
+    double cos_theta = fmin(glm::dot(incidentRay, payload.worldNormal), 1.0f);
     double sin_theta = glm::sqrt(1.0f - cos_theta * cos_theta);
     bool cannot_refract = eta * sin_theta > 1.0f;
 
     glm::vec3 direction;
 
-    if (cannot_refract || reflectance(cos_theta, eta) > Core::Random::Float()) {
+    if (cannot_refract || reflectance(cos_theta, eta) > random()) {
     //if (cannot_refract) {
         direction = reflect(incidentRay, payload.worldNormal);
     } else {
@@ -140,17 +140,24 @@ glm::vec3 Dielectric::refract3(glm::vec3 i, glm::vec3 n, float eta, glm::vec3 ou
     // Tests
     glm::vec3 iPerp = glm::dot(i, normal) * normal;
     glm::vec3 iPar = i - iPerp;
-    double iDot = glm::dot(iPerp, iPar);
-    // This should return 0
-    std::cout << "Dot product between incident I-Parallel and I-Perpendicular: " << iDot << "\n";
-    
-    eta = 2.0f - eta;
-    float cosi = glm::dot(n, i);
+
+    //eta = 2.0f - eta;
+    const float cosi = -glm::dot(n, i);
+    const float sinT2 = eta * eta * (1.0f - cosi * cosi);
+    if (sinT2 > 1.0f){
+        return outRay = glm::vec3(0.0f, 0.0f, 0.0f);
+    }
+    const float cosT = glm::sqrt(1.0f - sinT2);
+    outRay = eta * i + (eta + cosi - cosT) * n;
+
 
     glm::vec3 iEtaN = (i * eta) - n;
-    outRay = iEtaN * (-cosi + eta * cosi);
+    //outRay = iEtaN * (-cosi + eta * cosi);
     //outRay = (i * eta - n * (-cosi + eta * cosi));
+
     return outRay;
+
+    //sin^2Tt = eta^2 * sin^2Ti
 }
 
 double Dielectric::reflectance(double cosine, double ref_idx)
