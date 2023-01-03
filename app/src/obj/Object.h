@@ -3,7 +3,6 @@
 #include "glm/glm.hpp"
 #include "../Material.h"
 #include <vector>
-#include "../Payload.h"
 
 class Object
 {
@@ -24,22 +23,4 @@ public:
     std::string objectName;
     glm::vec3 position;
     std::shared_ptr<Material> material_ptr;
-};
-
-class Sphere : public Object
-{
-public:
-    Sphere() : Object() {};
-    ~Sphere() {};
-
-    Sphere(std::string pName, glm::vec3 pPosition, std::shared_ptr<Material> pMaterial, float pRadius);
-
-    bool intersect(const glm::vec3 &origin, const glm::vec3 &rayDirection, float &tNear) const override;
-    bool solveQuadratic(const float &a, const float &b, const float &c, float &t) const;
-
-    // Getters
-    float getSphereRadius() const { return radius; }
-
-public:
-    float radius;
 };
