@@ -117,6 +117,7 @@ public:
         ImGui::Checkbox(": Scattering Type", (bool*)&Lambertian::lambertHemi);
         ImGui::Separator();
         ImGui::Checkbox(": Display Normals", &m_Render.GetSettings().renderNormals);
+        ImGui::Checkbox(": Facing Ratio", &m_Render.GetSettings().renderFacingRatio);
 
         ImGui::Separator();
 

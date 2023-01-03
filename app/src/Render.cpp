@@ -151,7 +151,12 @@ glm::vec3 Renderer::RenderColor(Ray& ray, int depth)
     if (m_settings.renderNormals){
         glm::vec3 colorNormals(payload.worldNormal * 0.5f + 0.5f);
         RayHitColor = colorNormals;
-    } else {
+    }
+    else if (m_settings.renderFacingRatio){
+        glm::vec3 FacingRatio(glm::dot(payload.worldNormal, -ray.Direction));
+        RayHitColor = FacingRatio;
+    }
+    else {
         glm::vec3 colorAlbedo(payload.materialPtr->albedo);
         RayHitColor = colorAlbedo;
     }
@@ -187,7 +192,7 @@ Payload Renderer::ClosestHit(const Ray& ray, float hitDistance, int objectIndex)
 
     const Sphere& closestSphere = m_activeScene->spheres[objectIndex];
 
-    payload.hitPosition = ray.at(payload.hitDistance);
+    payload.hitPosition = ray.at(hitDistance);
 
     glm::vec3 outwardNormal = (payload.hitPosition - closestSphere.position) / closestSphere.radius;
     payload.setFaceNormal(ray.Direction, outwardNormal);

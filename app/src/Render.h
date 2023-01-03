@@ -21,6 +21,7 @@ public:
         bool doGI = true;
         bool renderEachFrame = false; // default false to avoid crash on start up
         bool renderNormals = false;
+        bool renderFacingRatio = false;
         int  threadCount = 1;
     };
 
