@@ -14,6 +14,9 @@ file(
 	"${PROJECT_SOURCE_DIR}/src/utils/*.h" "${PROJECT_SOURCE_DIR}/src/utils/*.cpp"
 )
 
+# Removed for build testing
+list(REMOVE_ITEM SRC "${PROJECT_SOURCE_DIR}/src/obj/Line.h" "${PROJECT_SOURCE_DIR}/src/obj/Line.cpp")
+
 add_executable(RayTracingApp ${SRC})
 # =================================
 
