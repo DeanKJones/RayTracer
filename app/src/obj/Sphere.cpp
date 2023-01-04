@@ -3,8 +3,8 @@
 #include "Sphere.h"
 #include "../Payload.h"
 
-Sphere::Sphere(std::string pName, glm::vec3 pPosition, std::shared_ptr<Material> pMaterial, float pRadius) :
-        Object(pName, pPosition, pMaterial), radius(pRadius) {}
+Sphere::Sphere(std::string pName, glm::vec3 pPosition, std::shared_ptr<Material> pMaterial, bool pVisibility, float pRadius) :
+        Object(pName, pPosition, pMaterial, pVisibility), radius(pRadius) {}
 
 bool Sphere::intersect(const glm::vec3 &origin, const glm::vec3 &rayDirection, float &tNear) const
 {

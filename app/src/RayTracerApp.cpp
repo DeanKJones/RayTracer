@@ -28,6 +28,7 @@ public:
             glm::vec3 albedo 	= {0.0f, 0.0f, 0.9f};
 			sphere.radius 	    = {0.3};
 			sphere.material_ptr = std::make_shared<Lambertian>(albedo);
+            sphere.isVisible    = true;
 			m_Scene.objects.push_back(sphere);
 		}
 		{
@@ -37,6 +38,7 @@ public:
             glm::vec3 albedo 	= {0.0f, 0.9f, 0.0f};
             sphere.radius 	    = {0.1f};
             sphere.material_ptr = std::make_shared<Lambertian>(albedo);
+            sphere.isVisible    = true;
 			m_Scene.objects.push_back(sphere);
 		}
 		{
@@ -46,6 +48,7 @@ public:
             glm::vec3 albedo    = {0.75f, 0.75f, 0.75f};
             sphere.radius       = {0.7f};
             sphere.material_ptr = std::make_shared<Metal>(albedo, 0.01f);
+            sphere.isVisible    = true;
 			m_Scene.objects.push_back(sphere);
 		}
 		{
@@ -55,6 +58,7 @@ public:
             glm::vec3 albedo    = {0.9f, 0.91f, 0.12f};
             sphere.radius       = {0.3f};
             sphere.material_ptr = std::make_shared<Metal>(albedo, 0.4f);
+            sphere.isVisible    = true;
 			m_Scene.objects.push_back(sphere);
 		}
         {
@@ -64,6 +68,7 @@ public:
             glm::vec3 albedo    = {1.0f, 1.0f, 1.0f};
             sphere.radius       = {0.2f};
             sphere.material_ptr = std::make_shared<Dielectric>(albedo, 1.52f);
+            sphere.isVisible    = false;
             m_Scene.objects.push_back(sphere);
         }
 		{
@@ -73,6 +78,7 @@ public:
             glm::vec3 albedo 	= {0.9f, 0.81f, 0.73f};
             sphere.radius 	    = {50.0f};
             sphere.material_ptr = std::make_shared<Lambertian>(albedo);
+            sphere.isVisible    = true;
 			m_Scene.objects.push_back(sphere);
 		}
 	}
@@ -184,6 +190,7 @@ public:
             }
 
             ImGui::DragFloat3(": Position", glm::value_ptr(sphere.position), 0.1f);
+            ImGui::Checkbox(": Visibility", &sphere.isVisible);
             ImGui::DragFloat(": Size", &sphere.radius, 0.1f);
 
             ImGui::Separator();

@@ -114,14 +114,12 @@ glm::vec3 Renderer::RenderColor(Ray& ray, int depth)
 {  
     // Set Colors
     glm::vec3 RayHitColor(0.0f, 0.0f, 0.0f);
-
     if (depth <= 0){
         return RayHitColor;
     }
 
     // Load the weapon and trace the ray
     Payload payload = TraceRay(ray);
-
     // No Hit -> Return Sky
     if (payload.hitDistance < 0){
         // Set Colors
@@ -135,7 +133,6 @@ glm::vec3 Renderer::RenderColor(Ray& ray, int depth)
 
     // Do GI check before rendering
     bool GI = m_settings.doGI;
-
     if(GI){
         Ray scatteredRay;
         glm::vec3 attenuation;
@@ -172,6 +169,9 @@ Payload Renderer::TraceRay(const Ray& ray)
     for (size_t i = 0; i < m_activeScene->objects.size(); i++) {
         float t = MAXFLOAT;
         Sphere activeSphere = m_activeScene->objects[i];
+        if (!activeSphere.isVisible)
+            continue;
+
         if (activeSphere.intersect(ray.Origin, ray.Direction, t) && t < hitDistance) {
             hitDistance = t;
             closestSphere = (int)i;
