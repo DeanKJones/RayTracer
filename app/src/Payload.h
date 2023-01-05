@@ -17,5 +17,6 @@ struct Payload
     }
 
     std::shared_ptr<Material> materialPtr;
+    std::string objectType;
     int objectIndex;
 };

@@ -130,6 +130,10 @@ glm::vec3 Renderer::RenderColor(Ray& ray, int depth)
         RayHitColor = SkyColor;
         return RayHitColor;
     }
+    if (payload.objectType == "Line"){
+        RayHitColor = glm::vec3(1.0f, 1.0f, 1.0f);
+        return RayHitColor;
+    }
 
     // Do GI check before rendering
     bool GI = m_settings.doGI;
@@ -166,13 +170,13 @@ Payload Renderer::TraceRay(const Ray& ray)
     int closestSphere = -1;
     float hitDistance = std::numeric_limits<float>::max();
 
-    for (size_t i = 0; i < m_activeScene->objects.size(); i++) {
+    for (size_t i = 0; i < m_activeScene->sceneObjects.size(); i++) {
         float t = MAXFLOAT;
-        Sphere activeSphere = m_activeScene->objects[i];
-        if (!activeSphere.isVisible)
+        Object* object = m_activeScene->sceneObjects[i];
+        if (!object->isVisible)
             continue;
 
-        if (activeSphere.intersect(ray.Origin, ray.Direction, t) && t < hitDistance) {
+        if (object->intersect(ray.Origin, ray.Direction, t) && t < hitDistance) {
             hitDistance = t;
             closestSphere = (int)i;
         } 
@@ -190,21 +194,34 @@ Payload Renderer::ClosestHit(const Ray& ray, float hitDistance, int objectIndex)
     payload.hitDistance = hitDistance;
     payload.objectIndex = objectIndex;
 
-    const Sphere& closestSphere = m_activeScene->objects[objectIndex];
+    Object* object = m_activeScene->sceneObjects[objectIndex];
 
-    payload.hitPosition = ray.at(hitDistance);
+    std::string typeidName = typeid(*(object)).name();
 
-    glm::vec3 outwardNormal = (payload.hitPosition - closestSphere.position) / closestSphere.radius;
-    payload.setFaceNormal(ray.Direction, outwardNormal);
+    if (typeidName.find("Sphere") != std::string::npos)
+    {
+        payload.hitPosition = ray.at(hitDistance);
+        glm::vec3 outwardNormal = (payload.hitPosition - object->position) / reinterpret_cast<Sphere *>(object)->radius;
+        payload.setFaceNormal(ray.Direction, outwardNormal);
 
-    glm::vec3 origin = ray.Origin - closestSphere.position;
-    payload.hitPosition = origin + ray.Direction * hitDistance;
+        glm::vec3 origin = ray.Origin - object->position;
+        payload.hitPosition = origin + ray.Direction * hitDistance;
+        payload.materialPtr = object->getMaterialPtr();
 
-    payload.materialPtr = closestSphere.getMaterialPtr();
-    // Add sphere position back
-    payload.hitPosition += closestSphere.position;
+        // Add sphere position back
+        payload.hitPosition += object->position;
+        payload.objectType = "Sphere";
 
-    return payload;
+        return payload;
+    }
+    else if (typeidName.find("Line") != std::string::npos)
+    {
+        payload.hitPosition = ray.at(hitDistance);
+        payload.materialPtr = object->getMaterialPtr();
+        payload.objectType  = "Line";
+
+        return payload;
+    }
 }
 
 Payload Renderer::MissHit(const Ray& ray)
