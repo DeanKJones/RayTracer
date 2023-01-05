@@ -14,6 +14,7 @@ public:
             objectName(pName), position(pPosition), material_ptr(pMaterial), isVisible(pVisibility) {}
 
     virtual bool intersect(const glm::vec3 &, const glm::vec3 &, float &) const = 0;
+    virtual void getUI() = 0;
 
     // Getters
     glm::vec3 getObjectPosition() const { return position; }
