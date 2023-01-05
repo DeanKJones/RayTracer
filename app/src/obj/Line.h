@@ -9,16 +9,17 @@ public:
     Line() : Object() {};
     ~Line() {};
 
-    Line(const glm::vec3 &pOrigin, const glm::vec3 &pDestination, const glm::vec3 &pColor, float pThickness);
+    Line(std::string pName, glm::vec3 pPosition, std::shared_ptr<Material> pMaterial,
+         bool pVisibility, glm::vec3 pDestination, float pThickness);
     bool intersect(const glm::vec3 &rayOrigin, const glm::vec3 &rayDirection, float &tNear) const override;
 
-private:
-    glm::vec3 GetLineDirection() const { return destination - origin; }
+    void getUI() override;
 
 private:
-    glm::vec3 origin;
+    glm::vec3 GetLineDirection() const { return destination - position; }
+
+public:
     glm::vec3 destination;
-    glm::vec3 color;
     float thickness;
 };
 

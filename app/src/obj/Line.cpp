@@ -1,63 +1,16 @@
 
 #include "Line.h"
+#include "imgui.h"
+#include "../Scene.h"
+#include "glm/gtc/type_ptr.hpp"
 
+Line::Line(std::string pName, glm::vec3 pPosition,
+           std::shared_ptr<Material> pMaterial,
+           bool pVisibility, glm::vec3 pDestination, float pThickness)
+                : Object(pName, pPosition, pMaterial, pVisibility),
+                  destination(pDestination),
+                  thickness(pThickness) { }
 
-Line::Line(const glm::vec3 &pOrigin,
-           const glm::vec3 &pDestination,
-           const glm::vec3 &pColor,
-           float pThickness)
-                : origin(pOrigin), destination(pDestination),
-                  color(pColor), thickness(pThickness)
-{
-    int n;
-    glm::vec3 error(0.0f, 0.0f, 0.0f);
-    glm::vec3 coord = origin;
-    glm::vec3 delta = destination - origin;
-
-    glm::vec3 step(delta.x >= 0 ? 1 : -1,
-                   delta.y >= 0 ? 1 : -1,
-                   delta.z >= 0 ? 1 : -1);
-
-    delta.x < 0 ? -delta.x : delta.x;
-    delta.y < 0 ? -delta.y : delta.y;
-    delta.z < 0 ? -delta.z : delta.z;
-
-    // Number of Pixels / Length of the line to fill
-    n = delta.x > delta.y ? delta.x : delta.y;
-    n = n > delta.z ? n : delta.z;
-
-    for (int i = 0; i < n; i++) {
-
-        /* TODO Normally here we draw the line to pixels.
-            We only want to draw pixels that are intersected though.
-            Perhaps simply calling the intersect function here could work:
-                -- Rays will probably not have access here --
-            It's probable that the line doesn't need to be drawn.
-         */
-
-        error.x = delta.x;
-        error.y = delta.y;
-        error.z = delta.z;
-
-        // Check if error exceeds the threshold
-        if(((int)error.x << 1) >= n ){
-            coord.x += step.x;
-            error.x -= n;
-        }
-        if(((int)error.y << 1) >= n ){
-            coord.y += step.y;
-            error.y -= n;
-        }
-        if(((int)error.z << 1) >= n ){
-            coord.z += step.z;
-            error.z -= n;
-        }
-    }
-    // Make sure the line has terminated at the correct place
-    assert(coord.x == destination.x
-        && coord.y == destination.y
-        && coord.z == coord.z);
-}
 
 bool Line::intersect(const glm::vec3 &rayOrigin, const glm::vec3 &rayDirection, float &tNear) const
 {
@@ -103,12 +56,15 @@ bool Line::intersect(const glm::vec3 &rayOrigin, const glm::vec3 &rayDirection, 
 
     float dist = (abs(glm::dot(n, (rayOrigin - rayDirection)))) / glm::length(n);
 
-    if (dist >= thickness) {
-        float t1 = glm::dot(glm::cross(lineDirection, n), (origin - rayOrigin)) / glm::dot(n, n);
-        float t2 = glm::dot(glm::cross(rayDirection, n), (origin - rayOrigin)) / glm::dot(n, n);
+    if (dist <= thickness) {
+
+        // TODO: Error in the math here, returning 0 distance sometimes which becomes a negative 0
+
+        float t1 = glm::dot(glm::cross(lineDirection, n), (position - rayOrigin)) / glm::dot(n, n);
+        float t2 = glm::dot(glm::cross(rayDirection, n), (position - rayOrigin)) / glm::dot(n, n);
 
         glm::vec3 RayPoint  = rayOrigin + (t1 * rayDirection);
-        glm::vec3 LinePoint = origin + (t2 * lineDirection);
+        glm::vec3 LinePoint = position + (t2 * lineDirection);
 
         tNear = t1;
 
@@ -116,4 +72,21 @@ bool Line::intersect(const glm::vec3 &rayOrigin, const glm::vec3 &rayDirection, 
             return true;
         }
     }
+}
+
+void Line::getUI()
+{
+    char *objName = this->objectName.data();
+    ImGui::Text("%s is selected", objName);
+
+    ImGui::Separator();
+
+    ImGui::ColorEdit3(": Color", glm::value_ptr(this->material_ptr->albedo));
+    ImGui::DragFloat3(": Position", glm::value_ptr(this->position), 0.1f);
+
+    ImGui::DragFloat3(": Line origin", glm::value_ptr(this->position), 0.1f);
+    ImGui::DragFloat3(": Line destination", glm::value_ptr(this->destination), 0.1f);
+
+    ImGui::Checkbox(": Visibility", &this->isVisible);
+    ImGui::DragFloat(": Line thickness", &this->thickness, 0.001f);
 }
