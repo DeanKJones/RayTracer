@@ -6,8 +6,21 @@
 
 #include <vector>
 
-struct Scene
+class Scene
 {
-    std::vector<Sphere> objects;
+public:
+    Scene()  = default;
+    ~Scene() = default;
+
+    void CreateDefaultScene();
+    void CreateNewSphere();
+
+    void RemoveItem(int objectIndex);
+    Object GetItem(int objectIndex);
+
+public:
+    std::vector<Object *> sceneObjects;
+private:
+    std::vector<Sphere> spheres;
     std::vector<Line> lines;
 };
