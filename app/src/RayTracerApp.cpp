@@ -20,67 +20,7 @@ public:
 	RenderLayer() // Scene definition
 		: m_Camera(45.0f, 0.1f, 100.0f)
 	{
-		// Scene Description
-		{
-			Sphere sphere;
-            sphere.objectName   = "Blue Sphere";
-			sphere.position     = {0.3f, 0.3f, 0.2f};
-            glm::vec3 albedo 	= {0.0f, 0.0f, 0.9f};
-			sphere.radius 	    = {0.3};
-			sphere.material_ptr = std::make_shared<Lambertian>(albedo);
-            sphere.isVisible    = true;
-			m_Scene.objects.push_back(sphere);
-		}
-		{
-			Sphere sphere;
-            sphere.objectName   = "Green Sphere";
-            sphere.position     = {0.0f, 0.0f, 1.4f};
-            glm::vec3 albedo 	= {0.0f, 0.9f, 0.0f};
-            sphere.radius 	    = {0.1f};
-            sphere.material_ptr = std::make_shared<Lambertian>(albedo);
-            sphere.isVisible    = true;
-			m_Scene.objects.push_back(sphere);
-		}
-		{
-			Sphere sphere;
-            sphere.objectName   = "Big Metal Sphere";
-            sphere.position     = {-0.7f, 0.5f, -0.1f};
-            glm::vec3 albedo    = {0.75f, 0.75f, 0.75f};
-            sphere.radius       = {0.7f};
-            sphere.material_ptr = std::make_shared<Metal>(albedo, 0.01f);
-            sphere.isVisible    = true;
-			m_Scene.objects.push_back(sphere);
-		}
-		{
-			Sphere sphere;
-            sphere.objectName   = "Small Metal Sphere";
-            sphere.position     = {0.6f, 0.1f, 0.8f};
-            glm::vec3 albedo    = {0.9f, 0.91f, 0.12f};
-            sphere.radius       = {0.3f};
-            sphere.material_ptr = std::make_shared<Metal>(albedo, 0.4f);
-            sphere.isVisible    = true;
-			m_Scene.objects.push_back(sphere);
-		}
-        {
-            Sphere sphere;
-            sphere.objectName   = "Glass Sphere";
-            sphere.position     = {-0.3f, 0.1f, 0.8f};
-            glm::vec3 albedo    = {1.0f, 1.0f, 1.0f};
-            sphere.radius       = {0.2f};
-            sphere.material_ptr = std::make_shared<Dielectric>(albedo, 1.52f);
-            sphere.isVisible    = false;
-            m_Scene.objects.push_back(sphere);
-        }
-		{
-			Sphere sphere;
-            sphere.objectName   = "Ground";
-            sphere.position     = {0.0f, -50.2f, 0.0f};
-            glm::vec3 albedo 	= {0.9f, 0.81f, 0.73f};
-            sphere.radius 	    = {50.0f};
-            sphere.material_ptr = std::make_shared<Lambertian>(albedo);
-            sphere.isVisible    = true;
-			m_Scene.objects.push_back(sphere);
-		}
+        m_Scene.CreateDefaultScene();
 	}
 
 	virtual void OnUpdate(float ts) override
@@ -154,9 +94,9 @@ public:
         ImGui::ListBox(
                 "Scene Objects\n\nSelect an item \nto edit it's \nparameters.",
                 &currentItem,
-                sphereGetter,
-                m_Scene.objects.data(),
-                m_Scene.objects.size(),
+                objectGetter,
+                m_Scene.sceneObjects.data(),
+                m_Scene.sceneObjects.size(),
                 6
                 );
 
@@ -164,50 +104,17 @@ public:
         if(currentItem >= 0) {
             ImGui::Separator();
 
-            Sphere &sphere = m_Scene.objects[currentItem];
-
-            char *objName = sphere.objectName.data();
-            ImGui::Text("%s is selected", objName);
+            m_Scene.sceneObjects[currentItem]->getUI();
 
             // Remove Objects
             if (ImGui::Button("Remove")) {
-                Sphere currentSphere = m_Scene.objects[currentItem];
-                m_Scene.objects.erase(m_Scene.objects.begin() + (currentItem));
+                m_Scene.RemoveItem(currentItem);
             }
-
-            ImGui::Separator();
-
-            ImGui::ColorEdit3(": Color", glm::value_ptr(sphere.material_ptr->albedo));
-            std::string typeidName = typeid(*(sphere.material_ptr)).name();
-
-            if (typeidName.find("Metal") != std::string::npos) {
-                auto sphereRoughness = &(reinterpret_cast<Metal *>(sphere.material_ptr.get())->roughness);
-                ImGui::DragFloat(": Roughness", sphereRoughness, 0.05f, 0.0f, 1.0f);
-            }
-            if (typeidName.find("Dielectric") != std::string::npos) {
-                auto sphereIOR = &(reinterpret_cast<Dielectric *>(sphere.material_ptr.get())->indexOfRefraction);
-                ImGui::DragFloat(": IOR", sphereIOR, 0.05f, 0.0f, 1.0f);
-            }
-
-            ImGui::DragFloat3(": Position", glm::value_ptr(sphere.position), 0.1f);
-            ImGui::Checkbox(": Visibility", &sphere.isVisible);
-            ImGui::DragFloat(": Size", &sphere.radius, 0.1f);
-
-            ImGui::Separator();
         }
 
         // Add Objects
         if (ImGui::Button("Add Sphere")) {
-
-            Sphere newSphere;
-            std::string name = "Sphere";
-            newSphere.objectName = name;
-            newSphere.position = {0.0f, 0.0f, 0.0f};
-            newSphere.radius = {0.5f};
-            glm::vec3 albedo = {0.8f, 0.8f, 0.8f};
-            newSphere.material_ptr = std::make_shared<Lambertian>(albedo);
-
-            m_Scene.objects.push_back(newSphere);
+            m_Scene.CreateNewSphere();
         }
 
 		// End Window
