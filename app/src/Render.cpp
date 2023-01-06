@@ -131,8 +131,10 @@ glm::vec3 Renderer::RenderColor(Ray& ray, int depth)
         return RayHitColor;
     }
     if (payload.objectType == "Line"){
-        RayHitColor = glm::vec3(1.0f, 1.0f, 1.0f);
-        return RayHitColor;
+        if (depth == m_settings.bounceDepth){
+            RayHitColor = payload.materialPtr->albedo;
+            return RayHitColor;
+        }
     }
 
     // Do GI check before rendering
@@ -161,7 +163,6 @@ glm::vec3 Renderer::RenderColor(Ray& ray, int depth)
         glm::vec3 colorAlbedo(payload.materialPtr->albedo);
         RayHitColor = colorAlbedo;
     }
-    return RayHitColor;
 }
 
 // Shader
