@@ -76,16 +76,8 @@ public:
 
 		ImGui::End();
 
-
         // Camera
-        ImGui::Begin("Camera");
-        ImGui::Text("Camera Settings: ");
-        ImGui::DragFloat(" : Field of View", &m_Camera.m_VerticalFOV, 1.0f, 0.0f, 150.0f);
-        ImGui::DragFloat(" : Near Clip", &m_Camera.m_NearClip, 0.05f, 0.0001f, 1.0f);
-        ImGui::DragFloat(" : Far Clip", &m_Camera.m_FarClip, 1.0f, 0.0f, 10000.0f);
-
-        ImGui::End();
-
+        m_Camera.GetUI();
 
 		// Scene //
 		ImGui::Begin("Scene");
