@@ -59,35 +59,35 @@ void Scene::CreateDefaultScene()
     sceneObjects.push_back(new Sphere(sphere));
 
     Line xAxis;
-    xAxis.objectName  = "xAxis";
+    xAxis.objectName    = "xAxis";
     xAxis.position      = {-1000, 0.0f, 0.0f};
-    xAxis.destination = {1000, 0.0f, 0.0f};
-    albedo            = {1.0f, 0.0f, 0.0f};
-    sphere.material_ptr = std::make_shared<Lambertian>(albedo);
-    xAxis.thickness   = 0.05f;
-    xAxis.isVisible   = true;
+    xAxis.destination   = {1000, 0.0f, 0.0f};
+    albedo              = {1.0f, 0.0f, 0.0f};
+    xAxis.material_ptr  = std::make_shared<Lambertian>(albedo);
+    xAxis.thickness     = 0.001f;
+    xAxis.isVisible     = true;
     lines.push_back(xAxis);
     sceneObjects.push_back(new Line(xAxis));
 
     Line yAxis;
-    yAxis.objectName  = "yAxis";
+    yAxis.objectName    = "yAxis";
     yAxis.position      = {0.0f, -1000, 0.0f};
-    yAxis.destination = {0.0f, 1000, 0.0f};
-    albedo            = {0.0f, 1.0f, 0.0f};
-    sphere.material_ptr = std::make_shared<Lambertian>(albedo);
-    yAxis.thickness   = 0.05f;
-    yAxis.isVisible   = true;
+    yAxis.destination   = {0.0f, 1000, 0.0f};
+    albedo              = {0.0f, 1.0f, 0.0f};
+    yAxis.material_ptr  = std::make_shared<Lambertian>(albedo);
+    yAxis.thickness     = 0.001f;
+    yAxis.isVisible     = true;
     lines.push_back(yAxis);
     sceneObjects.push_back(new Line(yAxis));
 
     Line zAxis;
-    zAxis.objectName  = "zAxis";
+    zAxis.objectName    = "zAxis";
     zAxis.position      = {0.0f, 0.0f, -1000};
-    zAxis.destination = {0.0f, 0.0f, 1000};
-    albedo            = {0.0f, 0.0f, 1.0f};
-    sphere.material_ptr = std::make_shared<Lambertian>(albedo);
-    zAxis.thickness   = 0.05f;
-    zAxis.isVisible   = true;
+    zAxis.destination   = {0.0f, 0.0f, 1000};
+    albedo              = {0.0f, 0.0f, 1.0f};
+    zAxis.material_ptr  = std::make_shared<Lambertian>(albedo);
+    zAxis.thickness     = 0.001f;
+    zAxis.isVisible     = true;
     lines.push_back(zAxis);
     sceneObjects.push_back(new Line(zAxis));
 }
