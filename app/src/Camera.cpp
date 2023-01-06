@@ -5,6 +5,9 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "imgui.h"
+#include "glm/gtc/type_ptr.hpp"
+
 #include "../../core/src/input/Input.h"
 
 using namespace Core;
@@ -12,8 +15,8 @@ using namespace Core;
 Camera::Camera(float verticalFOV, float nearClip, float farClip)
 	: m_VerticalFOV(verticalFOV), m_NearClip(nearClip), m_FarClip(farClip)
 {
-	m_ForwardDirection = glm::vec3(0, 0, -1);
-	m_Position = glm::vec3(0, 0, 3);
+	m_ForwardDirection = glm::vec3(0.0f, 0.0f, -1.0f);
+	m_Position = glm::vec3(0.0f, 0.55f, 3.0f);
 }
 
 bool Camera::OnUpdate(float ts)
@@ -149,4 +152,21 @@ void Camera::RecalculateRayDirections()
 			m_RayDirections[x + y * m_ViewportWidth] = rayDirection;
 		}
 	}
+}
+
+void Camera::GetUI()
+{
+    ImGui::Begin("Camera");
+    ImGui::Text("Camera Settings: ");
+
+    ImGui::DragFloat(" : Field of View", &m_VerticalFOV, 1.0f, 0.0f, 150.0f);
+    ImGui::DragFloat(" : Near Clip", &m_NearClip, 0.05f, 0.0001f, 1.0f);
+    ImGui::DragFloat(" : Far Clip", &m_FarClip, 1.0f, 0.0f, 10000.0f);
+
+    ImGui::Separator();
+
+    ImGui::DragFloat3(" : Position", glm::value_ptr(m_Position), 0.5f);
+    ImGui::DragFloat3(" : Forward direction", glm::value_ptr(m_ForwardDirection), 0.5f);
+
+    ImGui::End();
 }

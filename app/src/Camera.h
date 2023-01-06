@@ -19,6 +19,8 @@ public:
 	const glm::vec3& GetPosition() const { return m_Position; }
 	const glm::vec3& GetDirection() const { return m_ForwardDirection; }
 
+    void GetUI();
+
 	const std::vector<glm::vec3>& GetRayDirections() const { return m_RayDirections; }
 
 	float GetRotationSpeed();
@@ -41,15 +43,13 @@ public:
 	float m_VerticalFOV = 45.0f;
 	float m_NearClip = 0.1f;
 	float m_FarClip = 100.0f;
+    glm::vec3 m_Position{0.0f, 0.0f, 0.0f};
+    glm::vec3 m_ForwardDirection{0.0f, 0.0f, 0.0f};
 
 private:
-	glm::vec3 m_Position{0.0f, 0.0f, 0.0f};
-	glm::vec3 m_ForwardDirection{0.0f, 0.0f, 0.0f};
-
 	// Cached ray directions
 	std::vector<glm::vec3> m_RayDirections;
 
 	glm::vec2 m_LastMousePosition{ 0.0f, 0.0f };
-
 	uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
 };
