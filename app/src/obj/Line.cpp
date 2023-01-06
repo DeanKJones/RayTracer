@@ -56,9 +56,7 @@ bool Line::intersect(const glm::vec3 &rayOrigin, const glm::vec3 &rayDirection, 
 
     float dist = (abs(glm::dot(n, (rayOrigin - rayDirection)))) / glm::length(n);
 
-    if (dist <= thickness) {
-
-        // TODO: Error in the math here, returning 0 distance sometimes which becomes a negative 0
+    if (dist < thickness && dist > 0.000001f) {
 
         float t1 = glm::dot(glm::cross(lineDirection, n), (position - rayOrigin)) / glm::dot(n, n);
         float t2 = glm::dot(glm::cross(rayDirection, n), (position - rayOrigin)) / glm::dot(n, n);
@@ -81,12 +79,10 @@ void Line::getUI()
 
     ImGui::Separator();
 
-    ImGui::ColorEdit3(": Color", glm::value_ptr(this->material_ptr->albedo));
-    ImGui::DragFloat3(": Position", glm::value_ptr(this->position), 0.1f);
-
-    ImGui::DragFloat3(": Line origin", glm::value_ptr(this->position), 0.1f);
+    ImGui::ColorEdit3(": Line color", glm::value_ptr(this->material_ptr->albedo));
+    ImGui::DragFloat3(": Line start", glm::value_ptr(this->position), 0.1f);
     ImGui::DragFloat3(": Line destination", glm::value_ptr(this->destination), 0.1f);
 
-    ImGui::Checkbox(": Visibility", &this->isVisible);
-    ImGui::DragFloat(": Line thickness", &this->thickness, 0.001f);
+    ImGui::Checkbox(": Line visibility", &this->isVisible);
+    ImGui::DragFloat(": Line thickness", &this->thickness, 0.0001f);
 }
