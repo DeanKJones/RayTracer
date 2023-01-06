@@ -72,7 +72,7 @@ void Sphere::getUI()
 
     ImGui::Separator();
 
-    ImGui::ColorEdit3(": Color", glm::value_ptr(this->material_ptr->albedo));
+    ImGui::ColorEdit3(": Sphere color", glm::value_ptr(this->material_ptr->albedo));
     std::string typeidName = typeid(*(this->material_ptr)).name();
 
     if (typeidName.find("Metal") != std::string::npos) {
@@ -84,7 +84,7 @@ void Sphere::getUI()
         ImGui::DragFloat(": IOR", sphereIOR, 0.05f, 0.0f, 1.0f);
     }
 
-    ImGui::DragFloat3(": Position", glm::value_ptr(this->position), 0.1f);
-    ImGui::Checkbox(": Visibility", &this->isVisible);
-    ImGui::DragFloat(": Size", &this->radius, 0.1f);
+    ImGui::DragFloat3(": Sphere position", glm::value_ptr(this->position), 0.1f);
+    ImGui::Checkbox(": Sphere visibility", &this->isVisible);
+    ImGui::DragFloat(": Sphere radius", &this->radius, 0.1f);
 }
