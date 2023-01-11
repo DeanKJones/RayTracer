@@ -159,14 +159,14 @@ void Camera::GetUI()
     ImGui::Begin("Camera");
     ImGui::Text("Camera Settings: ");
 
-    ImGui::DragFloat(" : Field of View", &m_VerticalFOV, 1.0f, 0.0f, 150.0f);
-    ImGui::DragFloat(" : Near Clip", &m_NearClip, 0.05f, 0.0001f, 1.0f);
-    ImGui::DragFloat(" : Far Clip", &m_FarClip, 1.0f, 0.0f, 10000.0f);
+    ImGui::DragFloat(" : Field of View", &this->m_VerticalFOV, 1.0f, 0.0f, 150.0f);
+    ImGui::DragFloat(" : Near Clip", &this->m_NearClip, 0.05f, 0.0001f, 1.0f);
+    ImGui::DragFloat(" : Far Clip", &this->m_FarClip, 1.0f, 0.0f, 10000.0f);
 
     ImGui::Separator();
 
-    ImGui::DragFloat3(" : Position", glm::value_ptr(m_Position), 0.5f);
-    ImGui::DragFloat3(" : Forward direction", glm::value_ptr(m_ForwardDirection), 0.5f);
+    ImGui::DragFloat3(" : Position", glm::value_ptr(this->m_Position), 0.5f);
+    ImGui::DragFloat3(" : Forward direction", glm::value_ptr(this->m_ForwardDirection), 0.5f);
 
     ImGui::End();
 }
