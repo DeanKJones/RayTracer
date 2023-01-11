@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../core/src/Image.h"
+#include "Pixel.h"
 
 #include "Camera.h"
 #include "Scene.h"
@@ -8,7 +8,6 @@
 
 #include "Payload.h"
 
-#include "glm/glm.hpp"
 #include <memory>
 #include <cstdlib>
 
@@ -36,9 +35,9 @@ public:
     void ResetFrameIndex() { m_frameIndex = 1; }
 
 private:     // Rendering //
-    glm::vec4 PerPixel(uint32_t x, u_int32_t y);
+    Pixel PerPixel(uint32_t x, u_int32_t y);
+    Pixel RenderColor(Ray& ray, int depth);
 
-    glm::vec3 RenderColor(Ray& ray, int depth);
     Payload TraceRay(const Ray& ray);
     Payload ClosestHit(const Ray& ray, float hitDistance, int objectIndex);
     Payload MissHit(const Ray& ray);

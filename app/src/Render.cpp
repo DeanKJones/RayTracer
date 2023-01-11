@@ -64,15 +64,16 @@ void Renderer::Render(const Camera& camera, const Scene& scene)
 
     for (uint32_t y = 0; y < m_FinalImage->GetHeight(); y++) {
         for (uint32_t x = 0; x < m_FinalImage->GetWidth(); x++) {
-            glm::vec4 color = PerPixel(x, y);
-            m_accumulationData[x + y * m_FinalImage->GetWidth()] += color;
+            Pixel pixel = PerPixel(x, y);
+            m_accumulationData[x + y * m_FinalImage->GetWidth()] += pixel.RGBA;
 
-            glm::vec4 accumulatedColor = m_accumulationData[x + y * m_FinalImage->GetWidth()];
-            accumulatedColor /= (float) m_frameIndex;
+            Pixel accumulatedPixel;
+            accumulatedPixel.RGBA = m_accumulationData[x + y * m_FinalImage->GetWidth()];
+            accumulatedPixel.RGBA /= (float) m_frameIndex;
 
-            accumulatedColor = glm::clamp(accumulatedColor, glm::vec4(0.0f), glm::vec4(1.0f));
+            accumulatedPixel.RGBA = glm::clamp(accumulatedPixel.RGBA, glm::vec4(0.0f), glm::vec4(1.0f));
             // Image Data Pixel Position
-            m_imageData[x + y * m_FinalImage->GetWidth()] = ConvertRGBA(accumulatedColor);
+            m_imageData[x + y * m_FinalImage->GetWidth()] = ConvertRGBA(accumulatedPixel.RGBA);
         }
     }
 
@@ -87,35 +88,40 @@ void Renderer::Render(const Camera& camera, const Scene& scene)
     }
 }
 
-glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
+Pixel Renderer::PerPixel(uint32_t x, uint32_t y)
 {
     Ray ray;
+    Pixel pixel;
+
     // Set ray origin back to camera after ray bounces around the scene
     ray.Origin = m_activeCamera->GetPosition();
     ray.Direction = m_activeCamera->GetRayDirections()[x + y * m_FinalImage->GetWidth()];
 
     // Set Pixel Color with the Alpha at 1
-    glm::vec4 color(0.0f, 0.0f, 0.0f, 1.0f);
+    pixel.RGBA = {0.0f, 0.0f, 0.0f, 1.0f};
 
     // Scatter Rays
     ray.Direction += Core::Random::Vec3(-0.0005f, 0.0005f);
 
     int depth = m_settings.bounceDepth;
-    // Render Color
-    glm::vec3 renderedColor;
-    renderedColor = RenderColor(ray, depth);
-    color = glm::vec4(renderedColor, 1.0f);
 
-    return color;
+    // Render Color
+    Pixel renderedPixel = RenderColor(ray, depth);
+    pixel.RGBA = glm::vec4(renderedPixel.RGB, 1.0f);
+
+    return pixel;
 }
 
 
-glm::vec3 Renderer::RenderColor(Ray& ray, int depth) 
-{  
+Pixel Renderer::RenderColor(Ray& ray, int depth)
+{
     // Set Colors
+    Pixel pixel;
     glm::vec3 RayHitColor(0.0f, 0.0f, 0.0f);
+
     if (depth <= 0){
-        return RayHitColor;
+        pixel.RGB = RayHitColor;
+        return pixel;
     }
 
     // Load the weapon and trace the ray
@@ -127,13 +133,15 @@ glm::vec3 Renderer::RenderColor(Ray& ray, int depth)
         float t = 0.5 * (unitVector.y + 1.0f);
         glm::vec3 SkyColor(((1.0f - t) * glm::vec3(1.0f, 1.0f, 1.0f)) + (t * glm::vec3(0.5f, 0.7f, 1.0f)));
 
-        RayHitColor = SkyColor;
-        return RayHitColor;
+        pixel.RGB = SkyColor;
+        return pixel;
     }
     if (payload.objectType == "Line"){
         if (depth == m_settings.bounceDepth){
             RayHitColor = payload.materialPtr->albedo;
-            return RayHitColor;
+
+            pixel.RGB = RayHitColor;
+            return pixel;
         }
     }
 
@@ -145,24 +153,26 @@ glm::vec3 Renderer::RenderColor(Ray& ray, int depth)
 
         if (payload.materialPtr->scatter(ray, payload, attenuation, scatteredRay))
         {
-            RayHitColor = (attenuation * RenderColor(scatteredRay, depth - 1)) * 0.75f;
-            return RayHitColor;
+            Pixel bounced = RenderColor(scatteredRay, depth - 1);
+            pixel.RGB = (attenuation * bounced.RGB) * 0.75f;
+            return pixel;
         }
-        return RayHitColor;
+        return pixel;
     }
 
     if (m_settings.renderNormals){
         glm::vec3 colorNormals(payload.worldNormal * 0.5f + 0.5f);
-        RayHitColor = colorNormals;
+        pixel.RGB = colorNormals;
     }
     else if (m_settings.renderFacingRatio){
         glm::vec3 FacingRatio(glm::dot(payload.worldNormal, -ray.Direction));
-        RayHitColor = FacingRatio;
+        pixel.RGB = FacingRatio;
     }
     else {
         glm::vec3 colorAlbedo(payload.materialPtr->albedo);
-        RayHitColor = colorAlbedo;
+        pixel.RGB = colorAlbedo;
     }
+    return pixel;
 }
 
 // Shader
