@@ -11,9 +11,7 @@
 #include "utils/Magnifier.h"
 #include "glm/gtc/type_ptr.hpp"
 
-#include "imgui.h"
-#define IMGUI_DEFINE_MATH_OPERATORS
-#include "imgui_internal.h"
+#include "../../core/src/input/Input.h"
 
 #include <string>
 
@@ -124,47 +122,15 @@ public:
 
 		std::shared_ptr<Image> image = m_Render.getFinalImage();
 		if (image) {
- 			ImGui::Image(image->GetDescriptorSet(), {(float)image->GetWidth(), (float)image->GetHeight()},
+ 			ImGui::Image(image->GetDescriptorSet(),
+                         {(float)image->GetWidth(), (float)image->GetHeight()},
 						 ImVec2(0, 1), ImVec2(1, 0));
 
-            // Render zoomed in image at the position of the cursor.
-            if(ImGui::IsItemHovered())
+            // Render magnified image at the position of the cursor
+            if(ImGui::IsItemHovered() && Core::Input::IsKeyDown(KeyCode::LeftShift))
             {
                 const ImVec2 cursor = ImGui::GetCurrentContext()->IO.MousePos;
-                const ImVec2 offset = ImGui::GetItemRectMin();
-
-                float width  = -(float)image->GetWidth();
-                auto height = (float)image->GetHeight();
-
-                auto size = ImVec2(ImGui::GetContentRegionAvail().x, (ImGui::GetContentRegionAvail().x * height) / width);
-                // Pixel position
-                const ImVec2 center = (ImVec2(width, height) * (cursor - offset)) / size;
-                glm::vec2 cursorPos(center.x, center.y);
-
-                //std::shared_ptr<Image> magnifiedImage = magnify(image, cursorPos);
-
-                const ImVec2 uv0 = (center + ImVec2(4, 4)) / ImVec2(width, height);
-                const ImVec2 uv1 = (center - ImVec2(4, 4)) / ImVec2(width, height);
-
-                ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-                ImGui::SetNextWindowPos(cursor - ImVec2(-15, 69));
-
-                ImGui::BeginTooltip();
-                // Flipped y axis
-                ImGui::Image(image->GetDescriptorSet(), ImVec2(64, 64), uv0, uv1);
-
-                ImGui::Text("center: %.1f", center.x);
-                ImGui::SameLine();
-                ImGui::Text(", %.1f", center.y);
-                ImGui::Text("uv0: %.1f", uv0.x);
-                ImGui::SameLine();
-                ImGui::Text(", %.1f", uv0.y);
-                ImGui::Text("uv1: %.1f", uv1.x);
-                ImGui::SameLine();
-                ImGui::Text(", %.1f", uv1.y);
-
-                ImGui::End();
-                ImGui::PopStyleVar();
+                MagnifingGlass(image, cursor);
             }
 		}
 		ImGui::End();

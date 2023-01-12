@@ -6,10 +6,38 @@
 #include "src/Image.h"
 #include "glm/glm.hpp"
 
-// Magnifying glass
-std::shared_ptr<Core::Image> magnify(std::shared_ptr<Core::Image> image, glm::vec2 cursorPos)
-{
+#include "imgui.h"
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include "imgui_internal.h"
 
+// Magnifying glass
+void MagnifingGlass(std::shared_ptr<Core::Image> image, ImVec2 cursorPos)
+{
+    const ImVec2 offset = ImGui::GetItemRectMin();
+
+    float width  = -(float)image->GetWidth();
+    auto height  =  (float)image->GetHeight();
+    auto size = ImVec2(ImGui::GetContentRegionAvail().x, (ImGui::GetContentRegionAvail().x * height) / width);
+
+    // Pixel position
+    const ImVec2 center = (ImVec2(width, height) * (cursorPos - offset)) / size;
+
+    const ImVec2 uv0 = (center + ImVec2(16, 16)) / ImVec2(width, height);
+    const ImVec2 uv1 = (center - ImVec2(16, 16)) / ImVec2(width, height);
+
+    // Create UI
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+    ImGui::SetNextWindowPos(cursorPos - ImVec2(-25, 128));
+    ImGui::BeginTooltip();
+
+    // Render new image
+    ImGui::Image(image->GetDescriptorSet(), ImVec2(128, 128), uv0, uv1);
+
+    // Here we can define different pixel data to write to the ui
+        // empty
+
+    ImGui::End();
+    ImGui::PopStyleVar();
 }
 
 #endif //RAYTRACING_MAGNIFIER_H
