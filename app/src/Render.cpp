@@ -120,8 +120,14 @@ Pixel Renderer::RenderColor(Ray& ray, int depth)
     glm::vec3 RayHitColor(0.0f, 0.0f, 0.0f);
 
     if (depth <= 0){
-        pixel.RGB = RayHitColor;
+        pixel.RGB += RayHitColor;
         return pixel;
+    }
+
+    if (depth == m_settings.bounceDepth){
+        ray.isFirstBounce = true;
+    } else {
+        ray.isFirstBounce = false;
     }
 
     // Load the weapon and trace the ray
@@ -136,13 +142,14 @@ Pixel Renderer::RenderColor(Ray& ray, int depth)
         pixel.RGB = SkyColor;
         return pixel;
     }
-    if (payload.objectType == "Line"){
-        if (depth == m_settings.bounceDepth){
-            RayHitColor = payload.materialPtr->albedo;
 
-            pixel.RGB = RayHitColor;
-            return pixel;
-        }
+    if (payload.objectType == "Line")
+    {
+        depth = 0;
+
+        RayHitColor = payload.materialPtr->albedo;
+        pixel.RGB = RayHitColor;
+        return pixel;
     }
 
     // Do GI check before rendering
@@ -178,7 +185,7 @@ Pixel Renderer::RenderColor(Ray& ray, int depth)
 // Shader
 Payload Renderer::TraceRay(const Ray& ray)
 {   
-    int closestSphere = -1;
+    int closest_T = -1;
     float hitDistance = std::numeric_limits<float>::max();
 
     for (size_t i = 0; i < m_activeScene->sceneObjects.size(); i++) {
@@ -187,15 +194,21 @@ Payload Renderer::TraceRay(const Ray& ray)
         if (!object->isVisible)
             continue;
 
-        if (object->intersect(ray.Origin, ray.Direction, t) && t < hitDistance) {
+        // Way of keeping our Line from rendering in reflections
+        if (!ray.isFirstBounce && !object->inReflections) {
+            continue;
+        }
+
+        if (object->intersect(ray.Origin, ray.Direction, t) && t < hitDistance)
+        {
             hitDistance = t;
-            closestSphere = (int)i;
+            closest_T = (int)i;
         } 
     } 
-    if (closestSphere < 0){
+    if (closest_T < 0){
         return MissHit(ray);
     }
-    return ClosestHit(ray, hitDistance, closestSphere);
+    return ClosestHit(ray, hitDistance, closest_T);
 }
 
 
