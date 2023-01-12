@@ -4,57 +4,63 @@
 void Scene::CreateDefaultScene()
 {
     Sphere sphere;
-    sphere.objectName   = "Blue Sphere";
-    sphere.position     = {0.3f, 0.3f, 0.2f};
-    glm::vec3 albedo 	= {0.0f, 0.0f, 0.9f};
-    sphere.radius 	    = {0.3};
-    sphere.material_ptr = std::make_shared<Lambertian>(albedo);
-    sphere.isVisible    = true;
+    sphere.objectName    = "Blue Sphere";
+    sphere.position      = {0.3f, 0.3f, 0.2f};
+    glm::vec3 albedo 	 = {0.0f, 0.0f, 0.9f};
+    sphere.radius 	     = {0.3};
+    sphere.material_ptr  = std::make_shared<Lambertian>(albedo);
+    sphere.isVisible     = true;
+    sphere.inReflections = true;
     spheres.push_back(sphere);
     sceneObjects.push_back(new Sphere(sphere));
 
-    sphere.objectName   = "Green Sphere";
-    sphere.position     = {0.0f, 0.0f, 1.4f};
-    albedo 	            = {0.0f, 0.9f, 0.0f};
-    sphere.radius 	    = {0.1f};
-    sphere.material_ptr = std::make_shared<Lambertian>(albedo);
-    sphere.isVisible    = true;
+    sphere.objectName    = "Green Sphere";
+    sphere.position      = {0.0f, 0.0f, 1.4f};
+    albedo 	             = {0.0f, 0.9f, 0.0f};
+    sphere.radius 	     = {0.1f};
+    sphere.material_ptr  = std::make_shared<Lambertian>(albedo);
+    sphere.isVisible     = true;
+    sphere.inReflections = true;
     spheres.push_back(sphere);
     sceneObjects.push_back(new Sphere(sphere));
 
-    sphere.objectName   = "Big Metal Sphere";
-    sphere.position     = {-0.7f, 0.5f, -0.1f};
-    albedo              = {0.75f, 0.75f, 0.75f};
-    sphere.radius       = {0.7f};
-    sphere.material_ptr = std::make_shared<Metal>(albedo, 0.01f);
-    sphere.isVisible    = true;
+    sphere.objectName    = "Big Metal Sphere";
+    sphere.position      = {-0.7f, 0.5f, -0.1f};
+    albedo               = {0.75f, 0.75f, 0.75f};
+    sphere.radius        = {0.7f};
+    sphere.material_ptr  = std::make_shared<Metal>(albedo, 0.01f);
+    sphere.isVisible     = true;
+    sphere.inReflections = true;
     spheres.push_back(sphere);
     sceneObjects.push_back(new Sphere(sphere));
 
-    sphere.objectName   = "Small Metal Sphere";
-    sphere.position     = {0.6f, 0.1f, 0.8f};
-    albedo              = {0.9f, 0.91f, 0.12f};
-    sphere.radius       = {0.3f};
-    sphere.material_ptr = std::make_shared<Metal>(albedo, 0.4f);
-    sphere.isVisible    = true;
+    sphere.objectName    = "Small Metal Sphere";
+    sphere.position      = {0.6f, 0.1f, 0.8f};
+    albedo               = {0.9f, 0.91f, 0.12f};
+    sphere.radius        = {0.3f};
+    sphere.material_ptr  = std::make_shared<Metal>(albedo, 0.4f);
+    sphere.isVisible     = true;
+    sphere.inReflections = true;
     spheres.push_back(sphere);
     sceneObjects.push_back(new Sphere(sphere));
 
-    sphere.objectName   = "Glass Sphere";
-    sphere.position     = {-0.3f, 0.1f, 0.8f};
-    albedo              = {1.0f, 1.0f, 1.0f};
-    sphere.radius       = {0.2f};
-    sphere.material_ptr = std::make_shared<Dielectric>(albedo, 1.52f);
-    sphere.isVisible    = false;
+    sphere.objectName    = "Glass Sphere";
+    sphere.position      = {-0.3f, 0.1f, 0.8f};
+    albedo               = {1.0f, 1.0f, 1.0f};
+    sphere.radius        = {0.2f};
+    sphere.material_ptr  = std::make_shared<Dielectric>(albedo, 1.52f);
+    sphere.isVisible     = false;
+    sphere.inReflections = true;
     spheres.push_back(sphere);
     sceneObjects.push_back(new Sphere(sphere));
 
-    sphere.objectName   = "Ground";
-    sphere.position     = {0.0f, -50.2f, 0.0f};
-    albedo           	= {0.9f, 0.81f, 0.73f};
-    sphere.radius 	    = {50.0f};
-    sphere.material_ptr = std::make_shared<Lambertian>(albedo);
-    sphere.isVisible    = true;
+    sphere.objectName    = "Ground";
+    sphere.position      = {0.0f, -50.2f, 0.0f};
+    albedo           	 = {0.9f, 0.81f, 0.73f};
+    sphere.radius 	     = {50.0f};
+    sphere.material_ptr  = std::make_shared<Lambertian>(albedo);
+    sphere.isVisible     = true;
+    sphere.inReflections = true;
     spheres.push_back(sphere);
     sceneObjects.push_back(new Sphere(sphere));
 
@@ -66,6 +72,7 @@ void Scene::CreateDefaultScene()
     xAxis.material_ptr  = std::make_shared<Lambertian>(albedo);
     xAxis.thickness     = 0.001f;
     xAxis.isVisible     = true;
+    xAxis.inReflections = false;
     lines.push_back(xAxis);
     sceneObjects.push_back(new Line(xAxis));
 
@@ -77,6 +84,7 @@ void Scene::CreateDefaultScene()
     yAxis.material_ptr  = std::make_shared<Lambertian>(albedo);
     yAxis.thickness     = 0.001f;
     yAxis.isVisible     = true;
+    yAxis.inReflections = false;
     lines.push_back(yAxis);
     sceneObjects.push_back(new Line(yAxis));
 
@@ -88,6 +96,7 @@ void Scene::CreateDefaultScene()
     zAxis.material_ptr  = std::make_shared<Lambertian>(albedo);
     zAxis.thickness     = 0.001f;
     zAxis.isVisible     = true;
+    zAxis.inReflections = false;
     lines.push_back(zAxis);
     sceneObjects.push_back(new Line(zAxis));
 }
@@ -103,6 +112,7 @@ void Scene::CreateNewSphere()
     glm::vec3 albedo        = {0.8f, 0.8f, 0.8f};
     newSphere.material_ptr  = std::make_shared<Lambertian>(albedo);
     newSphere.isVisible     = true;
+    newSphere.inReflections = true;
 
     spheres.push_back(newSphere);
     sceneObjects.push_back(&spheres.back());

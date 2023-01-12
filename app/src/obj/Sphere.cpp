@@ -7,8 +7,9 @@
 #include "glm/gtc/type_ptr.hpp"
 
 
-Sphere::Sphere(std::string pName, glm::vec3 pPosition, std::shared_ptr<Material> pMaterial, bool pVisibility, float pRadius) :
-        Object(pName, pPosition, pMaterial, pVisibility), radius(pRadius) {}
+Sphere::Sphere(std::string pName, glm::vec3 pPosition, std::shared_ptr<Material> pMaterial,
+               bool pVisibility, bool pInReflections, float pRadius) :
+        Object(pName, pPosition, pMaterial, pVisibility, pInReflections), radius(pRadius) { }
 
 bool Sphere::intersect(const glm::vec3 &origin, const glm::vec3 &rayDirection, float &tNear) const
 {

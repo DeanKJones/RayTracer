@@ -10,7 +10,7 @@ public:
     ~Line() {};
 
     Line(std::string pName, glm::vec3 pPosition, std::shared_ptr<Material> pMaterial,
-         bool pVisibility, glm::vec3 pDestination, float pThickness);
+         bool pVisibility, bool pInReflections, glm::vec3 pDestination, float pThickness);
 
     bool intersect(const glm::vec3 &rayOrigin, const glm::vec3 &rayDirection, float &tNear) const override;
     void getUI() override;

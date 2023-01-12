@@ -10,8 +10,10 @@ public:
     Object() {};
     virtual ~Object() {};
 
-    Object(std::string pName, glm::vec3 pPosition, std::shared_ptr<Material> pMaterial, bool pVisibility) :
-            objectName(pName), position(pPosition), material_ptr(pMaterial), isVisible(pVisibility) {}
+    Object(std::string pName, glm::vec3 pPosition, std::shared_ptr<Material> pMaterial,
+           bool pVisibility, bool pInReflections) :
+                objectName(pName), position(pPosition), material_ptr(pMaterial),
+                isVisible(pVisibility), inReflections(pInReflections) {}
 
     virtual bool intersect(const glm::vec3 &, const glm::vec3 &, float &) const = 0;
     virtual void getUI() = 0;
@@ -25,4 +27,5 @@ public:
     glm::vec3 position;
     std::shared_ptr<Material> material_ptr;
     bool isVisible;
+    bool inReflections;
 };
