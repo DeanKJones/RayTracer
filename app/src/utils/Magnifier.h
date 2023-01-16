@@ -34,7 +34,9 @@ void MagnifingGlass(std::shared_ptr<Core::Image> image, ImVec2 cursorPos)
     ImGui::Image(image->GetDescriptorSet(), ImVec2(128, 128), uv0, uv1);
 
     // Here we can define different pixel data to write to the ui
-        // empty
+    ImGui::Text("Center: %f.1", fabs(center.x));
+    ImGui::SameLine();
+    ImGui::Text("Center: %f.1", fabs(center.y));
 
     ImGui::End();
     ImGui::PopStyleVar();
