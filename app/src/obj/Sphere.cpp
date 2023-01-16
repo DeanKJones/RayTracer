@@ -87,5 +87,6 @@ void Sphere::getUI()
 
     ImGui::DragFloat3(": Sphere position", glm::value_ptr(this->position), 0.1f);
     ImGui::Checkbox(": Sphere visibility", &this->isVisible);
+    ImGui::Checkbox(": Reflection Bounces", &this->inReflections);
     ImGui::DragFloat(": Sphere radius", &this->radius, 0.1f);
 }

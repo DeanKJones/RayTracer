@@ -84,5 +84,6 @@ void Line::getUI()
     ImGui::DragFloat3(": Line destination", glm::value_ptr(this->destination), 0.1f);
 
     ImGui::Checkbox(": Line visibility", &this->isVisible);
+    ImGui::Checkbox(": Reflection Bounces", &this->inReflections);
     ImGui::DragFloat(": Line thickness", &this->thickness, 0.0001f);
 }
