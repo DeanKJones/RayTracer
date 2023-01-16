@@ -6,11 +6,20 @@
 
 namespace Core {
 
+    std::function<void(int, int)> Input::callbackKeyPressed = {};
+
 	bool Input::IsKeyDown(KeyCode keycode)
 	{
 		GLFWwindow* windowHandle = Application::Get().GetWindowHandle();
 		int state = glfwGetKey(windowHandle, (int)keycode);
 		return state == GLFW_PRESS || state == GLFW_REPEAT;
+	}
+
+	bool Input::IsKeyPressed(KeyCode keycode)
+	{
+		GLFWwindow* windowHandle = Application::Get().GetWindowHandle();
+		int state = glfwGetKey(windowHandle, (int)keycode);
+		return state == GLFW_PRESS;
 	}
 
 	bool Input::IsMouseButtonDown(MouseButton button)
@@ -34,5 +43,20 @@ namespace Core {
 		GLFWwindow* windowHandle = Application::Get().GetWindowHandle();
 		glfwSetInputMode(windowHandle, GLFW_CURSOR, GLFW_CURSOR_NORMAL + (int)mode);
 	}
+
+    void Input::addMainCallback(GLFWwindow* window)
+    {
+        glfwSetKeyCallback(window, Input::onKeyPressedCallback);
+    }
+
+    void Input::onKeyPressedCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+    {
+        Input::callbackKeyPressed(key, action);
+    }
+
+    void Input::addKeyPressCallback(const std::function<void(int, int)> &callback)
+    {
+        Input::callbackKeyPressed = callback;
+    }
 
 }

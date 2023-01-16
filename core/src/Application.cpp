@@ -14,6 +14,8 @@
 #include <vulkan/vulkan.h>
 #include <glm/glm.hpp>
 
+#include "input/Input.h"
+
 #include <iostream>
 
 // Emedded font
@@ -414,6 +416,7 @@ namespace Core {
 
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		m_WindowHandle = glfwCreateWindow(m_Specification.Width, m_Specification.Height, m_Specification.Name.c_str(), NULL, NULL);
+        Input::addMainCallback(m_WindowHandle);
 
 		// Setup Vulkan
 		if (!glfwVulkanSupported())

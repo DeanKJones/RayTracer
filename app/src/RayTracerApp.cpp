@@ -19,11 +19,19 @@ using namespace Core;
 
 class RenderLayer : public Core::Layer
 {
+    void onKeyPressed(int key, int action){
+        if(key == GLFW_KEY_R && action == GLFW_PRESS)
+            m_Scene.RayPathToLine(m_Render, m_viewportWidth);
+    }
+
 public:
 	RenderLayer() // Scene definition
 		: m_Camera(45.0f, 0.1f, 100.0f)
 	{
         m_Scene.CreateDefaultScene();
+        Input::addKeyPressCallback([&](int key,int action){
+            onKeyPressed(key, action);
+        });
 	}
 
 	virtual void OnUpdate(float ts) override
