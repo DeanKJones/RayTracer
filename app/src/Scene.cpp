@@ -1,6 +1,13 @@
 
 #include "Scene.h"
 
+#include "Render.h"
+#include "imgui.h"
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include "imgui_internal.h"
+
+#include "sstream"
+
 void Scene::CreateDefaultScene()
 {
     Sphere sphere;
@@ -118,6 +125,55 @@ void Scene::CreateNewSphere()
     sceneObjects.push_back(&spheres.back());
 }
 
+void Scene::RayPathToLine(Renderer &pRender, uint32_t &viewportWidth)
+{
+    int rayToLineCount = 0;
+    std::shared_ptr<Core::Image> image = pRender.getFinalImage();
+
+    const ImVec2 cursor = ImGui::GetCurrentContext()->IO.MousePos;
+    const ImVec2 offset = ImGui::GetItemRectMin();
+
+    float width  = -(float)image->GetWidth();
+    auto height  =  (float)image->GetHeight();
+    auto size = ImVec2(viewportWidth, (viewportWidth * height) / width);
+
+    const ImVec2 center = (ImVec2(width, height) * (cursor - offset)) / size;
+
+    pRender.GetSettings().renderSinglePixel = true;
+    pRender.PerPixel(fabs(center.x), fabs(center.y));
+
+    std::cout << "Vector Size: " << rayToLine.size() << "\n";
+    for(int i = 0; i <= rayToLine.size(); i++)
+    {
+        std::cout << "Ray: " << rayToLine[i].Origin.x << ", "
+                             << rayToLine[i].Origin.y << ", "
+                             << rayToLine[i].Origin.z << "\n";
+
+        Line newLine;
+        newLine.position = rayToLine[i].Origin;
+        if ((i + 1) > rayToLine.size()) {
+            // Add final line
+        } else {
+            newLine.destination = rayToLine[i + 1].Origin;
+        }
+
+        std::ostringstream name;
+        name << "Ray_" << rayToLineCount + 1 << "_" << i;
+        newLine.objectName    = name.str();
+
+        newLine.thickness     = 0.001f;
+        newLine.isVisible     = true;
+        newLine.inReflections = false;
+        glm::vec3 albedo      = {1.0f, 1.0f, 1.0f};
+        newLine.material_ptr  = std::make_shared<Lambertian>(albedo);
+
+        //lines.push_back(newLine);
+        //sceneObjects.push_back(new Line(newLine));
+    }
+
+    pRender.GetSettings().renderSinglePixel = false;
+    rayToLine.clear();
+}
 
 void Scene::RemoveItem(int objectIndex)
 {

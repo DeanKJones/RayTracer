@@ -6,6 +6,9 @@
 
 #include <vector>
 
+class Ray;
+class Renderer;
+
 class Scene
 {
 public:
@@ -15,11 +18,15 @@ public:
     void CreateDefaultScene();
     void CreateNewSphere();
 
+    void RayPathToLine(Renderer &pRender, uint32_t &viewportWidth);
+
     void RemoveItem(int objectIndex);
     Object GetItem(int objectIndex);
 
 public:
     std::vector<Object *> sceneObjects;
+    mutable std::vector<Ray> rayToLine;
+
 private:
     std::vector<Sphere> spheres;
     std::vector<Line> lines;
