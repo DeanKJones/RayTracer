@@ -17,12 +17,14 @@ public:
     struct Settings
     {
         bool accumulate = true;
-        int  samples = 50;
-        int  bounceDepth = 5;
         bool doGI = true;
         bool renderEachFrame = false; // default false to avoid crash on start up
         bool renderNormals = false;
         bool renderFacingRatio = false;
+        bool renderSinglePixel = false;
+
+        int  samples = 35;
+        int  bounceDepth = 5;
         int  threadCount = 1;
     };
 
@@ -34,8 +36,11 @@ public:
 
     void ResetFrameIndex() { m_frameIndex = 1; }
 
-private:     // Rendering //
+    // Exposed for the magnified pixel to use
     Pixel PerPixel(uint32_t x, u_int32_t y);
+
+private:     // Rendering //
+
     Pixel RenderColor(Ray& ray, int depth);
 
     Payload TraceRay(const Ray& ray);
