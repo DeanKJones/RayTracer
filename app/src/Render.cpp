@@ -2,6 +2,9 @@
 
 #include <random>
 
+#include "algorithm"
+#include "../../core/external/libomp/include/omp.h"
+
 void Renderer::onResize(uint32_t width, uint32_t height)
 {
     if(m_FinalImage) {
@@ -42,23 +45,29 @@ void Renderer::Render(const Camera& camera, const Scene& scene)
 
 #define MT 0
 #if MT
-    std::for_each(m_ImageVerticalIter.begin(), m_ImageVerticalIter.end(),
+    std::for_each(std::execution::par, m_ImageVerticalIter.begin(), m_ImageVerticalIter.end(),
                   [this](uint32_t y)
     {
-        std::for_each(m_ImageHorizontalIter.begin(), m_ImageHorizontalIter.end(),
+        std::for_each(td::execution::par, m_ImageHorizontalIter.begin(), m_ImageHorizontalIter.end(),
                   [this, y](uint32_t x)
         {
-            glm::vec4 color = PerPixel(x, y);
-            m_accumulationData[x + y * m_FinalImage->GetWidth()] += color;
+            Pixel pixel = PerPixel(x, y);
+            m_accumulationData[x + y * m_FinalImage->GetWidth()] += pixel.RGBA;
 
-            glm::vec4 accumulatedColor = m_accumulationData[x + y * m_FinalImage->GetWidth()];
-            accumulatedColor /= (float)m_frameIndex;
-            accumulatedColor = glm::clamp(accumulatedColor,glm::vec4(0.0f), glm::vec4(1.0f));
+            Pixel accumulatedColor;
+            accumulatedColor.RGBA = m_accumulationData[x + y * m_FinalImage->GetWidth()];
+            accumulatedColor.RGBA /= (float)m_frameIndex;
+            accumulatedColor.RGBA = glm::clamp(accumulatedColor.RGBA, glm::vec4(0.0f), glm::vec4(1.0f));
 
             // Image Data Pixel Position
-            m_imageData[x + y * m_FinalImage->GetWidth()] = ConvertRGBA(accumulatedColor);
+            m_imageData[x + y * m_FinalImage->GetWidth()] = ConvertRGBA(accumulatedColor.RGBA);
         });
     });
+
+
+    //
+    // #pragma omp parallel for schedule(dynamic, 1)
+    //
 
 #else
 
@@ -101,7 +110,9 @@ Pixel Renderer::PerPixel(uint32_t x, uint32_t y)
     pixel.RGBA = {0.0f, 0.0f, 0.0f, 1.0f};
 
     // Scatter Rays
-    ray.Direction += Core::Random::Vec3(-0.0005f, 0.0005f);
+    ray.Direction += Core::Random::Vec3(-0.00005f, 0.00005f);
+    // Normalize Direction
+    glm::normalize(ray.Direction);
 
     int depth = m_settings.bounceDepth;
 
@@ -257,8 +268,8 @@ Payload Renderer::ClosestHit(const Ray& ray, float hitDistance, int objectIndex)
     {
         payload.hitPosition = ray.at(hitDistance);
         payload.materialPtr = object->getMaterialPtr();
-        payload.objectType  = "Line";
 
+        payload.objectType  = "Line";
         return payload;
     }
 }
