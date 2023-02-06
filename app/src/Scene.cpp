@@ -77,7 +77,7 @@ void Scene::CreateDefaultScene()
     xAxis.destination   = {1000, 0.0f, 0.0f};
     albedo              = {1.0f, 0.0f, 0.0f};
     xAxis.material_ptr  = std::make_shared<Lambertian>(albedo);
-    xAxis.thickness     = 0.001f;
+    xAxis.thickness     = 0.0015f;
     xAxis.isVisible     = true;
     xAxis.inReflections = false;
     lines.push_back(xAxis);
@@ -89,7 +89,7 @@ void Scene::CreateDefaultScene()
     yAxis.destination   = {0.0f, 1000, 0.0f};
     albedo              = {0.0f, 1.0f, 0.0f};
     yAxis.material_ptr  = std::make_shared<Lambertian>(albedo);
-    yAxis.thickness     = 0.001f;
+    yAxis.thickness     = 0.0015f;
     yAxis.isVisible     = true;
     yAxis.inReflections = false;
     lines.push_back(yAxis);
@@ -101,11 +101,23 @@ void Scene::CreateDefaultScene()
     zAxis.destination   = {0.0f, 0.0f, 1000};
     albedo              = {0.0f, 0.0f, 1.0f};
     zAxis.material_ptr  = std::make_shared<Lambertian>(albedo);
-    zAxis.thickness     = 0.001f;
+    zAxis.thickness     = 0.0015f;
     zAxis.isVisible     = true;
     zAxis.inReflections = false;
     lines.push_back(zAxis);
     sceneObjects.push_back(new Line(zAxis));
+
+    Line normal;
+    normal.objectName    = "normal";
+    normal.position      = {0.2f, 0.2f, 0.0f};
+    normal.destination   = {1.0f, 1.0f, 1.0f};
+    albedo               = {1.0f, 1.0f, 1.0f};
+    normal.material_ptr  = std::make_shared<Lambertian>(albedo);
+    normal.thickness     = 0.005f;
+    normal.isVisible     = true;
+    normal.inReflections = false;
+    lines.push_back(normal);
+    sceneObjects.push_back(new Line(normal));
 }
 
 
@@ -133,15 +145,16 @@ void Scene::RayPathToLine(Renderer &pRender, uint32_t &viewportWidth)
     const ImVec2 cursor = ImGui::GetCurrentContext()->IO.MousePos;
     const ImVec2 offset = ImGui::GetItemRectMin();
 
-    float width  = -(float)image->GetWidth();
+    auto width  = (float)image->GetWidth();
     auto height  =  (float)image->GetHeight();
     auto size = ImVec2(viewportWidth, (viewportWidth * height) / width);
 
     const ImVec2 center = (ImVec2(width, height) * (cursor - offset)) / size;
 
     pRender.GetSettings().renderSinglePixel = true;
-    pRender.PerPixel(fabs(center.x), fabs(center.y));
+    pRender.PerPixel(fabs(center.x), (fabs(center.y) - 108));
 
+    std::cout << "Pixel Coordinates: " << cursor.x << ", " << (cursor.y - 108) << "\n";
     std::cout << "Vector Size: " << rayToLine.size() << "\n";
     for(int i = 0; i <= rayToLine.size(); i++)
     {
@@ -167,8 +180,8 @@ void Scene::RayPathToLine(Renderer &pRender, uint32_t &viewportWidth)
         glm::vec3 albedo      = {1.0f, 1.0f, 1.0f};
         newLine.material_ptr  = std::make_shared<Lambertian>(albedo);
 
-        //lines.push_back(newLine);
-        //sceneObjects.push_back(new Line(newLine));
+        lines.push_back(newLine);
+        sceneObjects.push_back(new Line(newLine));
     }
 
     pRender.GetSettings().renderSinglePixel = false;

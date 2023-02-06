@@ -16,7 +16,7 @@ public:
     void getUI() override;
 
 private:
-    glm::vec3 GetLineDirection() const { return destination - position; }
+    glm::vec3 GetLineDirection() const { return glm::normalize(destination - position); }
 
 public:
     glm::vec3 destination;
