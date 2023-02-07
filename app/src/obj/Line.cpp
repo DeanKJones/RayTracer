@@ -66,6 +66,10 @@ bool Line::intersect(const glm::vec3 &rayOrigin, const glm::vec3 &rayDirection, 
 
         if (t2 > 0.0f) {
             if (t2 < glm::length(destination - position)) {
+                // Catch negative hit values
+                if (t1 <= 0.0f){
+                    return false;
+                }
                 tNear = t1;
                 if (dist == glm::length(RayPoint - LinePoint)) {
                     return true;
