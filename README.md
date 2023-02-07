@@ -18,7 +18,7 @@ Included in the project are the necessary submodules
 
 Run `git clone --recursive-submodules https://github.com/DeanKJones/RayTracer.git` to fetch the submodules when cloning the project
 
-In the `core/external/` subdirectory is the `vulkanSDK/include` files. This is because I haven't figured out how to include these without causing linker errors yet. You can delete them if they are not needed in your project folder. 
+In the `core/external/` subdirectory are the `vulkanSDK/include` files. This is because I haven't figured out how to include these without causing linker errors yet. You can delete them if they are not needed in your project folder. 
 
 ## Resources
 Using [Walnut](https://github.com/TheCherno/Walnut) as an application template. 
