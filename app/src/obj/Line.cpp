@@ -53,7 +53,7 @@ bool Line::intersect(const glm::vec3 &rayOrigin, const glm::vec3 &rayDirection, 
     if (n == vec3null) {
         return false;   // The two lines are parallel
     }
-    // Here we need to subtract two points on either line respectively. Using the origins of either line is a good start
+    // Here we need to subtract two points on either line.
     float dist = fabs(glm::dot(n, (rayOrigin - position))) / glm::length(n);
 
     if (dist < thickness && dist > 0.000001f) {
@@ -64,13 +64,8 @@ bool Line::intersect(const glm::vec3 &rayOrigin, const glm::vec3 &rayDirection, 
         glm::vec3 RayPoint  = rayOrigin + (t1 * rayDirection);
         glm::vec3 LinePoint = position + (t2 * lineDirection);
 
-
-#define LI 1
-#if LI
-
-        if (t2 > 0.0f){
-
-            if (t2 < glm::length(destination - position)){
+        if (t2 > 0.0f) {
+            if (t2 < glm::length(destination - position)) {
                 tNear = t1;
                 if (dist == glm::length(RayPoint - LinePoint)) {
                     return true;
@@ -83,14 +78,6 @@ bool Line::intersect(const glm::vec3 &rayOrigin, const glm::vec3 &rayDirection, 
         else {
             return false;
         }
-
-#else
-
-        tNear = t1;
-        if (dist == glm::length(RayPoint - LinePoint)) {
-            return true;
-        }
-#endif
     }
 }
 
