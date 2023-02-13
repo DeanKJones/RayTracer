@@ -110,7 +110,9 @@ Pixel Renderer::PerPixel(uint32_t x, uint32_t y)
     pixel.RGBA = {0.0f, 0.0f, 0.0f, 1.0f};
 
     // Scatter Rays
-    ray.Direction += Core::Random::Vec3(-0.00005f, 0.00005f);
+    if (!m_settings.renderSinglePixel){
+        ray.Direction += Core::Random::Vec3(-0.00005f, 0.00005f);
+    }
     // Normalize Direction
     glm::normalize(ray.Direction);
 
@@ -131,8 +133,8 @@ Pixel Renderer::RenderColor(Ray& ray, int depth)
     glm::vec3 RayHitColor(0.0f, 0.0f, 0.0f);
 
     if (depth <= 0){
+        // Get the last bounce of the ray
         if (m_settings.renderSinglePixel){
-            // Get the last bounce of the ray
             m_activeScene->rayToLine.push_back(ray);
         }
         pixel.RGB += RayHitColor;
@@ -149,6 +151,7 @@ Pixel Renderer::RenderColor(Ray& ray, int depth)
     if (m_settings.renderSinglePixel){
         m_activeScene->rayToLine.push_back(ray);
     }
+
     // Load the weapon and trace the ray
     Payload payload = TraceRay(ray);
 
@@ -182,17 +185,12 @@ Pixel Renderer::RenderColor(Ray& ray, int depth)
         {
             Pixel bounced = RenderColor(scatteredRay, depth - 1);
             pixel.RGB = (attenuation * bounced.RGB) * 0.75f;
-            if (m_settings.renderSinglePixel)
-            {
-                std::cout << "Ray Position: " << scatteredRay.Origin.x << ", "
-                                              << scatteredRay.Origin.y << ", "
-                                              << scatteredRay.Origin.z << "\n";
-            }
             return pixel;
         }
         return pixel;
     }
 
+    // Debug views
     if (m_settings.renderNormals){
         glm::vec3 colorNormals(payload.worldNormal * 0.5f + 0.5f);
         pixel.RGB = colorNormals;
@@ -260,8 +258,9 @@ Payload Renderer::ClosestHit(const Ray& ray, float hitDistance, int objectIndex)
 
         // Add sphere position back
         payload.hitPosition += object->position;
-        payload.objectType = "Sphere";
+        payload.objectType   = "Sphere";
 
+        ray.HitDistance = hitDistance;
         return payload;
     }
     else if (typeidName.find("Line") != std::string::npos)

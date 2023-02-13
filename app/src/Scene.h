@@ -30,4 +30,6 @@ public:
 private:
     std::vector<Sphere> spheres;
     std::vector<Line> lines;
+
+    int rayToLineCount = 0;
 };
