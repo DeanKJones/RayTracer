@@ -21,7 +21,7 @@ class RenderLayer : public Core::Layer
 {
     void onKeyPressed(int key, int action){
         if(key == GLFW_KEY_R && action == GLFW_PRESS)
-            m_Scene.RayPathToLine(m_Render, m_viewportWidth);
+            m_Scene.RayPathToLine(m_Render);
     }
 
 public:

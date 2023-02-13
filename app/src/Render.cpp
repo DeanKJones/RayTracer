@@ -162,6 +162,13 @@ Pixel Renderer::RenderColor(Ray& ray, int depth)
         float t = 0.5 * (unitVector.y + 1.0f);
         glm::vec3 SkyColor(((1.0f - t) * glm::vec3(1.0f, 1.0f, 1.0f)) + (t * glm::vec3(0.5f, 0.7f, 1.0f)));
 
+        // Catch the final ray for RayToLine
+        if (m_settings.renderSinglePixel)
+        {
+            ray.HitDistance   = payload.hitDistance;
+            m_activeScene->rayToLine.push_back(ray);
+        }
+
         pixel.RGB = SkyColor;
         return pixel;
     }
@@ -230,7 +237,7 @@ Payload Renderer::TraceRay(const Ray& ray)
         } 
     } 
     if (closest_T < 0){
-        return MissHit(ray);
+        return MissHit();
     }
     return ClosestHit(ray, hitDistance, closest_T);
 }
@@ -273,7 +280,7 @@ Payload Renderer::ClosestHit(const Ray& ray, float hitDistance, int objectIndex)
     }
 }
 
-Payload Renderer::MissHit(const Ray& ray)
+Payload Renderer::MissHit()
 {
     Payload payload;
 	payload.hitDistance = -1.0f;

@@ -45,7 +45,7 @@ private:     // Rendering //
 
     Payload TraceRay(const Ray& ray);
     Payload ClosestHit(const Ray& ray, float hitDistance, int objectIndex);
-    Payload MissHit(const Ray& ray);
+    Payload MissHit();
 
     uint32_t ConvertRGBA(glm::vec4 color);
 

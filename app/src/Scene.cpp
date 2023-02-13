@@ -125,7 +125,7 @@ void Scene::CreateNewSphere()
     sceneObjects.push_back(&spheres.back());
 }
 
-void Scene::RayPathToLine(Renderer &pRender, uint32_t &viewportWidth)
+void Scene::RayPathToLine(Renderer &pRender)
 {
     std::shared_ptr<Core::Image> image = pRender.getFinalImage();
 
@@ -153,18 +153,27 @@ void Scene::RayPathToLine(Renderer &pRender, uint32_t &viewportWidth)
 
         Line newLine;
         newLine.position = rayToLine[i].Origin;
-        if ((i + 1) > rayToLine.size()) {
-            Ray ray = rayToLine[i];
-            glm::vec3 FinalDest;
 
+        Ray ray = rayToLine[i];
+        glm::vec3 Destination;
+
+        if ((i + 1) > rayToLine.size())
+        {
             if (ray.HitDistance <= 0.0f) {
-                FinalDest = ray.Origin + (ray.Direction * 10.0f);
+                Destination = ray.Origin + (ray.Direction * 10.0f);
             } else {
-                FinalDest = ray.Origin + (ray.Direction * ray.HitDistance);
+                Destination = ray.Origin + (ray.Direction * ray.HitDistance);
             }
-            newLine.destination = FinalDest;
-        } else {
-            newLine.destination = rayToLine[i + 1].Origin;
+            newLine.destination = Destination;
+        }
+        else
+        {
+            if (ray.HitDistance <= 0.0f) {
+                Destination = ray.Origin + (ray.Direction * 10.0f);
+            } else {
+                Destination = rayToLine[i + 1].Origin;
+            }
+            newLine.destination = Destination;
         }
 
         std::ostringstream name;
@@ -182,8 +191,8 @@ void Scene::RayPathToLine(Renderer &pRender, uint32_t &viewportWidth)
     }
 
     pRender.GetSettings().renderSinglePixel = false;
-    rayToLineCount += 1;
     rayToLine.clear();
+    rayToLineCount += 1;
 }
 
 void Scene::RemoveItem(int objectIndex)

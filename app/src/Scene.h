@@ -18,7 +18,7 @@ public:
     void CreateDefaultScene();
     void CreateNewSphere();
 
-    void RayPathToLine(Renderer &pRender, uint32_t &viewportWidth);
+    void RayPathToLine(Renderer &pRender);
 
     void RemoveItem(int objectIndex);
     Object GetItem(int objectIndex);
