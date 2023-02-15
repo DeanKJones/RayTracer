@@ -45,8 +45,7 @@ bool Sphere::intersect(const glm::vec3 &origin, const glm::vec3 &rayDirection, f
 }
 
 
-bool Sphere::solveQuadratic(const float &a, const float &b, const float &c, float &t) const
-{
+bool Sphere::solveQuadratic(const float &a, const float &b, const float &c, float &t) const {
     // Quadratic
     /*  Quadratic Formula
     *         ___________
@@ -55,14 +54,17 @@ bool Sphere::solveQuadratic(const float &a, const float &b, const float &c, floa
     */
 
     float discriminant = (b * b) - (4.0f * a * c);
-    if (discriminant < 0.0f)
+    if (discriminant < 0.0f) {
         return false;
-    else
-        t = ((-b - glm::sqrt(discriminant)) / (2 * a));
+    }
 
-    // Unused
-    //tFar = ((-b + glm::sqrt(discriminant)) / (2 * a));
-
+    t = ((-b - glm::sqrt(discriminant)) / (2 * a));
+    if (t < 0 || std::numeric_limits<float>::infinity() < t) {
+        t = ((-b + glm::sqrt(discriminant)) / (2 * a));
+        if (t < 0 || std::numeric_limits<float>::infinity() < t) {
+            return false;
+        }
+    }
     return true;
 }
 
