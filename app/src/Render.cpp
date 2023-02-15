@@ -194,6 +194,7 @@ Pixel Renderer::RenderColor(Ray& ray, int depth)
             pixel.RGB = (attenuation * bounced.RGB) * 0.75f;
             return pixel;
         }
+        pixel.RGB = {0.0f, 0.0f, 0.0f};
         return pixel;
     }
 

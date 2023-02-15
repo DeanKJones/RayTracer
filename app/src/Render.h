@@ -16,16 +16,16 @@ class Renderer
 public:
     struct Settings
     {
-        bool accumulate = true;
-        bool doGI = true;
-        bool renderEachFrame = false; // default false to avoid crash on start up
-        bool renderNormals = false;
-        bool renderFacingRatio = false;
-        bool renderSinglePixel = false;
+        bool accumulate         = true;
+        bool doGI               = true;
+        bool renderEachFrame    = false; // default false to avoid crash on start up
+        bool renderNormals      = false;
+        bool renderFacingRatio  = false;
+        bool renderSinglePixel  = false;
 
-        int  samples = 35;
-        int  bounceDepth = 5;
-        int  threadCount = 1;
+        int  samples        = 35;
+        int  bounceDepth    = 5;
+        int  threadCount    = 1;
     };
 
 public:
