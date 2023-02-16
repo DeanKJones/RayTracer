@@ -12,7 +12,7 @@ Line::Line(std::string pName, glm::vec3 pPosition,
                   thickness(pThickness) { }
 
 
-bool Line::intersect(const glm::vec3 &rayOrigin, const glm::vec3 &rayDirection, float &tNear) const
+bool Line::intersect(const glm::vec3 &rayOrigin, const glm::vec3 &rayDirection, tHit &intersector) const
 {
     /*  Solving for the intersection between two lines
      *    This is solved by finding points along either line.
@@ -70,7 +70,7 @@ bool Line::intersect(const glm::vec3 &rayOrigin, const glm::vec3 &rayDirection, 
                 if (t1 <= 0.0f){
                     return false;
                 }
-                tNear = t1;
+                intersector.t_near = t1;
                 if (dist == glm::length(RayPoint - LinePoint)) {
                     return true;
                 }

@@ -11,7 +11,7 @@ Sphere::Sphere(std::string pName, glm::vec3 pPosition, std::shared_ptr<Material>
                bool pVisibility, bool pInReflections, float pRadius) :
         Object(pName, pPosition, pMaterial, pVisibility, pInReflections), radius(pRadius) { }
 
-bool Sphere::intersect(const glm::vec3 &origin, const glm::vec3 &rayDirection, float &tNear) const
+bool Sphere::intersect(const glm::vec3 &origin, const glm::vec3 &rayDirection, tHit &quadratic) const
 {
     // Preparing quadratic
     /* (bx^2 + bx^2)t^2 + (2(axbx + ayby))t + (ax^2 + ay^2 - r^2) = 0
@@ -22,7 +22,7 @@ bool Sphere::intersect(const glm::vec3 &origin, const glm::vec3 &rayDirection, f
     * t = Hit Distance
     */
 
-    float t;
+    tHit intersector;
     glm::vec3 sphereCenter = getObjectPosition();
     float radius = getSphereRadius();
 
@@ -32,12 +32,12 @@ bool Sphere::intersect(const glm::vec3 &origin, const glm::vec3 &rayDirection, f
     float b = 2.0f * glm::dot((diff), rayDirection);
     float c = glm::dot(diff, diff) - radius * radius;
 
-    if(solveQuadratic(a, b, c, t)) {
-        if (t <= 0){
+    if(solveQuadratic(a, b, c, intersector)) {
+        if (intersector.t_near <= 0){
             return false;
         }
         else {
-            tNear = t;
+            quadratic.t_near = intersector.t_near;
             return true;
         }
     }
@@ -45,7 +45,7 @@ bool Sphere::intersect(const glm::vec3 &origin, const glm::vec3 &rayDirection, f
 }
 
 
-bool Sphere::solveQuadratic(const float &a, const float &b, const float &c, float &t) const {
+bool Sphere::solveQuadratic(const float &a, const float &b, const float &c, tHit &quadratic) const {
     // Quadratic
     /*  Quadratic Formula
     *         ___________
@@ -58,10 +58,10 @@ bool Sphere::solveQuadratic(const float &a, const float &b, const float &c, floa
         return false;
     }
 
-    t = ((-b - glm::sqrt(discriminant)) / (2 * a));
-    if (t < 0 || std::numeric_limits<float>::infinity() < t) {
-        t = ((-b + glm::sqrt(discriminant)) / (2 * a));
-        if (t < 0 || std::numeric_limits<float>::infinity() < t) {
+    quadratic.t_near = ((-b - glm::sqrt(discriminant)) / (2 * a));
+    if (quadratic.t_near < 0 || std::numeric_limits<float>::infinity() < quadratic.t_near) {
+        quadratic.t_far = ((-b + glm::sqrt(discriminant)) / (2 * a));
+        if (quadratic.t_far < 0 || std::numeric_limits<float>::infinity() < quadratic.t_far) {
             return false;
         }
     }
