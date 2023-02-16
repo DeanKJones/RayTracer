@@ -20,7 +20,7 @@ void Scene::CreateDefaultScene()
         albedo = {0.0f, 0.0f, 0.9f};
         sphere.radius = {0.3};
         sphere.material_ptr = std::make_shared<Lambertian>(albedo);
-        sphere.isVisible = false;
+        sphere.isVisible = true;
         sphere.inReflections = true;
         spheres.push_back(sphere);
         sceneObjects.push_back(new Sphere(sphere));
@@ -29,11 +29,11 @@ void Scene::CreateDefaultScene()
     // Green Sphere
     {
         sphere.objectName = "Green Sphere";
-        sphere.position = {0.0f, 0.0f, 1.4f};
+        sphere.position = {-0.2f, 0.1f, 0.8f};
         albedo = {0.0f, 0.9f, 0.0f};
         sphere.radius = {0.1f};
         sphere.material_ptr = std::make_shared<Lambertian>(albedo);
-        sphere.isVisible = false;
+        sphere.isVisible = true;
         sphere.inReflections = true;
         spheres.push_back(sphere);
         sceneObjects.push_back(new Sphere(sphere));
@@ -45,9 +45,8 @@ void Scene::CreateDefaultScene()
         sphere.position = {-0.7f, 0.5f, -0.1f};
         albedo = {0.75f, 0.75f, 0.75f};
         sphere.radius = {0.7f};
-        //sphere.material_ptr  = std::make_shared<Metal>(albedo, 0.01f);
-        sphere.material_ptr = std::make_shared<Dielectric>(albedo, 1.52f);
-        sphere.isVisible = false;
+        sphere.material_ptr  = std::make_shared<Metal>(albedo, 0.01f);
+        sphere.isVisible = true;
         sphere.inReflections = true;
         spheres.push_back(sphere);
         sceneObjects.push_back(new Sphere(sphere));
@@ -60,7 +59,7 @@ void Scene::CreateDefaultScene()
         albedo = {0.9f, 0.91f, 0.12f};
         sphere.radius = {0.3f};
         sphere.material_ptr = std::make_shared<Metal>(albedo, 0.4f);
-        sphere.isVisible = false;
+        sphere.isVisible = true;
         sphere.inReflections = true;
         spheres.push_back(sphere);
         sceneObjects.push_back(new Sphere(sphere));
@@ -68,23 +67,10 @@ void Scene::CreateDefaultScene()
 
     // Glass Sphere Right
     {
-        sphere.objectName = "Glass Sphere L";
-        sphere.position = {0.4f, 0.5f, 0.2f};
-        albedo = {1.0f, 1.0f, 1.0f};
-        sphere.radius = {0.2f};
-        sphere.material_ptr = std::make_shared<Dielectric>(albedo, 1.52f);
-        sphere.isVisible = true;
-        sphere.inReflections = true;
-        spheres.push_back(sphere);
-        sceneObjects.push_back(new Sphere(sphere));
-    }
-
-    // Glass Sphere Left
-    {
         sphere.objectName = "Glass Sphere R";
-        sphere.position = {-0.55f, 0.5f, 0.2f};
+        sphere.position = {0.225f, 0.49f, 1.55f};
         albedo = {1.0f, 1.0f, 1.0f};
-        sphere.radius = {0.35f};
+        sphere.radius = {0.12f};
         sphere.material_ptr = std::make_shared<Dielectric>(albedo, 1.52f);
         sphere.isVisible = true;
         sphere.inReflections = true;
