@@ -25,7 +25,7 @@ void MagnifingGlass(std::shared_ptr<Core::Image> image, ImVec2 cursorPos)
     const ImVec2 uv0 = (center + ImVec2(16, 16)) / ImVec2(width, height);
     const ImVec2 uv1 = (center - ImVec2(16, 16)) / ImVec2(width, height);
 
-    // Create UI
+    // Create main magnifier window
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
     ImGui::SetNextWindowPos(cursorPos - ImVec2(-25, 128));
     ImGui::BeginTooltip();
