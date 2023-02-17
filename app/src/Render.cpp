@@ -1,4 +1,5 @@
 #include "Render.h"
+#include "imgui.h"
 
 #include <random>
 
@@ -134,9 +135,9 @@ Pixel Renderer::RenderColor(Ray& ray, int depth)
 
     if (depth <= 0){
         // Get the last bounce of the ray
-        if (m_settings.renderSinglePixel){
-            m_activeScene->rayToLine.push_back(ray);
-        }
+//        if (m_settings.renderSinglePixel){
+//            m_activeScene->rayToLine.push_back(ray);
+//        }
         pixel.RGB += RayHitColor;
         return pixel;
     }
@@ -147,13 +148,13 @@ Pixel Renderer::RenderColor(Ray& ray, int depth)
         ray.isFirstBounce = false;
     }
 
-    // Add ray to the start of the rayToLine vector
-    if (m_settings.renderSinglePixel){
-        m_activeScene->rayToLine.push_back(ray);
-    }
-
     // Load the weapon and trace the ray
     Payload payload = TraceRay(ray);
+
+    // Add ray to the start of the rayToLine vector
+    if (m_settings.renderSinglePixel) {
+        m_activeScene->rayToLine.push_back(ray);
+    }
 
     // No Hit -> Return Sky
     if (payload.hitDistance < 0){
@@ -163,8 +164,7 @@ Pixel Renderer::RenderColor(Ray& ray, int depth)
         glm::vec3 SkyColor(((1.0f - t) * glm::vec3(1.0f, 1.0f, 1.0f)) + (t * glm::vec3(0.5f, 0.7f, 1.0f)));
 
         // Catch the final ray for RayToLine
-        if (m_settings.renderSinglePixel)
-        {
+        if (m_settings.renderSinglePixel) {
             ray.HitDistance   = payload.hitDistance;
             m_activeScene->rayToLine.push_back(ray);
         }
@@ -308,4 +308,28 @@ uint32_t Renderer::ConvertRGBA(glm::vec4 color)
         ((uint8_t)(colorG * 255.0f) << 8)  |
         ((uint8_t)(colorR * 255.0f));
     return result;
+}
+
+void Renderer::GetUI()
+{
+    ImGui::Text("Turn on Light Bouncing: ");
+    ImGui::Checkbox(": GI", &GetSettings().doGI);
+
+    ImGui::Text("Accumulate samples over time: ");
+    ImGui::Checkbox(": Accumulate", &GetSettings().accumulate);
+
+    ImGui::Text("Use Lambert Hemisphere Model: ");
+    ImGui::Checkbox(": Scattering Type", (bool*)&Lambertian::lambertHemi);
+    ImGui::Separator();
+    ImGui::Checkbox(": Display Normals", &GetSettings().renderNormals);
+    ImGui::Checkbox(": Facing Ratio", &GetSettings().renderFacingRatio);
+
+    ImGui::Separator();
+
+    // Samples per pixel lock at 1, values below 1 will be ignored
+    ImGui::Text("Maximum number of samples: ");
+    ImGui::InputInt(": Samples", &GetSettings().samples);
+
+    ImGui::Text("Ray Bounce Depth: ");
+    ImGui::InputInt(": Ray Bounces", &GetSettings().bounceDepth);
 }

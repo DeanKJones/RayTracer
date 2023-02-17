@@ -10,7 +10,7 @@ bool objectGetter(void* data, int index, const char** output)
     return true;
 }
 
-void keyBinds()
+void keyBindsUI()
 {
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
     ImGui::Begin("Key Bindings");

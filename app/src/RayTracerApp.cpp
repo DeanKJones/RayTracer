@@ -61,34 +61,18 @@ public:
         if (ImGui::Button("Reset")) {
             m_Render.ResetFrameIndex();
         }
-
         ImGui::Separator();
 
-        ImGui::Text("Turn on Light Bouncing: ");
-        ImGui::Checkbox(": GI", &m_Render.GetSettings().doGI);
-
-        ImGui::Text("Accumulate samples over time: ");
-        ImGui::Checkbox(": Accumulate", &m_Render.GetSettings().accumulate);
-
-        ImGui::Text("Use Lambert Hemisphere Model: ");
-        ImGui::Checkbox(": Scattering Type", (bool*)&Lambertian::lambertHemi);
-        ImGui::Separator();
-        ImGui::Checkbox(": Display Normals", &m_Render.GetSettings().renderNormals);
-        ImGui::Checkbox(": Facing Ratio", &m_Render.GetSettings().renderFacingRatio);
-
-        ImGui::Separator();
-
-        // Samples per pixel lock at 1, values below 1 will be ignored
-        ImGui::Text("Maximum number of samples: ");
-        ImGui::InputInt(": Samples", &m_Render.GetSettings().samples);
-
-        ImGui::Text("Ray Bounce Depth: ");
-        ImGui::InputInt(": Ray Bounces", &m_Render.GetSettings().bounceDepth);
+        // Render settings
+        m_Render.GetUI();
 
 		ImGui::End();
 
-        // Camera
+        // Camera settings
         m_Camera.GetUI();
+
+        // Add UI to check key bindings in the editor
+        keyBindsUI();
 
 		// Scene //
 		ImGui::Begin("Scene");
@@ -143,9 +127,6 @@ public:
 		}
         ImGui::End();
 		ImGui::PopStyleVar();
-
-        // Add UI to check key bindings in the editor
-        keyBinds();
 	}
 
 	void RenderImage()

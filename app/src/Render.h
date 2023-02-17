@@ -70,4 +70,6 @@ public:    // Getter Functions //
     std::shared_ptr<Core::Image> getFinalImage() const { return m_FinalImage; }
     Settings& GetSettings() { return m_settings; }
     uint32_t GetFrameIndex() const { return m_frameIndex; }
+
+    void GetUI();
 };
