@@ -133,11 +133,7 @@ Pixel Renderer::RenderColor(Ray& ray, int depth)
     Pixel pixel;
     glm::vec3 RayHitColor(0.0f, 0.0f, 0.0f);
 
-    if (depth <= 0){
-        // Get the last bounce of the ray
-//        if (m_settings.renderSinglePixel){
-//            m_activeScene->rayToLine.push_back(ray);
-//        }
+    if (depth <= 0) {
         pixel.RGB += RayHitColor;
         return pixel;
     }
@@ -150,11 +146,6 @@ Pixel Renderer::RenderColor(Ray& ray, int depth)
 
     // Load the weapon and trace the ray
     Payload payload = TraceRay(ray);
-
-    // Add ray to the start of the rayToLine vector
-    if (m_settings.renderSinglePixel) {
-        m_activeScene->rayToLine.push_back(ray);
-    }
 
     // No Hit -> Return Sky
     if (payload.hitDistance < 0){
@@ -171,6 +162,12 @@ Pixel Renderer::RenderColor(Ray& ray, int depth)
 
         pixel.RGB = SkyColor;
         return pixel;
+    }
+
+    // Add Ray to vector
+    // Done here to avoid duplicate rays from being pushed back
+    if (m_settings.renderSinglePixel) {
+        m_activeScene->rayToLine.push_back(ray);
     }
 
     if (payload.objectType == "Line")
