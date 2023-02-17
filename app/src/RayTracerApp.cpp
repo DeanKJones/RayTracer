@@ -20,8 +20,12 @@ using namespace Core;
 class RenderLayer : public Core::Layer
 {
     void onKeyPressed(int key, int action){
-        if(key == GLFW_KEY_R && action == GLFW_PRESS)
+        if (key == GLFW_KEY_R && action == GLFW_PRESS) {
             m_Scene.RayPathToLine(m_Render);
+        }
+        if (key == GLFW_KEY_T && action == GLFW_PRESS) {
+            m_Scene.ClearRays();
+        }
     }
 
 public:

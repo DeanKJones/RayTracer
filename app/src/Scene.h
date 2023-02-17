@@ -21,6 +21,8 @@ public:
     void RayPathToLine(Renderer &pRender);
 
     void RemoveItem(int objectIndex);
+    void ClearRays();
+
     Object GetItem(int objectIndex);
 
 public:

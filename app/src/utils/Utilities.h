@@ -26,6 +26,9 @@ void keyBindsUI()
     ImGui::Text("Key press [ R ]: "
                      "\n    Trace a single ray into the scene and render its path");
     ImGui::Separator();
+    ImGui::Text("Key press [ T ]: "
+                     "\n    Remove all ray paths from the scene");
+    ImGui::Separator();
 
     ImGui::End();
     ImGui::PopStyleVar();

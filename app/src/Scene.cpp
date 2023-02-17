@@ -102,8 +102,8 @@ void Scene::CreateDefaultScene()
         xAxis.thickness = 0.0015f;
         xAxis.isVisible = true;
         xAxis.inReflections = false;
-        lines.push_back(xAxis);
-        sceneObjects.push_back(new Line(xAxis));
+        //lines.push_back(xAxis);
+        //sceneObjects.push_back(new Line(xAxis));
     }
 
     // yAxis Line
@@ -117,8 +117,8 @@ void Scene::CreateDefaultScene()
         yAxis.thickness = 0.0015f;
         yAxis.isVisible = true;
         yAxis.inReflections = false;
-        lines.push_back(yAxis);
-        sceneObjects.push_back(new Line(yAxis));
+        //lines.push_back(yAxis);
+        //sceneObjects.push_back(new Line(yAxis));
     }
 
     // zAxis Line
@@ -132,8 +132,8 @@ void Scene::CreateDefaultScene()
         zAxis.thickness = 0.0015f;
         zAxis.isVisible = true;
         zAxis.inReflections = false;
-        lines.push_back(zAxis);
-        sceneObjects.push_back(new Line(zAxis));
+        //lines.push_back(zAxis);
+        //sceneObjects.push_back(new Line(zAxis));
     }
 }
 
@@ -160,12 +160,12 @@ void Scene::RayPathToLine(Renderer &pRender)
 
     const ImVec2 cursor = ImGui::GetCurrentContext()->IO.MousePos;
     uint32_t cursorX = cursor.x;
-    uint32_t cursorY = (image->GetHeight() - (cursor.y - 108.0f));
+    uint32_t cursorY = (image->GetHeight() - (cursor.y - 87));
 
     pRender.GetSettings().renderSinglePixel = true;
     pRender.PerPixel(cursorX, cursorY);
 
-    for(int i = 0; i <= rayToLine.size(); i++)
+    for(int i = 0; i < rayToLine.size(); i++)
     {
 
 #define log 0
@@ -233,4 +233,20 @@ void Scene::RemoveItem(int objectIndex)
 Object Scene::GetItem(int objectIndex)
 {
     sceneObjects[objectIndex];
+}
+
+void Scene::ClearRays()
+{
+    for (Object* item : sceneObjects)
+    {
+        // Use an iterator and not an object index as the sceneObjects vector changes size after .erase()
+        auto iter = std::find_if(sceneObjects.begin(),
+                               sceneObjects.end(),
+                               [](Object *o)->bool {
+                                // Return true if "Ray" is found inside the objectName
+                                return o->objectName.find("Ray") != std::string::npos;
+                                });
+        if (iter != sceneObjects.end())
+            sceneObjects.erase(iter);
+    }
 }
