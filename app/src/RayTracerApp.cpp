@@ -141,8 +141,11 @@ public:
                 MagnifingGlass(image, cursor);
             }
 		}
-		ImGui::End();
+        ImGui::End();
 		ImGui::PopStyleVar();
+
+        // Add UI to check key bindings in the editor
+        keyBinds();
 	}
 
 	void RenderImage()

@@ -9,3 +9,24 @@ bool objectGetter(void* data, int index, const char** output)
 
     return true;
 }
+
+void keyBinds()
+{
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+    ImGui::Begin("Key Bindings");
+
+    ImGui::Text("Hold [ Spacebar ]: "
+                     "\n    [ W ][ A ][ S ][ D ] movement"
+                     "\n    [ Q ] travel down"
+                     "\n    [ E ] travel up");
+    ImGui::Separator();
+    ImGui::Text("Hold [ Left Shift ]: "
+                     "\n    Magnifying glass");
+    ImGui::Separator();
+    ImGui::Text("Key press [ R ]: "
+                     "\n    Trace a single ray into the scene and render its path");
+    ImGui::Separator();
+
+    ImGui::End();
+    ImGui::PopStyleVar();
+}
