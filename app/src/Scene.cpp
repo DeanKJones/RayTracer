@@ -65,9 +65,9 @@ void Scene::CreateDefaultScene()
         sceneObjects.push_back(new Sphere(sphere));
     }
 
-    // Glass Sphere Right
+    // Glass Sphere
     {
-        sphere.objectName = "Glass Sphere R";
+        sphere.objectName = "Glass Sphere";
         sphere.position = {0.225f, 0.49f, 1.55f};
         albedo = {1.0f, 1.0f, 1.0f};
         sphere.radius = {0.12f};

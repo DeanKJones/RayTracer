@@ -74,13 +74,13 @@ bool Dielectric::scatter(
 
     glm::vec3 incidentRay = glm::normalize(ray.Direction);
 
-    double cos_theta = fmin(glm::dot(incidentRay, payload.worldNormal), 1.0f);
+    double cos_theta = fmin(glm::dot(-incidentRay, payload.worldNormal), 1.0f);
     double sin_theta = glm::sqrt(1.0f - cos_theta * cos_theta);
     bool cannot_refract = eta * sin_theta > 1.0f;
 
     glm::vec3 direction;
 
-    if (cannot_refract || reflectance(cos_theta, eta) > random()) {
+    if (cannot_refract || reflectance(cos_theta, eta) > Core::Random::Float()) {
         direction = reflect(incidentRay, payload.worldNormal);
     } else {
         direction = refract(incidentRay, payload.worldNormal, eta);
@@ -93,11 +93,11 @@ bool Dielectric::scatter(
     return true;
 }
 
-glm::vec3 Dielectric::refract(const glm::vec3& uv, const glm::vec3& n, float etai_over_etat) const
+glm::vec3 Dielectric::refract(const glm::vec3& incident, const glm::vec3& n, float etai_over_etat) const
 {
-    float cos_theta = fmin(glm::dot(-uv, n), 1.0f);
+    float cos_theta = fmin(glm::dot(-incident, n), 1.0f);
 
-    glm::vec3 r_out_perp =  etai_over_etat * (uv + cos_theta * n);
+    glm::vec3 r_out_perp =  etai_over_etat * (incident + cos_theta * n);
     float r_o_p_lengthSq = (r_out_perp.x * r_out_perp.x) +
                            (r_out_perp.y * r_out_perp.y) +
                            (r_out_perp.z * r_out_perp.z);

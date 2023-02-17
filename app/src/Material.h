@@ -76,7 +76,7 @@ public:
             const Ray& ray, const Payload& payload, glm::vec3& colorAttenuation, Ray& scattered
             ) const override;
 
-    glm::vec3 refract(const glm::vec3& uv, const glm::vec3& n, float etai_over_etat) const;
+    glm::vec3 refract(const glm::vec3& incident, const glm::vec3& n, float etai_over_etat) const;
     void refract_2(const glm::vec3 &incident, const glm::vec3 &normal, float &ior, glm::vec3 &refracted) const;
     glm::vec3 refract_3(glm::vec3 i, glm::vec3 n, float eta, glm::vec3 outRay) const;
 
