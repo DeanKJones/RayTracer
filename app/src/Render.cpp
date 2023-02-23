@@ -221,7 +221,7 @@ Payload Renderer::TraceRay(const Ray& ray)
     {
         Object* object = m_activeScene->sceneObjects[i];
 
-        Object::tHit intersector = object->getIntersector();
+        tHit intersector = object->getIntersector();
         intersector.t_near = std::numeric_limits<float>::infinity();
         intersector.t_far  = std::numeric_limits<float>::infinity();
 
