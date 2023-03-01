@@ -12,6 +12,7 @@ file(
 	"${PROJECT_SOURCE_DIR}/src/*.h" "${PROJECT_SOURCE_DIR}/src/*.cpp"
 	"${PROJECT_SOURCE_DIR}/src/obj/*.h" "${PROJECT_SOURCE_DIR}/src/obj/*.cpp"
 	"${PROJECT_SOURCE_DIR}/src/utils/*.h" "${PROJECT_SOURCE_DIR}/src/utils/*.cpp"
+	"${PROJECT_SOURCE_DIR}/src/obj/bvh/*.h" "${PROJECT_SOURCE_DIR}/src/obj/bvh/*.cpp"
 )
 
 add_executable(RayTracingApp ${SRC})
