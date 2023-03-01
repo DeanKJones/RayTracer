@@ -1,7 +1,9 @@
 
 #include "Line.h"
-#include "imgui.h"
 #include "../Scene.h"
+#include "bvh/AABB.h"
+
+#include "imgui.h"
 #include "glm/gtc/type_ptr.hpp"
 
 Line::Line(std::string pName, glm::vec3 pPosition,
@@ -85,6 +87,20 @@ bool Line::intersect(const glm::vec3 &rayOrigin, const glm::vec3 &rayDirection, 
     }
 }
 
+/* TODO:
+ * Lines need to be input as a minimum position and maximum position
+ * for the Bounding Box to be built.
+ * Something different will have to be built here.
+ * */
+bool Line::intersectBB(AABB &outputBox) const
+{
+    AABB Origin(position - glm::vec3(thickness, thickness, thickness),
+                     position + glm::vec3(thickness, thickness, thickness));
+    AABB Destination(destination - glm::vec3(thickness, thickness, thickness),
+                     destination + glm::vec3(thickness, thickness, thickness));
+    outputBox = outputBox.surroundingBox(Origin, Destination);
+    return true;
+}
 
 void Line::getUI()
 {

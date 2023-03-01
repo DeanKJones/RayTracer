@@ -13,6 +13,8 @@ public:
          bool pVisibility, bool pInReflections, glm::vec3 pDestination, float pThickness);
 
     bool intersect(const glm::vec3 &rayOrigin, const glm::vec3 &rayDirection, tHit &intersector) const override;
+    bool intersectBB(AABB& outputBox) const override;
+
     void getUI() override;
 
 private:

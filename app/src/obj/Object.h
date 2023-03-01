@@ -1,18 +1,15 @@
 #pragma once
 
 #include "glm/glm.hpp"
+
+#include "Hit.h"
 #include "../Material.h"
+#include "bvh/AABB.h"
+
 #include <vector>
 
 class Object
 {
-public:
-    struct tHit
-    {
-        float t_near;
-        float t_far;
-    };
-
 public: 
     Object() {};
     virtual ~Object() {};
@@ -23,6 +20,8 @@ public:
                 isVisible(pVisibility), inReflections(pInReflections) {}
 
     virtual bool intersect(const glm::vec3 &, const glm::vec3 &, tHit &) const = 0;
+    virtual bool intersectBB(AABB& ) const = 0;
+
     virtual void getUI() = 0;
 
     // Getters

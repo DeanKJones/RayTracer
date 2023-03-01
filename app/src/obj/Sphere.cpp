@@ -44,6 +44,13 @@ bool Sphere::intersect(const glm::vec3 &origin, const glm::vec3 &rayDirection, t
     return false;
 }
 
+bool Sphere::intersectBB(AABB& outputBox) const
+{
+    outputBox = AABB((position - glm::vec3(radius, radius, radius)),
+                     (position + glm::vec3(radius, radius, radius)));
+    return true;
+}
+
 
 bool Sphere::solveQuadratic(const float &a, const float &b, const float &c, tHit &quadratic) const {
     // Quadratic
