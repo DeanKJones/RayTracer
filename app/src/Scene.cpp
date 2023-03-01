@@ -250,3 +250,31 @@ void Scene::ClearRays()
             sceneObjects.erase(iter);
     }
 }
+
+bool Scene::intersect(const Ray &ray, tHit &intersector, int &objectIndex) const
+{
+
+    for (size_t i = 0; i < sceneObjects.size(); i++)
+    {
+        Object* object = sceneObjects[i];
+
+        tHit objInter = object->getIntersector();
+        objInter.t_near = std::numeric_limits<float>::infinity();
+        objInter.t_far  = std::numeric_limits<float>::infinity();
+
+        if (!object->isVisible)
+            continue;
+
+        // Way of keeping our Line from rendering in reflections
+        if (!ray.isFirstBounce && !object->inReflections) {
+            continue;
+        }
+
+        if (object->intersect(ray.Origin, ray.Direction, objInter)
+            && objInter.t_near < intersector.t_near)
+        {
+            intersector.t_near = objInter.t_near;
+            objectIndex = (int)i;
+        }
+    }
+}

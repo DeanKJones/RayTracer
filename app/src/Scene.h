@@ -23,6 +23,8 @@ public:
     void RemoveItem(int objectIndex);
     void ClearRays();
 
+    bool intersect(const Ray &ray, tHit &intersector, int &objectIndex) const;
+
     Object GetItem(int objectIndex);
 
 public:

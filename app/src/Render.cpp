@@ -213,37 +213,18 @@ Pixel Renderer::RenderColor(Ray& ray, int depth)
 
 // Shader
 Payload Renderer::TraceRay(const Ray& ray)
-{   
+{
     int objectIndex = -1;
-    float hitDistance = std::numeric_limits<float>::max();
+    tHit intersector;
+    intersector.t_near = std::numeric_limits<float>::max();
 
-    for (size_t i = 0; i < m_activeScene->sceneObjects.size(); i++)
-    {
-        Object* object = m_activeScene->sceneObjects[i];
+    // Use the scene intersect function
+    m_activeScene->intersect(ray, intersector, objectIndex);
 
-        tHit intersector = object->getIntersector();
-        intersector.t_near = std::numeric_limits<float>::infinity();
-        intersector.t_far  = std::numeric_limits<float>::infinity();
-
-        if (!object->isVisible)
-            continue;
-
-        // Way of keeping our Line from rendering in reflections
-        if (!ray.isFirstBounce && !object->inReflections) {
-            continue;
-        }
-
-        if (object->intersect(ray.Origin, ray.Direction, intersector)
-                                     && intersector.t_near < hitDistance)
-        {
-            hitDistance = intersector.t_near;
-            objectIndex = (int)i;
-        } 
-    } 
     if (objectIndex < 0){
         return MissHit();
     }
-    return ClosestHit(ray, hitDistance, objectIndex);
+    return ClosestHit(ray, intersector.t_near, objectIndex);
 }
 
 
