@@ -16,6 +16,8 @@ struct Payload
         worldNormal = frontFace ? outwardNormal : -outwardNormal;
     }
 
+    float u, v;
+
     std::shared_ptr<Material> materialPtr;
     std::string objectType;
     int objectIndex;

@@ -7,7 +7,7 @@ class Sphere : public Object
 {
 public:
     Sphere() : Object() {};
-    ~Sphere() {};
+    ~Sphere() override = default;
 
     Sphere(std::string pName, glm::vec3 pPosition, std::shared_ptr<Material> pMaterial,
            bool pVisibility, bool pInReflections, float pRadius);
@@ -15,12 +15,12 @@ public:
     bool intersect(const glm::vec3 &origin, const glm::vec3 &rayDirection, tHit &quadratic) const override;
     bool intersectBB(AABB& outputBox) const override;
 
-    void getUI() override;
-
     bool solveQuadratic(const float &a, const float &b, const float &c, tHit &quadratic) const;
 
     // Getters
     float getSphereRadius() const { return radius; }
+    void getUV(const glm::vec3& p, float& u, float& v) override;
+    void getUI() override;
 
 public:
     float radius;

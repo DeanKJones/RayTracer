@@ -87,7 +87,7 @@ bool Line::intersect(const glm::vec3 &rayOrigin, const glm::vec3 &rayDirection, 
     }
 }
 
-/* TODO:
+/*
  * Lines need to be input as a minimum position and maximum position
  * for the Bounding Box to be built.
  * Something different will have to be built here.
@@ -109,7 +109,7 @@ void Line::getUI()
 
     ImGui::Separator();
 
-    ImGui::ColorEdit3(": Line color", glm::value_ptr(this->material_ptr->albedo));
+    //ImGui::ColorEdit3(": Line color", glm::value_ptr(this->material_ptr->albedo));
     ImGui::DragFloat3(": Line start", glm::value_ptr(this->position), 0.1f);
     ImGui::DragFloat3(": Line destination", glm::value_ptr(this->destination), 0.1f);
 

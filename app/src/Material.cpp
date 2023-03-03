@@ -35,7 +35,7 @@ bool Lambertian::scatter(
     scattered.Origin = payload.hitPosition + (payload.worldNormal * 0.00001f);
     scattered.Direction = scatterDirection;
 
-    colorAttenuation = albedo;
+    colorAttenuation = albedo->value(payload.u, payload.v, payload.hitPosition);
     return true;
 }
 
@@ -59,7 +59,7 @@ bool Metal::scatter(
 
     scattered.Origin = payload.hitPosition + (payload.worldNormal * 0.00001f);
     scattered.Direction = reflected;
-    colorAttenuation = albedo;
+    colorAttenuation = albedo->value(payload.u, payload.v, payload.hitPosition);
 
     return (glm::dot(scattered.Direction, payload.worldNormal) > 0);
 }
@@ -69,7 +69,7 @@ bool Metal::scatter(
 bool Dielectric::scatter(
     const Ray &ray, const Payload &payload, glm::vec3 &colorAttenuation, Ray &scattered) const
 {
-    colorAttenuation = albedo;
+    colorAttenuation = albedo->value(payload.u, payload.v, payload.hitPosition);
     float eta = payload.frontFace ? (1.0f / indexOfRefraction) : indexOfRefraction;
 
     glm::vec3 incidentRay = glm::normalize(ray.Direction);

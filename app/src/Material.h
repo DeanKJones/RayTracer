@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../core/src/Random.h"
-#include "glm/glm.hpp"
+#include "Texture.h"
 #include "Ray.h"
 
 struct Payload;
@@ -12,7 +12,8 @@ public:
     Material() = default;
     virtual ~Material() = default;
 
-    Material(glm::vec3 pAlbedo) : albedo(pAlbedo) {};
+    Material(glm::vec3 pAlbedo) : albedo(std::make_shared<SolidColor>(pAlbedo)) {};
+    Material(std::shared_ptr<Texture> pTexture) : albedo(pTexture) {};
 
     virtual bool scatter(
         const Ray& ray, const Payload& payload, glm::vec3& colorAttenuation, Ray& scattered
@@ -21,7 +22,7 @@ public:
     glm::vec3 reflect(const glm::vec3 &incident, const glm::vec3 &normal) const;
 
 public:
-    glm::vec3 albedo;
+    std::shared_ptr<Texture> albedo;
 };
 
 
@@ -32,6 +33,7 @@ public:
     ~Lambertian() override = default;
 
     Lambertian(const glm::vec3 &pColor) : Material(pColor) {}
+    Lambertian(std::shared_ptr<Texture> pTexture) : Material(pTexture) {}
     
     virtual bool scatter(
         const Ray& ray, const Payload& payload, glm::vec3& colorAttenuation, Ray& scattered

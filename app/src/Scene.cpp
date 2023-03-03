@@ -81,13 +81,14 @@ void Scene::CreateDefaultScene()
     // Ground Sphere
     {
         sphere.objectName    = "Ground";
-        sphere.position = {0.0f, -50.2f, 0.0f};
-        albedo = {0.9f, 0.81f, 0.73f};
-        sphere.radius = {50.0f};
-        sphere.material_ptr = std::make_shared<Lambertian>(albedo);
+        sphere.position = {0.0f, -75.2f, 0.0f};
+        sphere.radius = {75.0f};
+        std::shared_ptr<CheckerTexture> checker = std::make_shared<CheckerTexture>(glm::vec3(0.25f, 0.5f, 0.1f),
+                                                                                   glm::vec3(0.95f, 0.95f, 0.95f));
+        sphere.material_ptr = std::make_shared<Lambertian>(checker);
         sphere.isVisible = true;
         sphere.inReflections = true;
-        spheres.push_back(sphere);
+        //spheres.push_back(sphere);
         sceneObjects.push_back(new Sphere(sphere));
     }
 
@@ -135,8 +136,8 @@ void Scene::CreateDefaultScene()
         //lines.push_back(zAxis);
         //sceneObjects.push_back(new Line(zAxis));
     }
-}
 
+}
 
 void Scene::CreateNewSphere()
 {

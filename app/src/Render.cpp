@@ -174,7 +174,7 @@ Pixel Renderer::RenderColor(Ray& ray, int depth)
     {
         depth = 0;
 
-        RayHitColor = payload.materialPtr->albedo;
+        RayHitColor = payload.materialPtr->albedo->value(payload.u, payload.v, payload.hitPosition);
         pixel.RGB = RayHitColor;
         return pixel;
     }
@@ -205,7 +205,7 @@ Pixel Renderer::RenderColor(Ray& ray, int depth)
         pixel.RGB = FacingRatio;
     }
     else {
-        glm::vec3 colorAlbedo(payload.materialPtr->albedo);
+        glm::vec3 colorAlbedo(payload.materialPtr->albedo->value(payload.u, payload.v, payload.hitPosition));
         pixel.RGB = colorAlbedo;
     }
     return pixel;
@@ -247,6 +247,8 @@ Payload Renderer::ClosestHit(const Ray& ray, float hitDistance, int objectIndex)
         glm::vec3 origin = ray.Origin - object->position;
         payload.hitPosition = origin + ray.Direction * hitDistance;
         payload.materialPtr = object->getMaterialPtr();
+
+        object->getUV(outwardNormal, payload.u, payload.v);
 
         // Add sphere position back
         payload.hitPosition += object->position;

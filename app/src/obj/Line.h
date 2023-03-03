@@ -7,7 +7,7 @@ class Line : public Object
 {
 public:
     Line() : Object() {};
-    ~Line() {};
+    ~Line() override = default;
 
     Line(std::string pName, glm::vec3 pPosition, std::shared_ptr<Material> pMaterial,
          bool pVisibility, bool pInReflections, glm::vec3 pDestination, float pThickness);
@@ -16,6 +16,7 @@ public:
     bool intersectBB(AABB& outputBox) const override;
 
     void getUI() override;
+    void getUV(const glm::vec3& p, float& u, float& v) override {}
 
 private:
     glm::vec3 GetLineDirection() const { return glm::normalize(destination - position); }

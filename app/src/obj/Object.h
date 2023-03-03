@@ -11,8 +11,8 @@
 class Object
 {
 public: 
-    Object() {};
-    virtual ~Object() {};
+    Object() = default;
+    virtual ~Object() = default;
 
     Object(std::string pName, glm::vec3 pPosition, std::shared_ptr<Material> pMaterial,
            bool pVisibility, bool pInReflections) :
@@ -23,6 +23,7 @@ public:
     virtual bool intersectBB(AABB& ) const = 0;
 
     virtual void getUI() = 0;
+    virtual void getUV(const glm::vec3& , float& , float& ) = 0;
 
     // Getters
     glm::vec3 getObjectPosition() const { return position; }
