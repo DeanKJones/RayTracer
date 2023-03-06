@@ -10,149 +10,153 @@
 
 void Scene::CreateDefaultScene()
 {
-    Sphere sphere;
     glm::vec3 albedo;
 
     // Blue Sphere
     {
-        sphere.objectName = "Blue Sphere";
-        sphere.position = {0.3f, 0.3f, 0.2f};
+        std::shared_ptr<Sphere> sphere = std::make_shared<Sphere>();
+        sphere->objectName = "Blue Sphere";
+        sphere->position = {0.3f, 0.3f, 0.2f};
         albedo = {0.0f, 0.0f, 0.9f};
-        sphere.radius = {0.3};
-        sphere.material_ptr = std::make_shared<Lambertian>(albedo);
-        sphere.isVisible = true;
-        sphere.inReflections = true;
-        spheres.push_back(sphere);
-        sceneObjects.push_back(new Sphere(sphere));
+        sphere->radius = {0.3};
+        sphere->material_ptr = std::make_shared<Lambertian>(albedo);
+        sphere->isVisible = true;
+        sphere->inReflections = true;
+
+        AddToScene(sphere);
     }
 
     // Green Sphere
     {
-        sphere.objectName = "Green Sphere";
-        sphere.position = {-0.2f, 0.1f, 0.8f};
+        std::shared_ptr<Sphere> sphere = std::make_shared<Sphere>();
+        sphere->objectName = "Green Sphere";
+        sphere->position = {-0.2f, 0.1f, 0.8f};
         albedo = {0.0f, 0.9f, 0.0f};
-        sphere.radius = {0.1f};
-        sphere.material_ptr = std::make_shared<Lambertian>(albedo);
-        sphere.isVisible = true;
-        sphere.inReflections = true;
-        spheres.push_back(sphere);
-        sceneObjects.push_back(new Sphere(sphere));
+        sphere->radius = {0.1f};
+        sphere->material_ptr = std::make_shared<Lambertian>(albedo);
+        sphere->isVisible = true;
+        sphere->inReflections = true;
+
+        AddToScene(sphere);
     }
 
     // Large Metal Sphere
     {
-        sphere.objectName = "Big Metal Sphere";
-        sphere.position = {-0.7f, 0.5f, -0.1f};
+        std::shared_ptr<Sphere> sphere = std::make_shared<Sphere>();
+        sphere->objectName = "Big Metal Sphere";
+        sphere->position = {-0.7f, 0.5f, -0.1f};
         albedo = {0.75f, 0.75f, 0.75f};
-        sphere.radius = {0.7f};
-        sphere.material_ptr  = std::make_shared<Metal>(albedo, 0.01f);
-        sphere.isVisible = true;
-        sphere.inReflections = true;
-        spheres.push_back(sphere);
-        sceneObjects.push_back(new Sphere(sphere));
+        sphere->radius = {0.7f};
+        sphere->material_ptr  = std::make_shared<Metal>(albedo, 0.01f);
+        sphere->isVisible = true;
+        sphere->inReflections = true;
+
+        AddToScene(sphere);
     }
 
     // Metal Sphere Gold
     {
-        sphere.objectName = "Small Metal Sphere";
-        sphere.position = {0.6f, 0.1f, 0.8f};
+        std::shared_ptr<Sphere> sphere = std::make_shared<Sphere>();
+        sphere->objectName = "Small Metal Sphere";
+        sphere->position = {0.6f, 0.1f, 0.8f};
         albedo = {0.9f, 0.91f, 0.12f};
-        sphere.radius = {0.3f};
-        sphere.material_ptr = std::make_shared<Metal>(albedo, 0.4f);
-        sphere.isVisible = true;
-        sphere.inReflections = true;
-        spheres.push_back(sphere);
-        sceneObjects.push_back(new Sphere(sphere));
+        sphere->radius = {0.3f};
+        sphere->material_ptr = std::make_shared<Metal>(albedo, 0.4f);
+        sphere->isVisible = true;
+        sphere->inReflections = true;
+
+        AddToScene(sphere);
     }
 
     // Glass Sphere
     {
-        sphere.objectName = "Glass Sphere";
-        sphere.position = {0.225f, 0.49f, 1.55f};
+        std::shared_ptr<Sphere> sphere = std::make_shared<Sphere>();
+        sphere->objectName = "Glass Sphere";
+        sphere->position = {0.225f, 0.49f, 1.55f};
         albedo = {1.0f, 1.0f, 1.0f};
-        sphere.radius = {0.12f};
-        sphere.material_ptr = std::make_shared<Dielectric>(albedo, 1.52f);
-        sphere.isVisible = true;
-        sphere.inReflections = true;
-        spheres.push_back(sphere);
-        sceneObjects.push_back(new Sphere(sphere));
+        sphere->radius = {0.12f};
+        sphere->material_ptr = std::make_shared<Dielectric>(albedo, 1.52f);
+        sphere->isVisible = true;
+        sphere->inReflections = true;
+
+        AddToScene(sphere);
     }
 
     // Ground Sphere
     {
-        sphere.objectName    = "Ground";
-        sphere.position = {0.0f, -75.2f, 0.0f};
-        sphere.radius = {75.0f};
+        std::shared_ptr<Sphere> sphere = std::make_shared<Sphere>();
+        sphere->objectName    = "Ground";
+        sphere->position = {0.0f, -75.2f, 0.0f};
+        sphere->radius = {75.0f};
         std::shared_ptr<CheckerTexture> checker = std::make_shared<CheckerTexture>(glm::vec3(0.25f, 0.5f, 0.1f),
                                                                                    glm::vec3(0.95f, 0.95f, 0.95f));
-        sphere.material_ptr = std::make_shared<Lambertian>(checker);
-        sphere.isVisible = true;
-        sphere.inReflections = true;
-        //spheres.push_back(sphere);
-        sceneObjects.push_back(new Sphere(sphere));
+        sphere->material_ptr = std::make_shared<Lambertian>(checker);
+        sphere->isVisible = true;
+        sphere->inReflections = true;
+
+        AddToScene(sphere);
     }
 
     // xAxis Line
     {
-        Line xAxis;
-        xAxis.objectName = "xAxis";
-        xAxis.position = {-1000, 0.0f, 0.0f};
-        xAxis.destination = {1000, 0.0f, 0.0f};
+        std::shared_ptr<Line> xAxis = std::make_shared<Line>();
+        xAxis->objectName = "xAxis";
+        xAxis->position = {-1000, 0.0f, 0.0f};
+        xAxis->destination = {1000, 0.0f, 0.0f};
         albedo = {1.0f, 0.0f, 0.0f};
-        xAxis.material_ptr = std::make_shared<Lambertian>(albedo);
-        xAxis.thickness = 0.0015f;
-        xAxis.isVisible = true;
-        xAxis.inReflections = false;
-        //lines.push_back(xAxis);
-        //sceneObjects.push_back(new Line(xAxis));
+        xAxis->material_ptr = std::make_shared<Lambertian>(albedo);
+        xAxis->thickness = 0.0015f;
+        xAxis->isVisible = true;
+        xAxis->inReflections = false;
+
+        //AddToScene(xAxis);
     }
 
     // yAxis Line
     {
-        Line yAxis;
-        yAxis.objectName = "yAxis";
-        yAxis.position = {0.0f, -1000, 0.0f};
-        yAxis.destination = {0.0f, 1000, 0.0f};
+        std::shared_ptr<Line> yAxis = std::make_shared<Line>();
+        yAxis->objectName = "yAxis";
+        yAxis->position = {0.0f, -1000, 0.0f};
+        yAxis->destination = {0.0f, 1000, 0.0f};
         albedo = {0.0f, 1.0f, 0.0f};
-        yAxis.material_ptr = std::make_shared<Lambertian>(albedo);
-        yAxis.thickness = 0.0015f;
-        yAxis.isVisible = true;
-        yAxis.inReflections = false;
-        //lines.push_back(yAxis);
-        //sceneObjects.push_back(new Line(yAxis));
+        yAxis->material_ptr = std::make_shared<Lambertian>(albedo);
+        yAxis->thickness = 0.0015f;
+        yAxis->isVisible = true;
+        yAxis->inReflections = false;
+
+        //AddToScene(yAxis);
     }
 
     // zAxis Line
     {
-        Line zAxis;
-        zAxis.objectName = "zAxis";
-        zAxis.position = {0.0f, 0.0f, -1000};
-        zAxis.destination = {0.0f, 0.0f, 1000};
+        std::shared_ptr<Line> zAxis = std::make_shared<Line>();
+        zAxis->objectName = "zAxis";
+        zAxis->position = {0.0f, 0.0f, -1000};
+        zAxis->destination = {0.0f, 0.0f, 1000};
         albedo = {0.0f, 0.0f, 1.0f};
-        zAxis.material_ptr = std::make_shared<Lambertian>(albedo);
-        zAxis.thickness = 0.0015f;
-        zAxis.isVisible = true;
-        zAxis.inReflections = false;
-        //lines.push_back(zAxis);
-        //sceneObjects.push_back(new Line(zAxis));
+        zAxis->material_ptr = std::make_shared<Lambertian>(albedo);
+        zAxis->thickness = 0.0015f;
+        zAxis->isVisible = true;
+        zAxis->inReflections = false;
+
+        //AddToScene(zAxis);
     }
 
 }
 
 void Scene::CreateNewSphere()
 {
-    Sphere newSphere;
+    std::shared_ptr<Sphere> newSphere = std::make_shared<Sphere>();
     std::string name        = "New_Sphere";
-    newSphere.objectName    = name;
-    newSphere.position      = {0.0f, 0.0f, 0.0f};
-    newSphere.radius        = {0.5f};
+    newSphere->objectName    = name;
+    newSphere->position      = {0.0f, 0.0f, 0.0f};
+    newSphere->radius        = {0.5f};
     glm::vec3 albedo        = {0.8f, 0.8f, 0.8f};
-    newSphere.material_ptr  = std::make_shared<Lambertian>(albedo);
-    newSphere.isVisible     = true;
-    newSphere.inReflections = true;
+    newSphere->material_ptr  = std::make_shared<Lambertian>(albedo);
+    newSphere->isVisible     = true;
+    newSphere->inReflections = true;
 
-    spheres.push_back(newSphere);
-    sceneObjects.push_back(&spheres.back());
+    AddToScene(newSphere);
 }
 
 void Scene::RayPathToLine(Renderer &pRender)
@@ -181,8 +185,8 @@ void Scene::RayPathToLine(Renderer &pRender)
                              << rayToLine[i].Origin.z << "\n";
 #endif
 
-        Line newLine;
-        newLine.position = rayToLine[i].Origin;
+        std::shared_ptr<Line> newLine = std::make_shared<Line>();
+        newLine->position = rayToLine[i].Origin;
 
         Ray ray = rayToLine[i];
         glm::vec3 Destination;
@@ -194,7 +198,7 @@ void Scene::RayPathToLine(Renderer &pRender)
             } else {
                 Destination = ray.Origin + (ray.Direction * ray.HitDistance);
             }
-            newLine.destination = Destination;
+            newLine->destination = Destination;
         }
         else
         {
@@ -203,21 +207,20 @@ void Scene::RayPathToLine(Renderer &pRender)
             } else {
                 Destination = rayToLine[i + 1].Origin;
             }
-            newLine.destination = Destination;
+            newLine->destination = Destination;
         }
 
         std::ostringstream name;
         name << "Ray_" << rayToLineCount + 1 << "_B-" << i;
-        newLine.objectName    = name.str();
+        newLine->objectName    = name.str();
 
-        newLine.thickness     = 0.001f;
-        newLine.isVisible     = true;
-        newLine.inReflections = false;
+        newLine->thickness     = 0.001f;
+        newLine->isVisible     = true;
+        newLine->inReflections = false;
         glm::vec3 albedo      = {1.0f, 1.0f, 1.0f};
-        newLine.material_ptr  = std::make_shared<Lambertian>(albedo);
+        newLine->material_ptr  = std::make_shared<Lambertian>(albedo);
 
-        lines.push_back(newLine);
-        sceneObjects.push_back(new Line(newLine));
+        AddToScene(newLine);
     }
 
     pRender.GetSettings().renderSinglePixel = false;
@@ -225,7 +228,7 @@ void Scene::RayPathToLine(Renderer &pRender)
     rayToLineCount += 1;
 }
 
-void Scene::AddItem(Object* object)
+void Scene::AddToScene(std::shared_ptr<Object> object)
 {
     sceneObjects.push_back(object);
 }
@@ -243,12 +246,12 @@ Object Scene::GetItem(int objectIndex)
 
 void Scene::ClearRays()
 {
-    for (Object* item : sceneObjects)
+    for (std::shared_ptr<Object> item : sceneObjects)
     {
         // Use an iterator and not an object index as the sceneObjects vector changes size after .erase()
         auto iter = std::find_if(sceneObjects.begin(),
                                sceneObjects.end(),
-                               [](Object *o)->bool {
+                               [](std::shared_ptr<Object> o)->bool {
                                 // Return true if "Ray" is found inside the objectName
                                 return o->objectName.find("Ray") != std::string::npos;
                                 });
@@ -262,7 +265,7 @@ bool Scene::intersect(const Ray &ray, tHit &intersector, int &objectIndex) const
 
     for (size_t i = 0; i < sceneObjects.size(); i++)
     {
-        Object* object = sceneObjects[i];
+        std::shared_ptr<Object> object = sceneObjects[i];
 
         tHit objInter = object->getIntersector();
         objInter.t_near = std::numeric_limits<float>::infinity();

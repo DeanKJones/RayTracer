@@ -4,7 +4,7 @@
 // Listbox Object Getter
 bool objectGetter(void* data, int index, const char** output)
 {
-    Object** objects = (Object**)data;
+    auto objects = (std::shared_ptr<Object>*)data;
     *output = objects[index]->objectName.c_str();
 
     return true;

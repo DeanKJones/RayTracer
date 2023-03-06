@@ -234,14 +234,14 @@ Payload Renderer::ClosestHit(const Ray& ray, float hitDistance, int objectIndex)
     payload.hitDistance = hitDistance;
     payload.objectIndex = objectIndex;
 
-    Object* object = m_activeScene->sceneObjects[objectIndex];
+    std::shared_ptr<Object> object = m_activeScene->sceneObjects[objectIndex];
 
     std::string typeidName = typeid(*(object)).name();
 
     if (typeidName.find("Sphere") != std::string::npos)
     {
         payload.hitPosition = ray.at(hitDistance);
-        glm::vec3 outwardNormal = (payload.hitPosition - object->position) / reinterpret_cast<Sphere *>(object)->radius;
+        glm::vec3 outwardNormal = (payload.hitPosition - object->position) / std::reinterpret_pointer_cast<Sphere>(object)->radius;
         payload.setFaceNormal(ray.Direction, outwardNormal);
 
         glm::vec3 origin = ray.Origin - object->position;
