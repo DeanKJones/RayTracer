@@ -225,6 +225,11 @@ void Scene::RayPathToLine(Renderer &pRender)
     rayToLineCount += 1;
 }
 
+void Scene::AddItem(Object* object)
+{
+    sceneObjects.push_back(object);
+}
+
 void Scene::RemoveItem(int objectIndex)
 {
     sceneObjects.erase(sceneObjects.begin() + (objectIndex));
