@@ -6,6 +6,7 @@
 
 #include "Render.h"
 #include "Camera.h"
+#include "obj/bvh/BVH.h"
 
 #include "utils/Utilities.h"
 #include "utils/Magnifier.h"
@@ -33,6 +34,10 @@ public:
 		: m_Camera(45.0f, 0.1f, 100.0f)
 	{
         m_Scene.CreateDefaultScene();
+        // Create BVH
+        std::shared_ptr<BVH_Node> bvhNode = std::make_shared<BVH_Node>(m_Scene);
+        m_Scene.AddToScene(bvhNode);
+
         Input::addKeyPressCallback([&](int key,int action){
             onKeyPressed(key, action);
         });

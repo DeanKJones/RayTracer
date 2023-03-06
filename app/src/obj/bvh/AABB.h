@@ -1,0 +1,26 @@
+#ifndef RAYTRACING_AABB_H
+#define RAYTRACING_AABB_H
+
+#include "../Hit.h"
+#include "../../Ray.h"
+
+class AABB
+{
+public:
+    AABB() {}
+
+    AABB(const glm::vec3& a, const glm::vec3& b);
+    static AABB surroundingBox(AABB box_0, AABB box_1);
+
+    glm::vec3 min() const { return minimum; }
+    glm::vec3 max() const { return maximum; }
+
+    bool intersect(const Ray &ray, tHit& intersector) const;
+
+public:
+    glm::vec3 minimum;
+    glm::vec3 maximum;
+};
+
+
+#endif //RAYTRACING_AABB_H
