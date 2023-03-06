@@ -11,7 +11,7 @@ Sphere::Sphere(std::string pName, glm::vec3 pPosition, std::shared_ptr<Material>
                bool pVisibility, bool pInReflections, float pRadius) :
         Object(pName, pPosition, pMaterial, pVisibility, pInReflections), radius(pRadius) { }
 
-bool Sphere::intersect(const glm::vec3 &origin, const glm::vec3 &rayDirection, tHit &quadratic) const
+bool Sphere::intersect(const Ray &ray, tHit &quadratic) const
 {
     // Preparing quadratic
     /* (bx^2 + bx^2)t^2 + (2(axbx + ayby))t + (ax^2 + ay^2 - r^2) = 0
@@ -27,9 +27,9 @@ bool Sphere::intersect(const glm::vec3 &origin, const glm::vec3 &rayDirection, t
     float radius = getSphereRadius();
 
     // The sphere center is subtracted from the ray origin to allow for the sphere to move and get hit by rays
-    glm::vec3 diff = origin - sphereCenter;
-    float a = glm::dot(rayDirection, rayDirection);
-    float b = 2.0f * glm::dot((diff), rayDirection);
+    glm::vec3 diff = ray.Origin - sphereCenter;
+    float a = glm::dot(ray.Direction, ray.Direction);
+    float b = 2.0f * glm::dot((diff), ray.Direction);
     float c = glm::dot(diff, diff) - radius * radius;
 
     if(solveQuadratic(a, b, c, intersector)) {

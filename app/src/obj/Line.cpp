@@ -14,7 +14,7 @@ Line::Line(std::string pName, glm::vec3 pPosition,
                   thickness(pThickness) { }
 
 
-bool Line::intersect(const glm::vec3 &rayOrigin, const glm::vec3 &rayDirection, tHit &intersector) const
+bool Line::intersect(const Ray &ray, tHit &intersector) const
 {
     /*  Solving for the intersection between two lines
      *    This is solved by finding points along either line.
@@ -51,19 +51,19 @@ bool Line::intersect(const glm::vec3 &rayOrigin, const glm::vec3 &rayDirection, 
     glm::vec3 lineDirection = GetLineDirection();
     glm::vec3 vec3null(0,0,0);
 
-    glm::vec3 n = (glm::cross(rayDirection, lineDirection));
+    glm::vec3 n = (glm::cross(ray.Direction, lineDirection));
     if (n == vec3null) {
         return false;   // The two lines are parallel
     }
     // Here we need to subtract two points on either line.
-    float dist = fabs(glm::dot(n, (rayOrigin - position))) / glm::length(n);
+    float dist = fabs(glm::dot(n, (ray.Origin - position))) / glm::length(n);
 
     if (dist < thickness && dist > 0.000001f) {
 
-        float t1 = glm::dot(glm::cross(lineDirection, n), (position - rayOrigin)) / glm::dot(n, n);
-        float t2 = glm::dot(glm::cross(rayDirection, n), (position - rayOrigin)) / glm::dot(n, n);
+        float t1 = glm::dot(glm::cross(lineDirection, n), (position - ray.Origin)) / glm::dot(n, n);
+        float t2 = glm::dot(glm::cross(ray.Direction, n), (position - ray.Origin)) / glm::dot(n, n);
 
-        glm::vec3 RayPoint  = rayOrigin + (t1 * rayDirection);
+        glm::vec3 RayPoint  = ray.Origin + (t1 * ray.Direction);
         glm::vec3 LinePoint = position + (t2 * lineDirection);
 
         if (t2 > 0.0f) {

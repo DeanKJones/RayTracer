@@ -271,7 +271,7 @@ bool Scene::intersect(const Ray &ray, tHit &intersector, int &objectIndex) const
             continue;
         }
 
-        if (object->intersect(ray.Origin, ray.Direction, objInter)
+        if (object->intersect(ray, objInter)
             && objInter.t_near < intersector.t_near)
         {
             intersector.t_near = objInter.t_near;

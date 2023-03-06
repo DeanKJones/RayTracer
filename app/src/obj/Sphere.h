@@ -12,7 +12,7 @@ public:
     Sphere(std::string pName, glm::vec3 pPosition, std::shared_ptr<Material> pMaterial,
            bool pVisibility, bool pInReflections, float pRadius);
 
-    bool intersect(const glm::vec3 &origin, const glm::vec3 &rayDirection, tHit &quadratic) const override;
+    bool intersect(const Ray &ray, tHit &quadratic) const override;
     bool intersectBB(AABB& outputBox) const override;
 
     bool solveQuadratic(const float &a, const float &b, const float &c, tHit &quadratic) const;
