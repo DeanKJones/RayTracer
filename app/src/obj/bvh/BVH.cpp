@@ -77,7 +77,7 @@ bool BVH_Node::intersectBB(AABB &outputBox) const
     return true;
 }
 
-bool BVH_Node::boxCompare(const std::shared_ptr<Object> a, const std::shared_ptr<Object> b, int axis)
+bool BVH_Node::boxCompare(const std::shared_ptr<Object> &a, const std::shared_ptr<Object> &b, int axis)
 {
     AABB boxA;
     AABB boxB;

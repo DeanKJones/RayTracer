@@ -36,7 +36,7 @@ public:
         m_Scene.CreateDefaultScene();
         // Create BVH
         std::shared_ptr<BVH_Node> bvhNode = std::make_shared<BVH_Node>(m_Scene);
-        m_Scene.AddToScene(bvhNode);
+        m_SceneBVH.AddToScene(bvhNode);
 
         Input::addKeyPressCallback([&](int key,int action){
             onKeyPressed(key, action);
@@ -144,7 +144,7 @@ public:
 
 		m_Render.onResize(m_viewportWidth, m_viewportHeight);
 		m_Camera.OnResize(m_viewportWidth, m_viewportHeight);
-		m_Render.Render(m_Camera, m_Scene);
+		m_Render.Render(m_Camera, m_SceneBVH);
 
 		m_lastRenderTime = m_timer.ElapsedMillis();
 	}
@@ -153,6 +153,7 @@ private:
 	Renderer m_Render;
 	Camera m_Camera;
 	Scene m_Scene;
+    Scene m_SceneBVH;
 
 	float m_lastRenderTime = 0.0f;
 	uint32_t m_viewportWidth = 0, m_viewportHeight = 0;

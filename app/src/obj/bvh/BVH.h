@@ -29,11 +29,11 @@ private:
     std::vector<std::shared_ptr<Object>> m_BVHObjects;
 
 public:
-    static bool boxCompare(const std::shared_ptr<Object> a, const std::shared_ptr<Object> b, int axis);
+    static bool boxCompare(const std::shared_ptr<Object> &a, const std::shared_ptr<Object> &b, int axis);
 
-    static bool boxCompare_x (const std::shared_ptr<Object> a, const std::shared_ptr<Object> b) { return boxCompare(a, b, 0); }
-    static bool boxCompare_y (const std::shared_ptr<Object> a, const std::shared_ptr<Object> b) { return boxCompare(a, b, 1); }
-    static bool boxCompare_z (const std::shared_ptr<Object> a, const std::shared_ptr<Object> b) { return boxCompare(a, b, 2); }
+    static bool boxCompare_x (const std::shared_ptr<Object> &a, const std::shared_ptr<Object> &b) { return boxCompare(a, b, 0); }
+    static bool boxCompare_y (const std::shared_ptr<Object> &a, const std::shared_ptr<Object> &b) { return boxCompare(a, b, 1); }
+    static bool boxCompare_z (const std::shared_ptr<Object> &a, const std::shared_ptr<Object> &b) { return boxCompare(a, b, 2); }
 };
 
 #endif //RAYTRACING_BVH_H
