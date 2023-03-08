@@ -6,8 +6,6 @@
 #include "Scene.h"
 #include "Material.h"
 
-#include "Payload.h"
-
 #include <memory>
 #include <cstdlib>
 
@@ -44,7 +42,6 @@ private:     // Rendering //
     Pixel RenderColor(Ray& ray, int depth);
 
     Payload TraceRay(const Ray& ray);
-    Payload ClosestHit(const Ray& ray, float hitDistance, int objectIndex);
     Payload MissHit();
 
     uint32_t ConvertRGBA(glm::vec4 color);

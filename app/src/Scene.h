@@ -28,15 +28,11 @@ public:
     void Clear() { sceneObjects.clear(); }
     void ClearRays();
 
-    bool intersect(const Ray &ray, tHit &intersector, int &objectIndex) const;
-
-    Object GetItem(int objectIndex);
-
     // Virtual Declarations
-    bool intersect(const Ray &ray, tHit &intersector) const override {}
+    bool intersect(const Ray &ray, tHit &intersector, Payload &payload) const override;
     bool intersectBB(AABB& outputBox) const override {}
     void getUI() override {}
-    void getUV(const glm::vec3& p, float& u, float& v) override {}
+    void getUV(const glm::vec3& p, float& u, float& v) const override {}
 
 public:
     std::vector<std::shared_ptr<Object>> sceneObjects;

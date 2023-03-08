@@ -181,7 +181,8 @@ Pixel Renderer::RenderColor(Ray& ray, int depth)
 
     // Do GI check before rendering
     bool GI = m_settings.doGI;
-    if(GI){
+    if(GI)
+    {
         Ray scatteredRay;
         glm::vec3 attenuation;
 
@@ -214,56 +215,17 @@ Pixel Renderer::RenderColor(Ray& ray, int depth)
 // Shader
 Payload Renderer::TraceRay(const Ray& ray)
 {
-    int objectIndex = -1;
     tHit intersector;
-    intersector.t_near = std::numeric_limits<float>::max();
+    intersector.t_near = 0.00001f;
+    intersector.t_far  = std::numeric_limits<float>::infinity();
+
+    Payload payload;
 
     // Use the scene intersect function
-    m_activeScene->intersect(ray, intersector, objectIndex);
-
-    if (objectIndex < 0){
+    if (m_activeScene->intersect(ray, intersector, payload)){
+        return payload;
+    } else {
         return MissHit();
-    }
-    return ClosestHit(ray, intersector.t_near, objectIndex);
-}
-
-
-Payload Renderer::ClosestHit(const Ray& ray, float hitDistance, int objectIndex)
-{
-    Payload payload;
-    payload.hitDistance = hitDistance;
-    payload.objectIndex = objectIndex;
-
-    std::shared_ptr<Object> object = m_activeScene->sceneObjects[objectIndex];
-
-    std::string typeidName = typeid(*(object)).name();
-
-    if (typeidName.find("Sphere") != std::string::npos)
-    {
-        payload.hitPosition = ray.at(hitDistance);
-        glm::vec3 outwardNormal = (payload.hitPosition - object->position) / std::reinterpret_pointer_cast<Sphere>(object)->radius;
-        payload.setFaceNormal(ray.Direction, outwardNormal);
-
-        glm::vec3 origin = ray.Origin - object->position;
-        payload.hitPosition = origin + ray.Direction * hitDistance;
-        payload.materialPtr = object->getMaterialPtr();
-
-        object->getUV(outwardNormal, payload.u, payload.v);
-
-        // Add sphere position back
-        payload.hitPosition += object->position;
-        payload.objectType   = "Sphere";
-
-        ray.HitDistance = hitDistance;
-        return payload;
-    }
-    else if (typeidName.find("Line") != std::string::npos)
-    {
-        payload.hitPosition = ray.at(hitDistance);
-        payload.materialPtr = object->getMaterialPtr();
-
-        payload.objectType  = "Line";
-        return payload;
     }
 }
 

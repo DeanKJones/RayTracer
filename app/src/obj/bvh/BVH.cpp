@@ -53,20 +53,20 @@ BVH_Node::BVH_Node(const std::vector<std::shared_ptr<Object>>& sceneObjects, siz
     box = AABB::surroundingBox(boxLeft, boxRight);
 }
 
-bool BVH_Node::intersect(const Ray &ray, tHit &intersector) const
+bool BVH_Node::intersect(const Ray &ray, tHit &intersector, Payload &payload) const
 {
     if(!box.intersect(ray, intersector))
     {
         return false;
     }
 
-    bool hitLeft  = left->intersect(ray, intersector);
+    bool hitLeft  = left->intersect(ray, intersector, payload);
     // Possible bug here
     if (hitLeft)
     {
         intersector.t_far = intersector.t_near;
     }
-    bool hitRight = right->intersect(ray, intersector);
+    bool hitRight = right->intersect(ray, intersector, payload);
 
     return hitLeft || hitRight;
 }

@@ -12,11 +12,11 @@ public:
     Line(std::string pName, glm::vec3 pPosition, std::shared_ptr<Material> pMaterial,
          bool pVisibility, bool pInReflections, glm::vec3 pDestination, float pThickness);
 
-    bool intersect(const Ray &ray, tHit &intersector) const override;
+    bool intersect(const Ray &ray, tHit &intersector, Payload &payload) const override;
     bool intersectBB(AABB& outputBox) const override;
 
     void getUI() override;
-    void getUV(const glm::vec3& p, float& u, float& v) override {}
+    void getUV(const glm::vec3& p, float& u, float& v) const override {}
 
 private:
     glm::vec3 GetLineDirection() const { return glm::normalize(destination - position); }

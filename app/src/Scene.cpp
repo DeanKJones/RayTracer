@@ -109,7 +109,7 @@ void Scene::CreateDefaultScene()
         xAxis->isVisible = true;
         xAxis->inReflections = false;
 
-        //AddToScene(xAxis);
+        AddToScene(xAxis);
     }
 
     // yAxis Line
@@ -124,7 +124,7 @@ void Scene::CreateDefaultScene()
         yAxis->isVisible = true;
         yAxis->inReflections = false;
 
-        //AddToScene(yAxis);
+        AddToScene(yAxis);
     }
 
     // zAxis Line
@@ -139,7 +139,7 @@ void Scene::CreateDefaultScene()
         zAxis->isVisible = true;
         zAxis->inReflections = false;
 
-        //AddToScene(zAxis);
+        AddToScene(zAxis);
     }
 
 }
@@ -238,12 +238,6 @@ void Scene::RemoveItem(int objectIndex)
     sceneObjects.erase(sceneObjects.begin() + (objectIndex));
 }
 
-// Does Nothing
-Object Scene::GetItem(int objectIndex)
-{
-    sceneObjects[objectIndex];
-}
-
 void Scene::ClearRays()
 {
     for (std::shared_ptr<Object> item : sceneObjects)
@@ -260,30 +254,29 @@ void Scene::ClearRays()
     }
 }
 
-bool Scene::intersect(const Ray &ray, tHit &intersector, int &objectIndex) const
+bool Scene::intersect(const Ray &ray, tHit &intersector, Payload &payload) const
 {
+    Payload dummyPayload;
+    tHit currentClosest = intersector;
 
-    for (size_t i = 0; i < sceneObjects.size(); i++)
+    bool hitAnything = false;
+
+    for (const std::shared_ptr<Object>& object : sceneObjects)
     {
-        std::shared_ptr<Object> object = sceneObjects[i];
-
-        tHit objInter = object->getIntersector();
-        objInter.t_near = std::numeric_limits<float>::infinity();
-        objInter.t_far  = std::numeric_limits<float>::infinity();
-
-        if (!object->isVisible)
+        if (!object->isVisible) {
             continue;
-
+        }
         // Way of keeping our Line from rendering in reflections
         if (!ray.isFirstBounce && !object->inReflections) {
             continue;
         }
 
-        if (object->intersect(ray, objInter)
-            && objInter.t_near < intersector.t_near)
+        if (object->intersect(ray, currentClosest, dummyPayload))
         {
-            intersector.t_near = objInter.t_near;
-            objectIndex = (int)i;
+            hitAnything = true;
+            currentClosest.t_far = dummyPayload.hitDistance;
+            payload = dummyPayload;
         }
     }
+    return hitAnything;
 }

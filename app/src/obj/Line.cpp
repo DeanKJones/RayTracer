@@ -14,7 +14,7 @@ Line::Line(std::string pName, glm::vec3 pPosition,
                   thickness(pThickness) { }
 
 
-bool Line::intersect(const Ray &ray, tHit &intersector) const
+bool Line::intersect(const Ray &ray, tHit &intersector, Payload &payload) const
 {
     /*  Solving for the intersection between two lines
      *    This is solved by finding points along either line.
@@ -69,13 +69,19 @@ bool Line::intersect(const Ray &ray, tHit &intersector) const
         if (t2 > 0.0f) {
             if (t2 < glm::length(destination - position)) {
                 // Catch negative hit values
-                if (t1 <= 0.0f){
+                if (t1 <= 0.0f) {
                     return false;
                 }
-                intersector.t_near = t1;
-                if (dist == glm::length(RayPoint - LinePoint)) {
-                    return true;
+                if (t1 < intersector.t_near || intersector.t_far < t1) {
+                    return false;
                 }
+
+                payload.hitDistance = t1;
+                payload.hitPosition = ray.at(payload.hitDistance);
+                payload.materialPtr = getMaterialPtr();
+                payload.objectType  = "Line";
+
+                return true;
             }
             else {
                 return false;
@@ -85,13 +91,14 @@ bool Line::intersect(const Ray &ray, tHit &intersector) const
             return false;
         }
     }
+    return false;
 }
 
 /*
  * Lines need to be input as a minimum position and maximum position
  * for the Bounding Box to be built.
  * Something different will have to be built here.
- * */
+ */
 bool Line::intersectBB(AABB &outputBox) const
 {
     AABB Origin(position - glm::vec3(thickness, thickness, thickness),

@@ -1,6 +1,5 @@
 
 #include "Sphere.h"
-#include "../Payload.h"
 
 #include "imgui.h"
 #include "../Scene.h"
@@ -11,7 +10,7 @@ Sphere::Sphere(std::string pName, glm::vec3 pPosition, std::shared_ptr<Material>
                bool pVisibility, bool pInReflections, float pRadius) :
         Object(pName, pPosition, pMaterial, pVisibility, pInReflections), radius(pRadius) { }
 
-bool Sphere::intersect(const Ray &ray, tHit &quadratic) const
+bool Sphere::intersect(const Ray &ray, tHit &quadratic, Payload &payload) const
 {
     // Preparing quadratic
     /* (bx^2 + bx^2)t^2 + (2(axbx + ayby))t + (ax^2 + ay^2 - r^2) = 0
@@ -22,22 +21,34 @@ bool Sphere::intersect(const Ray &ray, tHit &quadratic) const
     * t = Hit Distance
     */
 
-    tHit intersector;
-    glm::vec3 sphereCenter = getObjectPosition();
-    float radius = getSphereRadius();
-
     // The sphere center is subtracted from the ray origin to allow for the sphere to move and get hit by rays
-    glm::vec3 diff = ray.Origin - sphereCenter;
+    glm::vec3 diff = ray.Origin - position;
     float a = glm::dot(ray.Direction, ray.Direction);
     float b = 2.0f * glm::dot((diff), ray.Direction);
     float c = glm::dot(diff, diff) - radius * radius;
 
-    if(solveQuadratic(a, b, c, intersector)) {
-        if (intersector.t_near <= 0){
+    if(solveQuadratic(a, b, c, quadratic)) {
+        if (quadratic.t_far <= 0){
             return false;
         }
         else {
-            quadratic.t_near = intersector.t_near;
+            payload.hitDistance = quadratic.t_far;
+
+            payload.hitPosition = ray.at(payload.hitDistance);
+            glm::vec3 outwardNormal = (payload.hitPosition - position) / radius;
+            payload.setFaceNormal(ray.Direction, outwardNormal);
+
+            glm::vec3 origin = ray.Origin - position;
+            payload.hitPosition = origin + ray.Direction * payload.hitDistance;
+            payload.materialPtr = getMaterialPtr();
+
+            getUV(outwardNormal, payload.u, payload.v);
+
+            // Add sphere position back
+            payload.hitPosition += position;
+            payload.objectType   = "Sphere";
+
+            ray.HitDistance = payload.hitDistance;
             return true;
         }
     }
@@ -65,17 +76,18 @@ bool Sphere::solveQuadratic(const float &a, const float &b, const float &c, tHit
         return false;
     }
 
-    quadratic.t_near = ((-b - glm::sqrt(discriminant)) / (2 * a));
-    if (quadratic.t_near < 0 || std::numeric_limits<float>::infinity() < quadratic.t_near) {
-        quadratic.t_far = ((-b + glm::sqrt(discriminant)) / (2 * a));
-        if (quadratic.t_far < 0 || std::numeric_limits<float>::infinity() < quadratic.t_far) {
+    float root = ((-b - glm::sqrt(discriminant)) / (2 * a));
+    if (root < quadratic.t_near || quadratic.t_far < root) {
+        root = ((-b + glm::sqrt(discriminant)) / (2 * a));
+        if (root < quadratic.t_near || quadratic.t_far < root) {
             return false;
         }
     }
+    quadratic.t_far = root;
     return true;
 }
 
-void Sphere::getUV(const glm::vec3& p, float& u, float& v)
+void Sphere::getUV(const glm::vec3& p, float& u, float& v) const
 {
     /*
     *  p: a given point on the sphere of radius one, centered at the origin.
