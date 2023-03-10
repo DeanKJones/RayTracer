@@ -15,7 +15,7 @@ public:
     BVH_Node(const std::vector<std::shared_ptr<Object>>& sceneObjects, size_t start, size_t end);
 
     bool intersect(const Ray &ray, tHit &intersector, Payload &payload) const override;
-    bool intersectBB(AABB& outputBox) const override;
+    bool boundingBox(AABB& outputBox) const override;
 
     void getUI() override {}
     void getUV(const glm::vec3& p, float& u, float& v) const override {}

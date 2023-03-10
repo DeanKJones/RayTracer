@@ -280,3 +280,22 @@ bool Scene::intersect(const Ray &ray, tHit &intersector, Payload &payload) const
     }
     return hitAnything;
 }
+
+bool Scene::boundingBox(AABB& outputBox) const
+{
+    if (sceneObjects.empty())
+        return false;
+
+    AABB tempBox;
+    bool firstBox = true;
+
+    for (const std::shared_ptr<Object>& object : sceneObjects)
+    {
+        if (!object->boundingBox(tempBox)) {
+            return false;
+        }
+        outputBox = firstBox ? tempBox : surroundingBox(outputBox, tempBox);
+        firstBox = false;
+    }
+    return true;
+}

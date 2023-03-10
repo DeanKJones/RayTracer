@@ -47,7 +47,7 @@ BVH_Node::BVH_Node(const std::vector<std::shared_ptr<Object>>& sceneObjects, siz
     AABB boxLeft;
     AABB boxRight;
 
-    if (!left->intersectBB(boxLeft) || !right->intersectBB(boxRight)){
+    if (!left->boundingBox(boxLeft) || !right->boundingBox(boxRight)){
         std::cerr << "No bounding box in BVH_Node constructor." << "\n";
     }
     box = AABB::surroundingBox(boxLeft, boxRight);
@@ -71,7 +71,7 @@ bool BVH_Node::intersect(const Ray &ray, tHit &intersector, Payload &payload) co
     return hitLeft || hitRight;
 }
 
-bool BVH_Node::intersectBB(AABB &outputBox) const
+bool BVH_Node::boundingBox(AABB &outputBox) const
 {
     outputBox = box;
     return true;
@@ -82,7 +82,7 @@ bool BVH_Node::boxCompare(const std::shared_ptr<Object> &a, const std::shared_pt
     AABB boxA;
     AABB boxB;
 
-    if (!a->intersectBB(boxA) || !b->intersectBB(boxB))
+    if (!a->boundingBox(boxA) || !b->boundingBox(boxB))
     {
         std::cerr << "No bounding box in BVH constructor." << "\n";
     }

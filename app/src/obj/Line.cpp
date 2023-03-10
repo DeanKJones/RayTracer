@@ -99,7 +99,7 @@ bool Line::intersect(const Ray &ray, tHit &intersector, Payload &payload) const
  * for the Bounding Box to be built.
  * Something different will have to be built here.
  */
-bool Line::intersectBB(AABB &outputBox) const
+bool Line::boundingBox(AABB &outputBox) const
 {
     AABB Origin(position - glm::vec3(thickness, thickness, thickness),
                      position + glm::vec3(thickness, thickness, thickness));

@@ -24,7 +24,7 @@ public:
                 isVisible(pVisibility), inReflections(pInReflections) {}
 
     virtual bool intersect(const Ray &, tHit &, Payload &) const = 0;
-    virtual bool intersectBB(AABB& ) const = 0;
+    virtual bool boundingBox(AABB& ) const = 0;
 
     virtual void getUI() = 0;
     virtual void getUV(const glm::vec3& , float& , float& ) const = 0;

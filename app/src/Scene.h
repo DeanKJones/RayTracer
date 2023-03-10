@@ -30,7 +30,7 @@ public:
 
     // Virtual Declarations
     bool intersect(const Ray &ray, tHit &intersector, Payload &payload) const override;
-    bool intersectBB(AABB& outputBox) const override {}
+    bool boundingBox(AABB& outputBox) const override;
     void getUI() override {}
     void getUV(const glm::vec3& p, float& u, float& v) const override {}
 
