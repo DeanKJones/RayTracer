@@ -217,7 +217,7 @@ Payload Renderer::TraceRay(const Ray& ray)
 {
     tHit intersector;
     intersector.t_near = 0.00001f;
-    intersector.t_far  = std::numeric_limits<float>::infinity();
+    intersector.t_far  = std::numeric_limits<float>::max();
 
     Payload payload;
 
