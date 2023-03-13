@@ -8,7 +8,12 @@
 
 Sphere::Sphere(std::string pName, glm::vec3 pPosition, std::shared_ptr<Material> pMaterial,
                bool pVisibility, bool pInReflections, float pRadius) :
-        Object(pName, pPosition, pMaterial, pVisibility, pInReflections), radius(pRadius) { }
+        Object(pName, pPosition, pMaterial, pVisibility, pInReflections), radius(pRadius)
+        {
+    // Initialize bounding box
+    glm::vec3 r = {radius, radius, radius};
+    box = AABB(position - r, position + r);
+        }
 
 bool Sphere::intersect(const Ray &ray, tHit &quadratic, Payload &payload) const
 {
@@ -55,11 +60,9 @@ bool Sphere::intersect(const Ray &ray, tHit &quadratic, Payload &payload) const
     return false;
 }
 
-bool Sphere::boundingBox(AABB& outputBox) const
+AABB Sphere::boundingBox() const
 {
-    outputBox = AABB((position - glm::vec3(radius, radius, radius)),
-                     (position + glm::vec3(radius, radius, radius)));
-    return true;
+    return box;
 }
 
 

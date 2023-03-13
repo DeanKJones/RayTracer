@@ -10,19 +10,20 @@ public:
     AABB() = default;
     virtual ~AABB() = default;
 
-    AABB(const glm::vec3& a, const glm::vec3& b) : minimum(a), maximum(b) {}
+    AABB(const tHit& ix, const tHit& iy, const tHit& iz) : x(ix), y(iy), z(iz) { }
+    AABB(const glm::vec3& a, const glm::vec3& b);
+    AABB(const AABB& box_0, const AABB& box_1);
 
-    glm::vec3 min() const { return minimum; }
-    glm::vec3 max() const { return maximum; }
+    const tHit& axis(int n) const {
+        if (n == 1) return y;
+        if (n == 2) return z;
+        return x;
+    }
 
     bool intersect(const Ray &ray, tHit& intersector) const;
 
 public:
-    glm::vec3 minimum;
-    glm::vec3 maximum;
+    tHit x, y, z;
 };
-
-AABB surroundingBox(AABB box_0, AABB box_1);
-
 
 #endif //RAYTRACING_AABB_H

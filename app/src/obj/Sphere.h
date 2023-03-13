@@ -13,7 +13,7 @@ public:
            bool pVisibility, bool pInReflections, float pRadius);
 
     bool intersect(const Ray &ray, tHit &quadratic, Payload &payload) const override;
-    bool boundingBox(AABB& outputBox) const override;
+    AABB boundingBox() const override;
 
     bool solveQuadratic(const float &a, const float &b, const float &c, tHit &quadratic) const;
 
@@ -23,6 +23,7 @@ public:
 
 public:
     float radius;
+    AABB box;
 };
 
 #endif //RAYTRACING_SPHERE_H

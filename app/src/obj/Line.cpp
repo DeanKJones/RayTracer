@@ -11,7 +11,14 @@ Line::Line(std::string pName, glm::vec3 pPosition,
            bool pVisibility, bool pInReflections, glm::vec3 pDestination, float pThickness)
                 : Object(pName, pPosition, pMaterial, pVisibility, pInReflections),
                   destination(pDestination),
-                  thickness(pThickness) { }
+                  thickness(pThickness)
+                  {
+    glm::vec3 thicc = {thickness, thickness, thickness};
+    AABB Origin(position - thicc,position + thicc);
+    AABB Destination(destination - thicc,destination + thicc);
+
+    box = AABB(Origin, Destination);
+                  }
 
 
 bool Line::intersect(const Ray &ray, tHit &intersector, Payload &payload) const
@@ -94,19 +101,10 @@ bool Line::intersect(const Ray &ray, tHit &intersector, Payload &payload) const
     return false;
 }
 
-/*
- * Lines need to be input as a minimum position and maximum position
- * for the Bounding Box to be built.
- * Something different will have to be built here.
- */
-bool Line::boundingBox(AABB &outputBox) const
+
+AABB Line::boundingBox() const
 {
-    AABB Origin(position - glm::vec3(thickness, thickness, thickness),
-                     position + glm::vec3(thickness, thickness, thickness));
-    AABB Destination(destination - glm::vec3(thickness, thickness, thickness),
-                     destination + glm::vec3(thickness, thickness, thickness));
-    outputBox = outputBox.surroundingBox(Origin, Destination);
-    return true;
+    return box;
 }
 
 void Line::getUI()

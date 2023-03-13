@@ -13,7 +13,7 @@ public:
          bool pVisibility, bool pInReflections, glm::vec3 pDestination, float pThickness);
 
     bool intersect(const Ray &ray, tHit &intersector, Payload &payload) const override;
-    bool boundingBox(AABB& outputBox) const override;
+    AABB boundingBox() const override;
 
     void getUI() override;
     void getUV(const glm::vec3& p, float& u, float& v) const override {}
@@ -24,6 +24,7 @@ private:
 public:
     glm::vec3 destination;
     float thickness;
+    AABB box;
 };
 
 #endif //RAYTRACING_LINE_H
