@@ -141,7 +141,7 @@ void Scene::CreateDefaultScene()
 
         //AddToScene(zAxis);
     }
-
+    //CreateRandomSpheres(20, -5.0f, 5.0f);
 }
 
 void Scene::CreateNewSphere()
@@ -157,6 +157,27 @@ void Scene::CreateNewSphere()
     newSphere->inReflections = true;
 
     AddToScene(newSphere);
+}
+
+void Scene::CreateRandomSpheres(int numberOfSpheres, float min, float max)
+{
+    for (int a = 0; a < numberOfSpheres; a++)
+    {
+        std::shared_ptr<Sphere> newSphere = std::make_shared<Sphere>();
+
+        std::string name = "RandSphere_";
+        name += a;
+
+        newSphere->objectName    = name;
+        newSphere->position      = Core::Random::Vec3(min, max);
+        newSphere->radius        = {0.2f};
+        auto albedo = glm::vec3(0.9f, 0.9f, 0.9f);
+        newSphere->material_ptr  = std::make_shared<Lambertian>(albedo);
+        newSphere->isVisible     = true;
+        newSphere->inReflections = true;
+
+        AddToScene(newSphere);
+    }
 }
 
 void Scene::RayPathToLine(Renderer &pRender)

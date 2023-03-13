@@ -19,6 +19,7 @@ public:
 
     void CreateDefaultScene();
     void CreateNewSphere();
+    void CreateRandomSpheres(int numberOfSpheres, float min, float max);
 
     void RayPathToLine(Renderer &pRender);
 
