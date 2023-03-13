@@ -144,7 +144,12 @@ public:
 
 		m_Render.onResize(m_viewportWidth, m_viewportHeight);
 		m_Camera.OnResize(m_viewportWidth, m_viewportHeight);
-		m_Render.Render(m_Camera, m_SceneBVH);
+#define BVH 1
+#if BVH
+        m_Render.Render(m_Camera, m_SceneBVH);
+#else
+        m_Render.Render(m_Camera, m_Scene);
+#endif
 
 		m_lastRenderTime = m_timer.ElapsedMillis();
 	}
