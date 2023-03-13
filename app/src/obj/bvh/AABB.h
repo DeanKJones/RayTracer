@@ -7,10 +7,10 @@
 class AABB
 {
 public:
-    AABB() {}
+    AABB() = default;
+    virtual ~AABB() = default;
 
-    AABB(const glm::vec3& a, const glm::vec3& b);
-    static AABB surroundingBox(AABB box_0, AABB box_1);
+    AABB(const glm::vec3& a, const glm::vec3& b) : minimum(a), maximum(b) {}
 
     glm::vec3 min() const { return minimum; }
     glm::vec3 max() const { return maximum; }
@@ -21,6 +21,8 @@ public:
     glm::vec3 minimum;
     glm::vec3 maximum;
 };
+
+AABB surroundingBox(AABB box_0, AABB box_1);
 
 
 #endif //RAYTRACING_AABB_H
