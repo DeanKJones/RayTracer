@@ -10,7 +10,7 @@ class BVH_Node : public Object
 public:
     BVH_Node();
 
-    BVH_Node(const Scene& scene);
+    BVH_Node(const Scene& scene) : BVH_Node(scene.sceneObjects, 0, scene.sceneObjects.size()) { }
 
     BVH_Node(const std::vector<std::shared_ptr<Object>>& sceneObjects, size_t start, size_t end);
 

@@ -3,11 +3,6 @@
 #include <iostream>
 #include "algorithm"
 
-BVH_Node::BVH_Node(const Scene& scene)
-{
-    BVH_Node(scene.sceneObjects, 0, scene.sceneObjects.size());
-}
-
 BVH_Node::BVH_Node(const std::vector<std::shared_ptr<Object>>& sceneObjects, size_t start, size_t end)
 {
     m_BVHObjects = std::vector<std::shared_ptr<Object>>(sceneObjects);
@@ -35,6 +30,11 @@ BVH_Node::BVH_Node(const std::vector<std::shared_ptr<Object>>& sceneObjects, siz
             right = m_BVHObjects[start];
         }
     }
+    else if (objectSpan == 3)
+    {
+        left = std::make_shared<BVH_Node>(m_BVHObjects, start, start + 2);
+        right = m_BVHObjects[start + 2];
+    }
     else
     {
         std::sort(m_BVHObjects.begin() + start, m_BVHObjects.begin() + end, comparator);
@@ -50,7 +50,7 @@ BVH_Node::BVH_Node(const std::vector<std::shared_ptr<Object>>& sceneObjects, siz
     if (!left->boundingBox(boxLeft) || !right->boundingBox(boxRight)){
         std::cerr << "No bounding box in BVH_Node constructor." << "\n";
     }
-    box = AABB::surroundingBox(boxLeft, boxRight);
+    box = surroundingBox(boxLeft, boxRight);
 }
 
 bool BVH_Node::intersect(const Ray &ray, tHit &intersector, Payload &payload) const
@@ -64,7 +64,7 @@ bool BVH_Node::intersect(const Ray &ray, tHit &intersector, Payload &payload) co
     // Possible bug here
     if (hitLeft)
     {
-        intersector.t_far = intersector.t_near;
+        intersector.t_far = payload.hitDistance;
     }
     bool hitRight = right->intersect(ray, intersector, payload);
 

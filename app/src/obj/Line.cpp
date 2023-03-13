@@ -105,7 +105,7 @@ bool Line::boundingBox(AABB &outputBox) const
                      position + glm::vec3(thickness, thickness, thickness));
     AABB Destination(destination - glm::vec3(thickness, thickness, thickness),
                      destination + glm::vec3(thickness, thickness, thickness));
-    outputBox = outputBox.surroundingBox(Origin, Destination);
+    outputBox = surroundingBox(Origin, Destination);
     return true;
 }
 

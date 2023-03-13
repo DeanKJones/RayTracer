@@ -109,7 +109,7 @@ void Scene::CreateDefaultScene()
         xAxis->isVisible = true;
         xAxis->inReflections = false;
 
-        AddToScene(xAxis);
+       //AddToScene(xAxis);
     }
 
     // yAxis Line
@@ -124,7 +124,7 @@ void Scene::CreateDefaultScene()
         yAxis->isVisible = true;
         yAxis->inReflections = false;
 
-        AddToScene(yAxis);
+        //AddToScene(yAxis);
     }
 
     // zAxis Line
@@ -139,7 +139,7 @@ void Scene::CreateDefaultScene()
         zAxis->isVisible = true;
         zAxis->inReflections = false;
 
-        AddToScene(zAxis);
+        //AddToScene(zAxis);
     }
 
 }
