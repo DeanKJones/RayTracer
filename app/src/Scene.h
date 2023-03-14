@@ -22,6 +22,7 @@ public:
     void CreateRandomSpheres(int numberOfSpheres, float min, float max);
 
     void RayPathToLine(Renderer &pRender);
+    void BuildBVHView(const AABB &box);
 
     void AddToScene(std::shared_ptr<Object> object);
     void RemoveItem(int objectIndex);

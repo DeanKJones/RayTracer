@@ -239,6 +239,212 @@ void Scene::RayPathToLine(Renderer &pRender)
     rayToLineCount += 1;
 }
 
+void Scene::BuildBVHView(const AABB &box)
+{
+    glm::vec3 min = box.min();
+    glm::vec3 max = box.max();
+
+    // Define the eight corners
+    glm::vec3 a = {max.x, max.y, min.z};
+    glm::vec3 b = {max.x, max.y, max.z};
+    glm::vec3 c = {max.x, min.y, max.z};
+    glm::vec3 d = {max.x, min.y, min.z};
+    glm::vec3 e = {min.x, min.y, max.z};
+    glm::vec3 f = {min.x, min.y, min.z};
+    glm::vec3 g = {min.x, max.y, max.z};
+    glm::vec3 h = {min.x, max.y, min.z};
+
+    // Create all lines for the box
+    // AB
+    {
+        std::shared_ptr<Line> newLine = std::make_shared<Line>();
+
+        newLine->thickness      = 0.001f;
+        newLine->isVisible      = true;
+        newLine->inReflections  = false;
+        glm::vec3 albedo        = {1.0f, 1.0f, 1.0f};
+        newLine->material_ptr   = std::make_shared<Lambertian>(albedo);
+
+        newLine->objectName  = "AB";
+        newLine->position    = a;
+        newLine->destination = b;
+
+        AddToScene(newLine);
+    }
+    // AD
+    {
+        std::shared_ptr<Line> newLine = std::make_shared<Line>();
+
+        newLine->thickness      = 0.001f;
+        newLine->isVisible      = true;
+        newLine->inReflections  = false;
+        glm::vec3 albedo        = {1.0f, 1.0f, 1.0f};
+        newLine->material_ptr   = std::make_shared<Lambertian>(albedo);
+
+        newLine->objectName  = "AD";
+        newLine->position    = a;
+        newLine->destination = d;
+
+        AddToScene(newLine);
+    }
+    // BC
+    {
+        std::shared_ptr<Line> newLine = std::make_shared<Line>();
+
+        newLine->thickness      = 0.001f;
+        newLine->isVisible      = true;
+        newLine->inReflections  = false;
+        glm::vec3 albedo        = {1.0f, 1.0f, 1.0f};
+        newLine->material_ptr   = std::make_shared<Lambertian>(albedo);
+
+        newLine->objectName  = "BC";
+        newLine->position    = b;
+        newLine->destination = c;
+
+        AddToScene(newLine);
+    }
+    // AH
+    {
+        std::shared_ptr<Line> newLine = std::make_shared<Line>();
+
+        newLine->thickness      = 0.001f;
+        newLine->isVisible      = true;
+        newLine->inReflections  = false;
+        glm::vec3 albedo        = {1.0f, 1.0f, 1.0f};
+        newLine->material_ptr   = std::make_shared<Lambertian>(albedo);
+
+        newLine->objectName  = "AH";
+        newLine->position    = a;
+        newLine->destination = h;
+
+        AddToScene(newLine);
+    }
+    // CE
+    {
+        std::shared_ptr<Line> newLine = std::make_shared<Line>();
+
+        newLine->thickness      = 0.001f;
+        newLine->isVisible      = true;
+        newLine->inReflections  = false;
+        glm::vec3 albedo        = {1.0f, 1.0f, 1.0f};
+        newLine->material_ptr   = std::make_shared<Lambertian>(albedo);
+
+        newLine->objectName  = "CE";
+        newLine->position    = c;
+        newLine->destination = e;
+
+        AddToScene(newLine);
+    }
+    // HG
+    {
+        std::shared_ptr<Line> newLine = std::make_shared<Line>();
+
+        newLine->thickness      = 0.001f;
+        newLine->isVisible      = true;
+        newLine->inReflections  = false;
+        glm::vec3 albedo        = {1.0f, 1.0f, 1.0f};
+        newLine->material_ptr   = std::make_shared<Lambertian>(albedo);
+
+        newLine->objectName  = "HG";
+        newLine->position    = h;
+        newLine->destination = g;
+
+        AddToScene(newLine);
+    }
+    // BG
+    {
+        std::shared_ptr<Line> newLine = std::make_shared<Line>();
+
+        newLine->thickness      = 0.001f;
+        newLine->isVisible      = true;
+        newLine->inReflections  = false;
+        glm::vec3 albedo        = {1.0f, 1.0f, 1.0f};
+        newLine->material_ptr   = std::make_shared<Lambertian>(albedo);
+
+        newLine->objectName  = "BG";
+        newLine->position    = b;
+        newLine->destination = g;
+
+        AddToScene(newLine);
+    }
+    // HF
+    {
+        std::shared_ptr<Line> newLine = std::make_shared<Line>();
+
+        newLine->thickness      = 0.001f;
+        newLine->isVisible      = true;
+        newLine->inReflections  = false;
+        glm::vec3 albedo        = {1.0f, 1.0f, 1.0f};
+        newLine->material_ptr   = std::make_shared<Lambertian>(albedo);
+
+        newLine->objectName  = "HF";
+        newLine->position    = h;
+        newLine->destination = f;
+
+        AddToScene(newLine);
+    }
+    // FE
+    {std::shared_ptr<Line> newLine = std::make_shared<Line>();
+
+        newLine->thickness      = 0.001f;
+        newLine->isVisible      = true;
+        newLine->inReflections  = false;
+        glm::vec3 albedo        = {1.0f, 1.0f, 1.0f};
+        newLine->material_ptr   = std::make_shared<Lambertian>(albedo);
+
+        newLine->objectName  = "FE";
+        newLine->position    = f;
+        newLine->destination = e;
+
+        AddToScene(newLine);
+    }
+    // FD
+    {std::shared_ptr<Line> newLine = std::make_shared<Line>();
+
+        newLine->thickness      = 0.001f;
+        newLine->isVisible      = true;
+        newLine->inReflections  = false;
+        glm::vec3 albedo        = {1.0f, 1.0f, 1.0f};
+        newLine->material_ptr   = std::make_shared<Lambertian>(albedo);
+
+        newLine->objectName  = "FD";
+        newLine->position    = f;
+        newLine->destination = d;
+
+        AddToScene(newLine);
+    }
+    // GE
+    {std::shared_ptr<Line> newLine = std::make_shared<Line>();
+
+        newLine->thickness      = 0.001f;
+        newLine->isVisible      = true;
+        newLine->inReflections  = false;
+        glm::vec3 albedo        = {1.0f, 1.0f, 1.0f};
+        newLine->material_ptr   = std::make_shared<Lambertian>(albedo);
+
+        newLine->objectName  = "GE";
+        newLine->position    = g;
+        newLine->destination = e;
+
+        AddToScene(newLine);
+    }
+    // DC
+    {std::shared_ptr<Line> newLine = std::make_shared<Line>();
+
+        newLine->thickness      = 0.001f;
+        newLine->isVisible      = true;
+        newLine->inReflections  = false;
+        glm::vec3 albedo        = {1.0f, 1.0f, 1.0f};
+        newLine->material_ptr   = std::make_shared<Lambertian>(albedo);
+
+        newLine->objectName  = "DC";
+        newLine->position    = d;
+        newLine->destination = c;
+
+        AddToScene(newLine);
+    }
+}
+
 void Scene::AddToScene(std::shared_ptr<Object> object)
 {
     sceneObjects.push_back(object);
