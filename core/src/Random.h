@@ -29,6 +29,13 @@ namespace Core {
 			return (float)s_Distribution(s_RandomEngine) / (float)std::numeric_limits<uint32_t>::max();
 		}
 
+        static float Float(float a, float b) {
+            float random = (float)s_Distribution(s_RandomEngine) / (float)std::numeric_limits<uint32_t>::max();
+            float diff = b - a;
+            float r = random * diff;
+            return a + r;
+        }
+
 		static glm::vec3 Vec3()
 		{
 			return glm::vec3(Float(), Float(), Float());
