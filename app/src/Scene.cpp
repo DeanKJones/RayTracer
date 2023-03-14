@@ -196,19 +196,6 @@ void Scene::RayPathToLine(Renderer &pRender)
 
     for(int i = 0; i < rayToLine.size(); i++)
     {
-
-#define log 0
-#if log
-        std::cout << "Pixel Coordinates: " << cursorX << ", " << cursorY << "\n";
-
-        std::cout << "Vector Size: " << rayToLine.size() << "\n";
-        std::cout << "Ray Hit Distance: " << ray.HitDistance << "\n";
-
-        std::cout << "Ray: " << rayToLine[i].Origin.x << ", "
-                             << rayToLine[i].Origin.y << ", "
-                             << rayToLine[i].Origin.z << "\n";
-#endif
-
         std::shared_ptr<Line> newLine = std::make_shared<Line>();
         newLine->position = rayToLine[i].Origin;
 
