@@ -169,8 +169,11 @@ void Scene::CreateRandomSpheres(int numberOfSpheres, float min, float max)
         name += a;
 
         newSphere->objectName    = name;
-        newSphere->position      = Core::Random::Vec3(min, max);
-        newSphere->radius        = {0.2f};
+        glm::vec3 position       = {Core::Random::Float(min, max),
+                                    Core::Random::Float(0.0f, max / 2),
+                                    Core::Random::Float(min, max)};
+        newSphere->position      = position;
+        newSphere->radius        = {0.05f};
         auto albedo = glm::vec3(0.9f, 0.9f, 0.9f);
         newSphere->material_ptr  = std::make_shared<Lambertian>(albedo);
         newSphere->isVisible     = true;
