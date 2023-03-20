@@ -1,6 +1,8 @@
 
 #include "Scene.h"
 
+#include "obj/bvh/BVH.h"
+
 #include "Render.h"
 #include "imgui.h"
 #define IMGUI_DEFINE_MATH_OPERATORS
@@ -73,9 +75,10 @@ void Scene::CreateDefaultScene()
         std::shared_ptr<Sphere> sphere = std::make_shared<Sphere>();
         sphere->objectName = "Glass Sphere";
         sphere->position = {0.225f, 0.49f, 1.55f};
-        albedo = {1.0f, 1.0f, 1.0f};
+        albedo = {1.0f, 0.1f, 0.2f};
         sphere->radius = {0.12f};
-        sphere->material_ptr = std::make_shared<Dielectric>(albedo, 1.52f);
+        sphere->material_ptr = std::make_shared<Lambertian>(albedo);
+        //sphere->material_ptr = std::make_shared<Dielectric>(albedo, 1.52f);
         sphere->isVisible = true;
         sphere->inReflections = true;
 
@@ -94,7 +97,7 @@ void Scene::CreateDefaultScene()
         sphere->isVisible = true;
         sphere->inReflections = true;
 
-        AddToScene(sphere);
+        //AddToScene(sphere);
     }
 
     // xAxis Line
@@ -141,8 +144,9 @@ void Scene::CreateDefaultScene()
 
         //AddToScene(zAxis);
     }
-    //CreateRandomSpheres(20, -5.0f, 5.0f);
+    //CreateRandomSpheres(20, -2.0f, 2.0f);
 }
+
 
 void Scene::CreateNewSphere()
 {
@@ -158,6 +162,7 @@ void Scene::CreateNewSphere()
 
     AddToScene(newSphere);
 }
+
 
 void Scene::CreateRandomSpheres(int numberOfSpheres, float min, float max)
 {
@@ -182,6 +187,7 @@ void Scene::CreateRandomSpheres(int numberOfSpheres, float min, float max)
         AddToScene(newSphere);
     }
 }
+
 
 void Scene::RayPathToLine(Renderer &pRender)
 {
@@ -239,7 +245,8 @@ void Scene::RayPathToLine(Renderer &pRender)
     rayToLineCount += 1;
 }
 
-void Scene::BuildBVHView(const AABB &box)
+
+void Scene::BuildBvhBox(const AABB &box)
 {
     glm::vec3 min = box.min();
     glm::vec3 max = box.max();
@@ -269,7 +276,7 @@ void Scene::BuildBVHView(const AABB &box)
         newLine->position    = a;
         newLine->destination = b;
 
-        AddToScene(newLine);
+        AddToUI(newLine);
     }
     // AD
     {
@@ -285,7 +292,7 @@ void Scene::BuildBVHView(const AABB &box)
         newLine->position    = a;
         newLine->destination = d;
 
-        AddToScene(newLine);
+        AddToUI(newLine);
     }
     // BC
     {
@@ -301,7 +308,7 @@ void Scene::BuildBVHView(const AABB &box)
         newLine->position    = b;
         newLine->destination = c;
 
-        AddToScene(newLine);
+        AddToUI(newLine);
     }
     // AH
     {
@@ -317,7 +324,7 @@ void Scene::BuildBVHView(const AABB &box)
         newLine->position    = a;
         newLine->destination = h;
 
-        AddToScene(newLine);
+        AddToUI(newLine);
     }
     // CE
     {
@@ -333,7 +340,7 @@ void Scene::BuildBVHView(const AABB &box)
         newLine->position    = c;
         newLine->destination = e;
 
-        AddToScene(newLine);
+        AddToUI(newLine);
     }
     // HG
     {
@@ -349,7 +356,7 @@ void Scene::BuildBVHView(const AABB &box)
         newLine->position    = h;
         newLine->destination = g;
 
-        AddToScene(newLine);
+        AddToUI(newLine);
     }
     // BG
     {
@@ -365,7 +372,7 @@ void Scene::BuildBVHView(const AABB &box)
         newLine->position    = b;
         newLine->destination = g;
 
-        AddToScene(newLine);
+        AddToUI(newLine);
     }
     // HF
     {
@@ -381,7 +388,7 @@ void Scene::BuildBVHView(const AABB &box)
         newLine->position    = h;
         newLine->destination = f;
 
-        AddToScene(newLine);
+        AddToUI(newLine);
     }
     // FE
     {std::shared_ptr<Line> newLine = std::make_shared<Line>();
@@ -396,7 +403,7 @@ void Scene::BuildBVHView(const AABB &box)
         newLine->position    = f;
         newLine->destination = e;
 
-        AddToScene(newLine);
+        AddToUI(newLine);
     }
     // FD
     {std::shared_ptr<Line> newLine = std::make_shared<Line>();
@@ -411,7 +418,7 @@ void Scene::BuildBVHView(const AABB &box)
         newLine->position    = f;
         newLine->destination = d;
 
-        AddToScene(newLine);
+        AddToUI(newLine);
     }
     // GE
     {std::shared_ptr<Line> newLine = std::make_shared<Line>();
@@ -426,7 +433,7 @@ void Scene::BuildBVHView(const AABB &box)
         newLine->position    = g;
         newLine->destination = e;
 
-        AddToScene(newLine);
+        AddToUI(newLine);
     }
     // DC
     {std::shared_ptr<Line> newLine = std::make_shared<Line>();
@@ -441,19 +448,58 @@ void Scene::BuildBVHView(const AABB &box)
         newLine->position    = d;
         newLine->destination = c;
 
-        AddToScene(newLine);
+        AddToUI(newLine);
     }
 }
+
+
+void Scene::TraverseBvhNode(std::shared_ptr<BVH_Node> Node)
+{
+    BuildBvhBox(Node->box);
+
+    std::string LeftType = typeid(*(Node->left)).name();
+    if (LeftType.find("BVH_Node") != std::string::npos) {
+        std::shared_ptr<BVH_Node> boxLeft = (std::reinterpret_pointer_cast<BVH_Node>(Node->left));
+        BuildBvhBox(boxLeft->box);
+        TraverseBvhNode(boxLeft);
+    }
+    else if (LeftType.find("Sphere") != std::string::npos) {
+        AABB tempBox;
+        Node->left->boundingBox(tempBox);
+        BuildBvhBox(tempBox);
+    }
+
+    std::string RightType = typeid(*(Node->right)).name();
+    if (RightType.find("BVH_Node") != std::string::npos) {
+        std::shared_ptr<BVH_Node> boxRight = (std::reinterpret_pointer_cast<BVH_Node>(Node->right));
+        BuildBvhBox(boxRight->box);
+        TraverseBvhNode(boxRight);
+    }
+    else if (LeftType.find("Sphere") != std::string::npos) {
+        AABB tempBox;
+        Node->right->boundingBox(tempBox);
+        BuildBvhBox(tempBox);
+    }
+}
+
 
 void Scene::AddToScene(std::shared_ptr<Object> object)
 {
     sceneObjects.push_back(object);
 }
 
+
+void Scene::AddToUI(std::shared_ptr<Object> object)
+{
+    ObjectsUI.push_back(object);
+}
+
+
 void Scene::RemoveItem(int objectIndex)
 {
     sceneObjects.erase(sceneObjects.begin() + (objectIndex));
 }
+
 
 void Scene::ClearRays()
 {
@@ -470,6 +516,7 @@ void Scene::ClearRays()
             sceneObjects.erase(iter);
     }
 }
+
 
 bool Scene::intersect(const Ray &ray, tHit &intersector, Payload &payload) const
 {
@@ -497,6 +544,7 @@ bool Scene::intersect(const Ray &ray, tHit &intersector, Payload &payload) const
     }
     return hitAnything;
 }
+
 
 bool Scene::boundingBox(AABB& outputBox) const
 {

@@ -1,13 +1,14 @@
 #pragma once
 
+#include "obj/Line.h"
 #include "obj/Object.h"
 #include "obj/Sphere.h"
-#include "obj/Line.h"
 
 #include <vector>
 
 class Ray;
 class Renderer;
+class BVH_Node;
 
 class Scene : public Object
 {
@@ -22,9 +23,11 @@ public:
     void CreateRandomSpheres(int numberOfSpheres, float min, float max);
 
     void RayPathToLine(Renderer &pRender);
-    void BuildBVHView(const AABB &box);
+    void BuildBvhBox(const AABB &box);
+    void TraverseBvhNode(std::shared_ptr<BVH_Node> Node);
 
     void AddToScene(std::shared_ptr<Object> object);
+    void AddToUI(std::shared_ptr<Object> object);
     void RemoveItem(int objectIndex);
 
     void Clear() { sceneObjects.clear(); }
@@ -38,6 +41,7 @@ public:
 
 public:
     std::vector<std::shared_ptr<Object>> sceneObjects;
+    std::vector<std::shared_ptr<Object>> ObjectsUI;
     mutable std::vector<Ray> rayToLine;
 
     int rayToLineCount = 0;
