@@ -57,8 +57,9 @@ bool Sphere::intersect(const Ray &ray, tHit &quadratic, Payload &payload) const
 
 bool Sphere::boundingBox(AABB& outputBox) const
 {
-    outputBox = AABB((position - glm::vec3(radius, radius, radius)),
-                     (position + glm::vec3(radius, radius, radius)));
+    auto radiusBuffer = radius + 0.000001f;
+    outputBox = AABB((position - glm::vec3(radiusBuffer, radiusBuffer, radiusBuffer)),
+                     (position + glm::vec3(radiusBuffer, radiusBuffer, radiusBuffer)));
     return true;
 }
 
