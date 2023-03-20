@@ -5,7 +5,6 @@
 
 bool AABB::intersect(const Ray &ray, tHit& intersector) const
 {
-    bool intersected = false;
     for (int a = 0; a < 3; a++)
     {
         float invD = 1.0f / ray.Direction[a];
@@ -18,13 +17,11 @@ bool AABB::intersect(const Ray &ray, tHit& intersector) const
         intersector.t_near = t0 > intersector.t_near ? t0 : intersector.t_near;
         intersector.t_far  = t1 < intersector.t_far  ? t1 : intersector.t_far;
 
-        if (intersector.t_far <= intersector.t_near){
-            intersected = false;
-        } else {
-            intersected = true;
+        if (intersector.t_far <= intersector.t_near) {
+            return false;
         }
     }
-    return intersected;
+    return true;
 }
 
 AABB surroundingBox(AABB box_0, AABB box_1)
