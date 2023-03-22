@@ -18,6 +18,10 @@ bool AABB::intersect(const Ray &ray, tHit& intersector) const
 
         // Use Temp near and far values
         // Avoids right leaf from getting cut off
+        // TODO: find the real cause of the t_near / t_far
+        //      Once being set in the leftNode AABB intersect
+        //      it should be managed before entering the right node
+        //
         float t_near_temp;
         float t_far_temp;
 
