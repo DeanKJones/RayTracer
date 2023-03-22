@@ -3,6 +3,7 @@
 #include <iostream>
 #include "algorithm"
 
+
 BVH_Node::BVH_Node(const std::vector<std::shared_ptr<Object>>& sceneObjects, size_t start, size_t end)
 {
     m_BVHObjects = std::vector<std::shared_ptr<Object>>(sceneObjects);
@@ -23,17 +24,14 @@ BVH_Node::BVH_Node(const std::vector<std::shared_ptr<Object>>& sceneObjects, siz
     {
         if (comparator(m_BVHObjects[start], m_BVHObjects[start + 1]))
         {
-            left  = m_BVHObjects[start];
+            left = m_BVHObjects[start];
             right = m_BVHObjects[start + 1];
-        } else {
-            left  = m_BVHObjects[start + 1];
+        }
+        else
+        {
+            left = m_BVHObjects[start + 1];
             right = m_BVHObjects[start];
         }
-    }
-    else if (objectSpan == 3)
-    {
-        left = std::make_shared<BVH_Node>(m_BVHObjects, start, start + 2);
-        right = m_BVHObjects[start + 2];
     }
     else
     {
@@ -53,15 +51,21 @@ BVH_Node::BVH_Node(const std::vector<std::shared_ptr<Object>>& sceneObjects, siz
     box = surroundingBox(boxLeft, boxRight);
 }
 
+
 bool BVH_Node::intersect(const Ray &ray, tHit &intersector, Payload &payload) const
 {
+
+    /*
+     *      t_far gets set (in the box.intersect)
+     *      this then cuts off objects stored in nodes in the right leaf.
+     * */
+
     if(!box.intersect(ray, intersector))
     {
         return false;
     }
 
     bool hitLeft  = left->intersect(ray, intersector, payload);
-    // Possible bug here
     if (hitLeft)
     {
         intersector.t_far = payload.hitDistance;

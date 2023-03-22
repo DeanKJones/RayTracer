@@ -38,6 +38,18 @@ public:
         std::shared_ptr<BVH_Node> bvhNode = std::make_shared<BVH_Node>(m_Scene);
         m_SceneBVH.AddToScene(bvhNode);
 
+        // Render BVH Box view
+        m_SceneBox.TraverseBvhNode(bvhNode);
+        for (std::shared_ptr<Object> item : m_Scene.sceneObjects) {
+            m_SceneBox.AddToScene(item);
+        }
+        for (std::shared_ptr<Object> item : m_SceneBox.ObjectsUI){
+            m_SceneBox.AddToScene(item);
+        }
+
+        std::shared_ptr<BVH_Node> bvhNodeScene = std::make_shared<BVH_Node>(m_SceneBox);
+        m_SceneBoxBVH.AddToScene(bvhNodeScene);
+
         Input::addKeyPressCallback([&](int key,int action){
             onKeyPressed(key, action);
         });
@@ -144,11 +156,12 @@ public:
 
 		m_Render.onResize(m_viewportWidth, m_viewportHeight);
 		m_Camera.OnResize(m_viewportWidth, m_viewportHeight);
-#define BVH 1
+
+#define BVH 0
 #if BVH
         m_Render.Render(m_Camera, m_SceneBVH);
 #else
-        m_Render.Render(m_Camera, m_Scene);
+        m_Render.Render(m_Camera, m_SceneBoxBVH);
 #endif
 
 		m_lastRenderTime = m_timer.ElapsedMillis();
@@ -157,8 +170,12 @@ public:
 private:
 	Renderer m_Render;
 	Camera m_Camera;
+
+    // Scenes
 	Scene m_Scene;
     Scene m_SceneBVH;
+    Scene m_SceneBox;
+    Scene m_SceneBoxBVH;
 
 	float m_lastRenderTime = 0.0f;
 	uint32_t m_viewportWidth = 0, m_viewportHeight = 0;

@@ -5,6 +5,8 @@
 
 bool AABB::intersect(const Ray &ray, tHit& intersector) const
 {
+#define Kensler 1
+#if Kensler
     for (int a = 0; a < 3; a++)
     {
         float invD = 1.0f / ray.Direction[a];
@@ -14,14 +16,32 @@ bool AABB::intersect(const Ray &ray, tHit& intersector) const
         if (invD < 0.0f)
             std::swap(t0, t1);
 
-        intersector.t_near = t0 > intersector.t_near ? t0 : intersector.t_near;
-        intersector.t_far  = t1 < intersector.t_far  ? t1 : intersector.t_far;
+        // Use Temp near and far values
+        // Avoids right leaf from getting cut off
+        float t_near_temp;
+        float t_far_temp;
 
-        if (intersector.t_far <= intersector.t_near) {
+        t_near_temp = t0 > intersector.t_near ? t0 : intersector.t_near;
+        t_far_temp  = t1 < intersector.t_far  ? t1 : intersector.t_far;
+
+        if (t_far_temp <= t_near_temp) {
             return false;
         }
     }
     return true;
+#else
+    for (int a = 0; a < 3; a++) {
+        auto t0 = fmin((min()[a] - ray.Origin[a]) / ray.Direction[a],
+                             (max()[a] - ray.Origin[a]) / ray.Direction[a]);
+        auto t1 = fmax((min()[a] - ray.Origin[a]) / ray.Direction[a],
+                             (max()[a] - ray.Origin[a]) / ray.Direction[a]);
+        intersector.t_near = fmax(t0, intersector.t_near);
+        intersector.t_far = fmin(t1, intersector.t_far);
+        if (intersector.t_far <= intersector.t_near)
+            return false;
+    }
+    return true;
+#endif Kensler
 }
 
 AABB surroundingBox(AABB box_0, AABB box_1)
