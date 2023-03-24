@@ -48,7 +48,7 @@ private:     // Rendering //
 
 
 private:        // Image //
-    std::shared_ptr<Core::Image> m_FinalImage;
+    std::shared_ptr<Walnut::Image> m_FinalImage;
     Settings m_settings;
 
     std::vector<uint32_t> m_ImageHorizontalIter, m_ImageVerticalIter;
@@ -64,7 +64,7 @@ private:        // Scene //
 
 
 public:    // Getter Functions //
-    std::shared_ptr<Core::Image> getFinalImage() const { return m_FinalImage; }
+    std::shared_ptr<Walnut::Image> getFinalImage() const { return m_FinalImage; }
     Settings& GetSettings() { return m_settings; }
     uint32_t GetFrameIndex() const { return m_frameIndex; }
 

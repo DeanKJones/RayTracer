@@ -8,7 +8,7 @@ BVH_Node::BVH_Node(const std::vector<std::shared_ptr<Object>>& sceneObjects, siz
 {
     m_BVHObjects = std::vector<std::shared_ptr<Object>>(sceneObjects);
 
-    uint32_t axis = Core::Random::UInt(0, 2);
+    uint32_t axis = Walnut::Random::UInt(0, 2);
     auto comparator
                     = (axis == 0) ? boxCompare_x
                     : (axis == 1) ? boxCompare_y

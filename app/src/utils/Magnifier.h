@@ -11,7 +11,7 @@
 #include "imgui_internal.h"
 
 // Magnifying glass
-void MagnifingGlass(std::shared_ptr<Core::Image> image, ImVec2 cursorPos)
+void MagnifingGlass(std::shared_ptr<Walnut::Image> image, ImVec2 cursorPos)
 {
     const ImVec2 offset = ImGui::GetItemRectMin();
 

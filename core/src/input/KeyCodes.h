@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <iostream>
 
-namespace Core {
+namespace Walnut {
 
 	typedef enum class KeyCode : uint16_t
 	{

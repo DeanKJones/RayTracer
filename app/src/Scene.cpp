@@ -174,9 +174,9 @@ void Scene::CreateRandomSpheres(int numberOfSpheres, float min, float max)
         name += a;
 
         newSphere->objectName    = name;
-        glm::vec3 position       = {Core::Random::Float(min, max),
-                                    Core::Random::Float(0.0f, max / 2),
-                                    Core::Random::Float(min, max)};
+        glm::vec3 position       = {Walnut::Random::Float(min, max),
+                                    Walnut::Random::Float(0.0f, max / 2),
+                                    Walnut::Random::Float(min, max)};
         newSphere->position      = position;
         newSphere->radius        = {0.05f};
         auto albedo = glm::vec3(0.9f, 0.9f, 0.9f);
@@ -191,7 +191,7 @@ void Scene::CreateRandomSpheres(int numberOfSpheres, float min, float max)
 
 void Scene::RayPathToLine(Renderer &pRender)
 {
-    std::shared_ptr<Core::Image> image = pRender.getFinalImage();
+    std::shared_ptr<Walnut::Image> image = pRender.getFinalImage();
 
     const ImVec2 cursor = ImGui::GetCurrentContext()->IO.MousePos;
     uint32_t cursorX = cursor.x;

@@ -10,7 +10,7 @@
 
 #include "../../core/src/input/Input.h"
 
-using namespace Core;
+using namespace Walnut;
 
 Camera::Camera(float verticalFOV, float nearClip, float farClip)
 	: m_VerticalFOV(verticalFOV), m_NearClip(nearClip), m_FarClip(farClip)

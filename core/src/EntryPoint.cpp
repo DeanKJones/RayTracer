@@ -4,7 +4,7 @@ bool g_ApplicationRunning = true;
 
 int main(int argc, char **argv) {
   while (g_ApplicationRunning) {
-    Core::Application *app = Core::CreateApplication(argc, argv);
+    Walnut::Application *app = Walnut::CreateApplication(argc, argv);
     app->Run();
     delete app;
   }

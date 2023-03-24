@@ -14,7 +14,7 @@ void check_vk_result(VkResult err);
 
 struct GLFWwindow;
 
-namespace Core {
+namespace Walnut {
 
 	struct ApplicationSpecification
 	{

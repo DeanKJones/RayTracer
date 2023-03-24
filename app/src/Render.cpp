@@ -16,7 +16,7 @@ void Renderer::onResize(uint32_t width, uint32_t height)
         m_FinalImage->Resize(width, height);
     }
     else {
-        m_FinalImage = std::make_shared<Core::Image>(width, height, Core::ImageFormat::RGBA);
+        m_FinalImage = std::make_shared<Walnut::Image>(width, height, Walnut::ImageFormat::RGBA);
     }
     delete[] m_imageData;
     m_imageData = new uint32_t[width * height];
@@ -112,7 +112,7 @@ Pixel Renderer::PerPixel(uint32_t x, uint32_t y)
 
     // Scatter Rays
     if (!m_settings.renderSinglePixel){
-        ray.Direction += Core::Random::Vec3(-0.00005f, 0.00005f);
+        ray.Direction += Walnut::Random::Vec3(-0.00005f, 0.00005f);
     }
     // Normalize Direction
     glm::normalize(ray.Direction);

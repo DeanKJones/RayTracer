@@ -6,7 +6,7 @@
 
 #include <glm/glm.hpp>
 
-namespace Core {
+namespace Walnut {
 
 	class Input
 	{

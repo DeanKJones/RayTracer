@@ -4,7 +4,7 @@
 
 #include <GLFW/glfw3.h>
 
-namespace Core {
+namespace Walnut {
 
     std::function<void(int, int)> Input::callbackKeyPressed = {};
 

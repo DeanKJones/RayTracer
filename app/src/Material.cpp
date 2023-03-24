@@ -22,9 +22,9 @@ bool Lambertian::scatter(
     bool lambertMode = GetLambertModel();
 
     if (lambertMode){
-        scatterDirection = payload.worldNormal + Core::Random::InUnitHemi(payload.worldNormal);
+        scatterDirection = payload.worldNormal + Walnut::Random::InUnitHemi(payload.worldNormal);
     } else {
-        scatterDirection = payload.worldNormal + Core::Random::InUnitSphere();
+        scatterDirection = payload.worldNormal + Walnut::Random::InUnitSphere();
     }
 
     // Need to catch degenerate ray scatters
@@ -55,7 +55,7 @@ bool Metal::scatter(
     glm::vec3 rayVector = glm::normalize(ray.Direction);
     glm::vec3 reflected = reflect(ray.Direction, payload.worldNormal);
 
-    reflected = reflected + (roughness * Core::Random::InUnitSphere());
+    reflected = reflected + (roughness * Walnut::Random::InUnitSphere());
 
     scattered.Origin = payload.hitPosition + (payload.worldNormal * 0.00001f);
     scattered.Direction = reflected;
@@ -80,7 +80,7 @@ bool Dielectric::scatter(
 
     glm::vec3 direction;
 
-    if (cannot_refract || reflectance(cos_theta, eta) > Core::Random::Float()) {
+    if (cannot_refract || reflectance(cos_theta, eta) > Walnut::Random::Float()) {
         direction = reflect(incidentRay, payload.worldNormal);
     } else {
         direction = refract(incidentRay, payload.worldNormal, eta);

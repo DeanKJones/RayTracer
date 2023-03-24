@@ -16,9 +16,9 @@
 
 #include <string>
 
-using namespace Core;
+using namespace Walnut;
 
-class RenderLayer : public Core::Layer
+class RenderLayer : public Walnut::Layer
 {
     void onKeyPressed(int key, int action){
         if (key == GLFW_KEY_R && action == GLFW_PRESS) {
@@ -140,7 +140,7 @@ public:
 						 ImVec2(0, 1), ImVec2(1, 0));
 
             // Render magnified image at the position of the cursor
-            if(ImGui::IsItemHovered() && Core::Input::IsKeyDown(KeyCode::LeftShift))
+            if(ImGui::IsItemHovered() && Walnut::Input::IsKeyDown(KeyCode::LeftShift))
             {
                 const ImVec2 cursor = ImGui::GetCurrentContext()->IO.MousePos;
                 MagnifingGlass(image, cursor);
@@ -181,12 +181,12 @@ private:
 	uint32_t m_viewportWidth = 0, m_viewportHeight = 0;
 };
 
-Core::Application* Core::CreateApplication(int argc, char** argv)
+Walnut::Application* Walnut::CreateApplication(int argc, char** argv)
 {
-	Core::ApplicationSpecification spec;
+	Walnut::ApplicationSpecification spec;
 	spec.Name = "Ray Tracer Application";
 
-	Core::Application* app = new Core::Application(spec);
+	Walnut::Application* app = new Walnut::Application(spec);
 	app->PushLayer<RenderLayer>();
 	app->SetMenubarCallback([app]()
 	{
