@@ -3,7 +3,7 @@
 
 #include "algorithm"
 
-bool AABB::intersect(const Ray &ray, tHit& intersector) const
+bool AABB::intersect(const Ray &ray, tHit intersector) const
 {
 #define Kensler 1
 #if Kensler
@@ -16,19 +16,10 @@ bool AABB::intersect(const Ray &ray, tHit& intersector) const
         if (invD < 0.0f)
             std::swap(t0, t1);
 
-        // Use Temp near and far values
-        // Avoids right leaf from getting cut off
-        // TODO: find the real cause of the t_near / t_far
-        //      Once being set in the leftNode AABB intersect
-        //      it should be managed before entering the right node
-        //
-        float t_near_temp;
-        float t_far_temp;
+        intersector.t_near = t0 > intersector.t_near ? t0 : intersector.t_near;
+        intersector.t_far  = t1 < intersector.t_far  ? t1 : intersector.t_far;
 
-        t_near_temp = t0 > intersector.t_near ? t0 : intersector.t_near;
-        t_far_temp  = t1 < intersector.t_far  ? t1 : intersector.t_far;
-
-        if (t_far_temp <= t_near_temp) {
+        if (intersector.t_far <= intersector.t_near) {
             return false;
         }
     }

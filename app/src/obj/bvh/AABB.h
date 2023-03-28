@@ -15,7 +15,7 @@ public:
     glm::vec3 min() const { return minimum; }
     glm::vec3 max() const { return maximum; }
 
-    bool intersect(const Ray &ray, tHit& intersector) const;
+    bool intersect(const Ray &ray, tHit intersector) const;
 
 public:
     glm::vec3 minimum;
