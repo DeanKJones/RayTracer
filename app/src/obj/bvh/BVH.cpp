@@ -54,12 +54,6 @@ BVH_Node::BVH_Node(const std::vector<std::shared_ptr<Object>>& sceneObjects, siz
 
 bool BVH_Node::intersect(const Ray &ray, tHit &intersector, Payload &payload) const
 {
-
-    /*
-     *      t_far gets set (in the box.intersect)
-     *      this then cuts off objects stored in nodes in the right leaf.
-     * */
-
     if(!box.intersect(ray, intersector))
     {
         return false;
