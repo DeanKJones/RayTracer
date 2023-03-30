@@ -1,8 +1,6 @@
 #pragma once
 
-#include "obj/Line.h"
 #include "obj/Object.h"
-#include "obj/Sphere.h"
 
 #include <vector>
 
