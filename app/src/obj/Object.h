@@ -10,8 +10,6 @@
 #include "../Payload.h"
 #include "../Material.h"
 
-#include <vector>
-
 class Object
 {
 public: 
