@@ -1,5 +1,4 @@
 #include "Triangle.h"
-#include "../Ray.h"
 
 #include "imgui.h"
 #include "../Scene.h"

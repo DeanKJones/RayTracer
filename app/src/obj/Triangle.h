@@ -30,7 +30,7 @@ public:
     void getUV(const glm::vec3& p, float& u, float& v) const override {};
     void getUI() override;
 
-private:
+public:
     bool hasBackfaceCulling = false;
 
 public:
