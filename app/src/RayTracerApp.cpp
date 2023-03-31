@@ -22,10 +22,10 @@ class RenderLayer : public Walnut::Layer
 {
     void onKeyPressed(int key, int action){
         if (key == GLFW_KEY_R && action == GLFW_PRESS) {
-            m_Scene.RayPathToLine(m_Render);
+            m_SceneBVH.RayPathToLine(m_Render);
         }
         if (key == GLFW_KEY_T && action == GLFW_PRESS) {
-            m_Scene.ClearRays();
+            m_SceneBVH.ClearRays();
         }
     }
 
@@ -157,12 +157,12 @@ public:
 		m_Render.onResize(m_viewportWidth, m_viewportHeight);
 		m_Camera.OnResize(m_viewportWidth, m_viewportHeight);
 
-#define BVH 0
-#if BVH
-        m_Render.Render(m_Camera, m_SceneBVH);
-#else
+#define BVHview 0
+#if BVHview
         m_Render.Render(m_Camera, m_SceneBoxBVH);
-#endif
+#else
+        m_Render.Render(m_Camera, m_SceneBVH);
+#endif BVHview
 
 		m_lastRenderTime = m_timer.ElapsedMillis();
 	}
