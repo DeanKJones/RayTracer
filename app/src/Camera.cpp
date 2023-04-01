@@ -167,6 +167,11 @@ void Camera::GetUI()
 
     ImGui::Separator();
 
+    ImGui::DragFloat(" : Blur Strength", &this->m_BlurStrength, 1.0f, 0.0f, 100.0f);
+    ImGui::DragFloat(" : Jitter Strength", &this->m_JitterStrength, 1.0f, 0.0f, 100.0f);
+
+    ImGui::Separator();
+
     ImGui::DragFloat3(" : Position", glm::value_ptr(this->m_Position), 0.5f);
     ImGui::DragFloat3(" : Forward direction", glm::value_ptr(this->m_ForwardDirection), 0.5f);
 
