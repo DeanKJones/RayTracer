@@ -61,9 +61,15 @@ namespace Walnut {
 				return -InUnitSphere;
 			}
 		}
+        static glm::vec2 RandomPointInCircle() {
+            float angle = Random::Float() * 2 * PI;
+            glm::vec2 pointOnCircle = glm::vec2(glm::cos(angle), glm::sin(angle));
+            return pointOnCircle * glm::sqrt(Random::Float());
+        }
 
 	private:
-		static std::mt19937 s_RandomEngine;
+        constexpr static const float PI = 3.1415926f;
+		static thread_local std::mt19937 s_RandomEngine;
 		static std::uniform_int_distribution<std::mt19937::result_type> s_Distribution;
 	};
 
