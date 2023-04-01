@@ -1,6 +1,11 @@
 
 #include "Scene.h"
 
+#include "obj/Line.h"
+#include "obj/Plane.h"
+#include "obj/Sphere.h"
+#include "obj/Triangle.h"
+
 #include "obj/bvh/BVH.h"
 
 #include "Render.h"
@@ -46,7 +51,7 @@ void Scene::CreateDefaultScene()
     {
         std::shared_ptr<Sphere> sphere = std::make_shared<Sphere>();
         sphere->objectName = "Big Metal Sphere";
-        sphere->position = {-0.7f, 0.5f, -0.1f};
+        sphere->position = {-0.7f, 0.7f, -0.1f};
         albedo = {0.75f, 0.75f, 0.75f};
         sphere->radius = {0.7f};
         sphere->material_ptr  = std::make_shared<Metal>(albedo, 0.01f);
@@ -60,7 +65,7 @@ void Scene::CreateDefaultScene()
     {
         std::shared_ptr<Sphere> sphere = std::make_shared<Sphere>();
         sphere->objectName = "Small Metal Sphere";
-        sphere->position = {0.6f, 0.1f, 0.8f};
+        sphere->position = {0.6f, 0.3f, 0.8f};
         albedo = {0.9f, 0.91f, 0.12f};
         sphere->radius = {0.3f};
         sphere->material_ptr = std::make_shared<Metal>(albedo, 0.4f);
@@ -75,10 +80,9 @@ void Scene::CreateDefaultScene()
         std::shared_ptr<Sphere> sphere = std::make_shared<Sphere>();
         sphere->objectName = "Glass Sphere";
         sphere->position = {0.225f, 0.49f, 1.55f};
-        albedo = {1.0f, 0.1f, 0.2f};
+        albedo = {1.0f, 1.0f, 1.0f};
         sphere->radius = {0.12f};
-        sphere->material_ptr = std::make_shared<Lambertian>(albedo);
-        //sphere->material_ptr = std::make_shared<Dielectric>(albedo, 1.52f);
+        sphere->material_ptr = std::make_shared<Dielectric>(albedo, 1.52f);
         sphere->isVisible = true;
         sphere->inReflections = true;
 
@@ -96,8 +100,6 @@ void Scene::CreateDefaultScene()
         sphere->material_ptr = std::make_shared<Lambertian>(checker);
         sphere->isVisible = true;
         sphere->inReflections = true;
-
-        //AddToScene(sphere);
     }
 
     // xAxis Line
@@ -144,18 +146,51 @@ void Scene::CreateDefaultScene()
 
         //AddToScene(zAxis);
     }
-    //CreateRandomSpheres(20, -2.0f, 2.0f);
+
+    // Triangle
+    {
+        glm::vec3 point1, point2, point3;
+        point1 = {0.4f, 0.7f, -0.3f};
+        point2 = {1.0f, 1.0f, 0.0f};
+        point3 = {0.2f, 1.0f, 0.0f};
+        std::shared_ptr<Triangle> triangle = std::make_shared<Triangle>(point1, point2, point3);
+        triangle->objectName = "Triangle";
+        triangle->inReflections = true;
+        triangle->isVisible = true;
+        triangle->position = {0.0f, 0.0f, 0.0f};
+        triangle->material_ptr = std::make_shared<Metal>(glm::vec3(1.0f, 1.0f, 1.0f), 0.0f);
+
+        AddToScene(triangle);
+    }
+
+    // Plane
+    {
+        std::shared_ptr<Material> material = std::make_shared<Lambertian>(glm::vec3(0.7f, 0.8f, 0.8f));
+        float planeSize = 5.0f;
+        std::shared_ptr<Plane> groundPlane = std::make_shared<Plane>(planeSize, material);
+        groundPlane->objectName            = "Ground Plane";
+        groundPlane->isVisible             = true;
+        groundPlane->inReflections         = true;
+        groundPlane->position              = {0.0f, 0.0f, 0.0f};
+
+        AddToScene(groundPlane);
+    }
+
+    // Random Spheres
+    {
+        //CreateRandomSpheres(5, -1.5f, 1.5f);
+    }
 }
 
 
 void Scene::CreateNewSphere()
 {
     std::shared_ptr<Sphere> newSphere = std::make_shared<Sphere>();
-    std::string name        = "New_Sphere";
+    std::string name         = "New_Sphere";
     newSphere->objectName    = name;
     newSphere->position      = {0.0f, 0.0f, 0.0f};
     newSphere->radius        = {0.5f};
-    glm::vec3 albedo        = {0.8f, 0.8f, 0.8f};
+    glm::vec3 albedo         = {0.8f, 0.8f, 0.8f};
     newSphere->material_ptr  = std::make_shared<Lambertian>(albedo);
     newSphere->isVisible     = true;
     newSphere->inReflections = true;
@@ -178,7 +213,7 @@ void Scene::CreateRandomSpheres(int numberOfSpheres, float min, float max)
                                     Walnut::Random::Float(0.0f, max / 2),
                                     Walnut::Random::Float(min, max)};
         newSphere->position      = position;
-        newSphere->radius        = {0.05f};
+        newSphere->radius        = {Walnut::Random::Float(0.1, 0.5)};
         auto albedo = glm::vec3(0.9f, 0.9f, 0.9f);
         newSphere->material_ptr  = std::make_shared<Lambertian>(albedo);
         newSphere->isVisible     = true;
