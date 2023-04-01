@@ -88,6 +88,7 @@ void Renderer::Render(const Camera& camera, const Scene& scene)
             m_imageData[x + y * m_FinalImage->GetWidth()] = ConvertRGBA(accumulatedPixel.RGBA);
         }
     }
+    m_FinalImage->SetData(m_imageData);
 
 #endif
 
