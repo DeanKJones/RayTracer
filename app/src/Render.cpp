@@ -6,6 +6,8 @@
 #include "algorithm"
 #include "../../core/external/libomp/include/omp.h"
 
+using namespace Walnut;
+
 void Renderer::onResize(uint32_t width, uint32_t height)
 {
     if(m_FinalImage) {
@@ -16,7 +18,7 @@ void Renderer::onResize(uint32_t width, uint32_t height)
         m_FinalImage->Resize(width, height);
     }
     else {
-        m_FinalImage = std::make_shared<Walnut::Image>(width, height, Walnut::ImageFormat::RGBA);
+        m_FinalImage = std::make_shared<Image>(width, height, ImageFormat::RGBA);
     }
     delete[] m_imageData;
     m_imageData = new uint32_t[width * height];
