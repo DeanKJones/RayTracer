@@ -10,11 +10,11 @@ public:
     Pixel() = default;
     ~Pixel() = default;
 
-    Pixel(int x, int y);
+    Pixel(uint32_t x, uint32_t y);
     Pixel(glm::vec2 pPixelPosition);
 
 public:
-    glm::vec2 position;
+    glm::vec2 coord;
     glm::vec4 RGBA = {0.0f, 0.0f, 0.0f, 1.0f};
     glm::vec3 RGB  = {0.0f, 0.0f, 0.0f};
 };

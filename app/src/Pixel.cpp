@@ -1,12 +1,12 @@
 
 #include "Pixel.h"
 
-Pixel::Pixel(int x, int y)
+Pixel::Pixel(uint32_t x, uint32_t y)
 {
-    position = glm::vec2(x, y);
+    coord = glm::vec2(x, y);
 }
 
 Pixel::Pixel(glm::vec2 pPixelPosition)
 {
-    position = pPixelPosition;
+    coord = pPixelPosition;
 }
