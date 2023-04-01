@@ -113,12 +113,24 @@ Pixel Renderer::PerPixel(uint32_t x, uint32_t y)
     // Set Pixel Color with the Alpha at 1
     pixel.RGBA = {0.0f, 0.0f, 0.0f, 1.0f};
 
-    // Scatter Rays
-    if (!m_settings.renderSinglePixel){
-        ray.Direction += Walnut::Random::Vec3(-0.00005f, 0.00005f);
+    glm::vec3 jitteredViewPoint;
+    if (!m_settings.renderSinglePixel)
+    {
+        // TODO: view point should be set by a camera z-depth plane
+        //      psuedo:
+        //      vec3 viewPointLocal = vec3(pixel.x - 0.5f, pixel.y - 0.5f, 1.0f)
+        //      vec3 viewPoint = multiply(CamLocalToWorld, vec4(viewPointLocal, 1.0f))
+        glm::vec3 viewPoint = ray.Origin + (m_activeCamera->m_JitterStrength * ray.Direction);
+
+        glm::vec2 defocusJitter = Random::RandomPointInCircle() * m_activeCamera->m_BlurStrength
+                                  / glm::vec2(m_FinalImage->GetWidth(), m_FinalImage->GetHeight());
+        ray.Origin = m_activeCamera->GetPosition() + m_activeCamera->GetRight() * defocusJitter.x + m_activeCamera->GetUp() * defocusJitter.y;
+        glm::vec2 jitter = Random::RandomPointInCircle() * m_activeCamera->m_JitterStrength
+                           / glm::vec2(m_FinalImage->GetWidth(), m_FinalImage->GetHeight());
+
+        jitteredViewPoint = viewPoint/* + m_activeCamera->GetRight() * jitter.x + m_activeCamera->GetUp() * jitter.y*/;
     }
-    // Normalize Direction
-    glm::normalize(ray.Direction);
+    ray.Direction = glm::normalize(jitteredViewPoint - ray.Origin);
 
     int depth = m_settings.bounceDepth;
 
