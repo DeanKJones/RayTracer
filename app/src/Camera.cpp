@@ -16,6 +16,9 @@ Camera::Camera(float verticalFOV, float nearClip, float farClip)
 	: m_VerticalFOV(verticalFOV), m_NearClip(nearClip), m_FarClip(farClip)
 {
 	m_ForwardDirection = glm::vec3(0.0f, 0.0f, -1.0f);
+    m_RightDirection = glm::vec3(1.0f, 0.0f, 0.0f);
+    m_UpDirection = glm::vec3(0.0f, 1.0f, 0.0f);
+
 	m_Position = glm::vec3(0.0f, 0.85f, 4.0f);
 
     RecalculateView();
@@ -50,10 +53,6 @@ bool Camera::OnUpdate(float ts)
 	Input::SetCursorMode(CursorMode::Locked);
 
 	bool moved = false;
-
-	constexpr glm::vec3 upDirection(0.0f, 1.0f, 0.0f);
-	glm::vec3 rightDirection = glm::cross(m_ForwardDirection, upDirection);
-
 	float speed = 5.0f;
 
 	// Movement
@@ -69,22 +68,22 @@ bool Camera::OnUpdate(float ts)
 	}
 	if (Input::IsKeyDown(KeyCode::A))
 	{
-		m_Position -= rightDirection * speed * ts;
+		m_Position -= m_RightDirection * speed * ts;
 		moved = true;
 	}
 	else if (Input::IsKeyDown(KeyCode::D))
 	{
-		m_Position += rightDirection * speed * ts;
+		m_Position += m_RightDirection * speed * ts;
 		moved = true;
 	}
 	if (Input::IsKeyDown(KeyCode::Q))
 	{
-		m_Position -= upDirection * speed * ts;
+		m_Position -= m_UpDirection * speed * ts;
 		moved = true;
 	}
 	else if (Input::IsKeyDown(KeyCode::E))
 	{
-		m_Position += upDirection * speed * ts;
+		m_Position += m_UpDirection * speed * ts;
 		moved = true;
 	}
 
@@ -94,9 +93,10 @@ bool Camera::OnUpdate(float ts)
 		float pitchDelta = delta.y * GetRotationSpeed();
 		float yawDelta = delta.x * GetRotationSpeed();
 
-		glm::quat q = glm::normalize(glm::cross(glm::angleAxis(-pitchDelta, rightDirection),
+		glm::quat q = glm::normalize(glm::cross(glm::angleAxis(-pitchDelta, m_RightDirection),
 			glm::angleAxis(-yawDelta, glm::vec3(0.f, 1.0f, 0.0f))));
 		m_ForwardDirection = glm::rotate(q, m_ForwardDirection);
+        m_RightDirection = glm::cross(m_ForwardDirection, m_UpDirection);
 
 		moved = true;
 	}
@@ -168,7 +168,7 @@ void Camera::GetUI()
     ImGui::Separator();
 
     ImGui::DragFloat(" : Blur Strength", &this->m_BlurStrength, 1.0f, 0.0f, 100.0f);
-    ImGui::DragFloat(" : Jitter Strength", &this->m_JitterStrength, 1.0f, 0.0f, 100.0f);
+    ImGui::DragFloat(" : Focus Distance", &this->m_FocusDistance, 1.0f, 0.0f, 100.0f);
 
     ImGui::Separator();
 

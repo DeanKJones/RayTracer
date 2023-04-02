@@ -104,35 +104,42 @@ void Renderer::Render(const Camera& camera, const Scene& scene)
 Pixel Renderer::PerPixel(uint32_t x, uint32_t y)
 {
     Ray ray;
-    Pixel pixel;
+    Pixel pixel = Pixel(x, y);
 
     // Set ray origin back to camera after ray bounces around the scene
     ray.Origin = m_activeCamera->GetPosition();
     ray.Direction = m_activeCamera->GetRayDirections()[x + y * m_FinalImage->GetWidth()];
 
+    int depth = m_settings.bounceDepth;
+
     // Set Pixel Color with the Alpha at 1
     pixel.RGBA = {0.0f, 0.0f, 0.0f, 1.0f};
 
-    glm::vec3 jitteredViewPoint;
     if (!m_settings.renderSinglePixel)
     {
-        // TODO: view point should be set by a camera z-depth plane
-        //      psuedo:
-        //      vec3 viewPointLocal = vec3(pixel.x - 0.5f, pixel.y - 0.5f, 1.0f)
-        //      vec3 viewPoint = multiply(CamLocalToWorld, vec4(viewPointLocal, 1.0f))
-        glm::vec3 viewPoint = ray.Origin + (m_activeCamera->m_JitterStrength * ray.Direction);
+        // Render Color
+        Pixel renderedPixel = RenderColor(ray, depth);
+        pixel.RGBA = glm::vec4(renderedPixel.RGB, 1.0f);
 
-        glm::vec2 defocusJitter = Random::RandomPointInCircle() * m_activeCamera->m_BlurStrength
-                                  / glm::vec2(m_FinalImage->GetWidth(), m_FinalImage->GetHeight());
-        ray.Origin = m_activeCamera->GetPosition() + m_activeCamera->GetRight() * defocusJitter.x + m_activeCamera->GetUp() * defocusJitter.y;
-        glm::vec2 jitter = Random::RandomPointInCircle() * m_activeCamera->m_JitterStrength
-                           / glm::vec2(m_FinalImage->GetWidth(), m_FinalImage->GetHeight());
-
-        jitteredViewPoint = viewPoint/* + m_activeCamera->GetRight() * jitter.x + m_activeCamera->GetUp() * jitter.y*/;
+        return pixel;
     }
-    ray.Direction = glm::normalize(jitteredViewPoint - ray.Origin);
 
-    int depth = m_settings.bounceDepth;
+    // Unsure if this is a good way of creating a depth plane, but it looks good enough for now
+    glm::vec3 viewPoint = ray.Origin + (m_activeCamera->m_FocusDistance * ray.Direction);
+    // Get random point once
+    glm::vec2 randPointInCircle = Random::RandomPointInCircle();
+
+    glm::vec2 defocusJitter = randPointInCircle * m_activeCamera->m_BlurStrength
+                              / glm::vec2(m_FinalImage->GetWidth(), m_FinalImage->GetHeight());
+    ray.Origin = m_activeCamera->GetPosition() + m_activeCamera->GetRight() * defocusJitter.x + m_activeCamera->GetUp() * defocusJitter.y;
+
+    glm::vec2 coord = { (float)x, (float)y };
+    coord = 1.0f / (coord * 2.0f - 1.0f); // -1 -> 1
+    glm::vec2 AAJitter = randPointInCircle * coord;
+
+    // Jitter ray direction inside pixel for Anti-Aliasing
+    viewPoint = viewPoint + m_activeCamera->GetRight() * AAJitter.x + m_activeCamera->GetUp() * AAJitter.y;
+    ray.Direction = glm::normalize(viewPoint - ray.Origin);
 
     // Render Color
     Pixel renderedPixel = RenderColor(ray, depth);

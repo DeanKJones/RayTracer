@@ -19,14 +19,9 @@ public:
 
 	const glm::vec3& GetPosition() const { return m_Position; }
 
-    const glm::vec3 GetRight() const {
-        glm::mat4 Right = glm::rotate(m_View, 0.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-        return glm::vec3(Right[0][0], Right[1][0], Right[2][0]);
-    }
-    const glm::vec3 GetUp() const {
-        return glm::vec3(0.0f, 1.0f, 0.0f);
-    }
-	const glm::vec3& GetDirection() const { return m_ForwardDirection; }
+    const glm::vec3& GetDirection() const { return m_ForwardDirection; }
+    const glm::vec3& GetRight() const { return m_RightDirection; }
+    const glm::vec3& GetUp() const { return m_UpDirection; }
 
     void GetUI();
 
@@ -53,10 +48,12 @@ public:
 	float m_NearClip = 0.1f;
 	float m_FarClip = 100.0f;
     float m_BlurStrength = 1.0f;
-    float m_JitterStrength = 4.0f;
+    float m_FocusDistance = 4.0f;
 
     glm::vec3 m_Position{0.0f, 0.0f, 0.0f};
     glm::vec3 m_ForwardDirection{0.0f, 0.0f, 0.0f};
+    glm::vec3 m_RightDirection{0.0f, 0.0f, 0.0f};
+    glm::vec3 m_UpDirection{0.0f, 0.0f, 0.0f};
 
 private:
 	// Cached ray directions
