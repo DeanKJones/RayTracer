@@ -115,7 +115,7 @@ Pixel Renderer::PerPixel(uint32_t x, uint32_t y)
     // Set Pixel Color with the Alpha at 1
     pixel.RGBA = {0.0f, 0.0f, 0.0f, 1.0f};
 
-    if (!m_settings.renderSinglePixel)
+    if (m_settings.renderSinglePixel)
     {
         // Render Color
         Pixel renderedPixel = RenderColor(ray, depth);
