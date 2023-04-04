@@ -12,17 +12,18 @@ Plane::Plane(std::string pName, glm::vec3 pPosition, std::shared_ptr<Material> p
 }
 
 
-Plane::Plane(float pSize, std::shared_ptr<Material>& pMaterial)
+Plane::Plane(float pSize, glm::vec3 pPosition, std::shared_ptr<Material>& pMaterial)
 {
+    position = pPosition;
     m_Size = pSize;
     // Make center by halving size
     float halfSize = m_Size / 2;
 
     // Create corners
-    glm::vec3 p0 = {-halfSize,   0.0f, -halfSize};
-    glm::vec3 p1 = {halfSize,    0.0f, -halfSize};
-    glm::vec3 p2 = {halfSize,    0.0f, halfSize};
-    glm::vec3 p3 = {-halfSize,   0.0f, halfSize};
+    glm::vec3 p0 = {position.x - halfSize,   position.y, position.z - halfSize};
+    glm::vec3 p1 = {position.x + halfSize,   position.y, position.z - halfSize};
+    glm::vec3 p2 = {position.x + halfSize,   position.y, position.z + halfSize};
+    glm::vec3 p3 = {position.x - halfSize,   position.y, position.z + halfSize};
 
     // Create Triangles
     std::shared_ptr<Triangle> half1 = std::make_shared<Triangle>(p0, p3, p1);
