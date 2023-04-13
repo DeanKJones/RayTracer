@@ -2,12 +2,12 @@
 #define RAYTRACING_PLANE_H
 
 #include "bvh/BVH.h"
-#include "Triangle.h"
+#include "Mesh.h"
 
-class Plane : public Object
+class Plane : public Mesh
 {
 public:
-    Plane() : Object() {}
+    Plane() : Mesh() {}
     ~Plane() override = default;
 
     Plane(std::string pName, glm::vec3 pPosition, std::shared_ptr<Material> pMaterial,
@@ -25,9 +25,6 @@ public:
     float m_Size;
     bool hasBackfaceCulling = true;
 
-private:
-    std::vector<std::shared_ptr<Object>> m_Tris;
-    std::shared_ptr<BVH_Node> m_BVH;
 };
 
 

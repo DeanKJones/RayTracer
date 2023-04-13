@@ -7,7 +7,7 @@
 
 Plane::Plane(std::string pName, glm::vec3 pPosition, std::shared_ptr<Material> pMaterial, bool pVisibility,
              bool pInReflections, float pSize)
-      : Object(pName, pPosition, pMaterial, pVisibility, pInReflections), m_Size(pSize)
+      : Mesh(pName, pPosition, pMaterial, pVisibility, pInReflections), m_Size(pSize)
 {
 }
 
@@ -20,19 +20,18 @@ Plane::Plane(float pSize, glm::vec3 pPosition, std::shared_ptr<Material>& pMater
     float halfSize = m_Size / 2;
 
     // Create corners
-    glm::vec3 p0 = {position.x - halfSize,   position.y, position.z - halfSize};
-    glm::vec3 p1 = {position.x + halfSize,   position.y, position.z - halfSize};
-    glm::vec3 p2 = {position.x + halfSize,   position.y, position.z + halfSize};
-    glm::vec3 p3 = {position.x - halfSize,   position.y, position.z + halfSize};
+    vertexPositions.push_back({position.x - halfSize, position.y, position.z - halfSize});
+    vertexPositions.push_back({position.x + halfSize, position.y, position.z - halfSize});
+    vertexPositions.push_back({position.x + halfSize, position.y, position.z + halfSize});
+    vertexPositions.push_back({position.x - halfSize, position.y, position.z + halfSize});
 
     // Create Triangles
-    std::shared_ptr<Triangle> half1 = std::make_shared<Triangle>(p0, p3, p1);
-    std::shared_ptr<Triangle> half2 = std::make_shared<Triangle>(p1, p3, p2);
-
-    half1->material_ptr = pMaterial;
-    half1->hasBackfaceCulling = hasBackfaceCulling;
-    half2->material_ptr = pMaterial;
-    half2->hasBackfaceCulling = hasBackfaceCulling;
+    std::shared_ptr<Triangle> half1 = std::make_shared<Triangle>(static_cast<const Mesh*>(this),
+                                                                 std::array<uint32_t , 3>{0, 3, 1},
+                                                                 pMaterial, hasBackfaceCulling);
+    std::shared_ptr<Triangle> half2 = std::make_shared<Triangle>(static_cast<const Mesh*>(this),
+                                                                 std::array<uint32_t , 3>{1, 3, 2},
+                                                                 pMaterial, hasBackfaceCulling);
 
     // Push into triangle pointer
     m_Tris.push_back(half1);
@@ -70,8 +69,5 @@ void Plane::getUI()
     ImGui::DragFloat3(": Triangle position", glm::value_ptr(this->position), 0.1f);
     ImGui::Checkbox(": Triangle visibility", &this->isVisible);
     ImGui::Checkbox(": Reflection Bounces", &this->inReflections);
-
-    ImGui::Checkbox(": Backface Culling", &this->hasBackfaceCulling);
-
 }
 
