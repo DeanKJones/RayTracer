@@ -167,7 +167,8 @@ void Scene::CreateDefaultScene()
     {
         std::shared_ptr<Material> material = std::make_shared<Lambertian>(glm::vec3(0.7f, 0.8f, 0.8f));
         float planeSize = 5.0f;
-        std::shared_ptr<Plane> groundPlane = std::make_shared<Plane>(planeSize, material);
+        glm::vec3 planePosition = {0.0f, 0.0f, 0.0f};
+        std::shared_ptr<Plane> groundPlane = std::make_shared<Plane>(planeSize, planePosition, material);
         groundPlane->objectName            = "Ground Plane";
         groundPlane->isVisible             = true;
         groundPlane->inReflections         = true;
