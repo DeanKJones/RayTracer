@@ -14,6 +14,7 @@ public:
 
     bool intersect(const Ray &ray, tHit &intersector, Payload &payload) const override;
     bool boundingBox(AABB& outputBox) const override;
+    void transform(const glm::mat4& transform) const override {}
 
     void getUI() override;
     void getUV(const glm::vec3& p, float& u, float& v) const override {}

@@ -16,6 +16,8 @@ public:
 
     bool intersect(const Ray &ray, tHit &intersector, Payload &payload) const override;
     bool boundingBox(AABB& outputBox) const override;
+    // We need to rebuild the BVH after every transform
+    void transform(const glm::mat4& transform) const override { box.transform(transform); }
 
     void getUI() override {}
     void getUV(const glm::vec3& p, float& u, float& v) const override {}

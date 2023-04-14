@@ -15,10 +15,13 @@ public:
     Mesh(std::string pName, glm::vec3 pPosition, std::shared_ptr<Material> pMaterial,
          bool pVisibility, bool pInReflections);
 
-    // Intersects with a bvh node built over all the triangles
     bool intersect(const Ray &ray, tHit &intersector, Payload &payload) const override;
-    // calls the m_BVH upper box
     bool boundingBox(AABB& outputBox) const override;
+    inline void transform(const glm::mat4& transform) const override {
+        for (auto& tri : m_Tris) {
+            tri->transform(transform);
+        }
+    }
 
     void getUV(const glm::vec3& p, float& u, float& v) const override;
     void getUI() override;
@@ -27,6 +30,7 @@ public:
     bool loadOBJ(const std::string& filename);
 
     inline const glm::vec3& getPosition(uint32_t index) const { return vertexPositions[index]; }
+    inline const glm::vec3& setPosition(uint32_t index, glm::vec3 wPosition) { return vertexPositions[index] = wPosition; }
 
 protected:
     std::vector<glm::vec3> vertexPositions;
@@ -34,7 +38,6 @@ protected:
 
     std::vector<std::shared_ptr<Object>> m_Tris;
     std::shared_ptr<BVH_Node> m_BVH;
-
 };
 
 

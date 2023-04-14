@@ -87,7 +87,14 @@ bool Triangle::boundingBox(AABB &outputBox) const
     return true;
 }
 
-
+void Triangle::transform(const glm::mat4 &transform) const
+{
+    for (uint32_t i = 0; i < 3; i++) {
+        glm::vec4 lPosition = {mesh->getPosition(indices[i]), 1.0f};
+        glm::vec3 wPosition = transform * lPosition;
+        mesh->setPosition(i, wPosition);
+    }
+}
 
 void Triangle::getUI()
 {

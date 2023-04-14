@@ -25,7 +25,7 @@ public:
     void getUV(const glm::vec3& p, float& u, float& v) const override {};
     void getUI() override;
 
-    //void transform(const Transform& transform);
+    void transform(const glm::mat4& transform) const override;
 
 public:
     bool hasBackfaceCulling = false;
