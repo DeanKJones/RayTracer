@@ -17,6 +17,7 @@ public:
     Scene(std::shared_ptr<Object> object) { AddToScene(object); }
 
     void CreateDefaultScene();
+    void CreateCornellBox();
     void CreateNewSphere();
     void CreateRandomSpheres(int numberOfSpheres, float min, float max);
 

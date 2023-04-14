@@ -185,6 +185,56 @@ void Scene::CreateDefaultScene()
     }
 }
 
+void Scene::CreateCornellBox()
+{
+    {
+        std::shared_ptr<Cube> cornellBox = std::make_shared<Cube>();
+        cornellBox->CornellBox();
+        cornellBox->objectName = "Cornell Box Items";
+        cornellBox->isVisible = true;
+        cornellBox->inReflections = true;
+
+        AddToScene(cornellBox);
+    }
+    {
+        std::shared_ptr<Material> material = std::make_shared<Emissive>(glm::vec3(5.0f, 5.0f, 5.0f));
+        float planeSize = 1.0f;
+        glm::vec3 planePosition = {0.0f, 1.9f, 0.0f};
+        std::shared_ptr<Plane> EmissivePlane = std::make_shared<Plane>(planeSize, planePosition,
+                                                                       material, true);
+        EmissivePlane->objectName            = "Emissive Plane";
+        EmissivePlane->isVisible             = true;
+        EmissivePlane->inReflections         = true;
+
+        AddToScene(EmissivePlane);
+    }
+    {
+        std::shared_ptr<Sphere> sphere = std::make_shared<Sphere>();
+        sphere->objectName = "Small Metal Sphere";
+        sphere->position = {0.6f, 0.4f, 0.0f};
+        glm::vec3 albedo = {0.9f, 0.91f, 0.12f};
+        sphere->radius = {0.3f};
+        sphere->material_ptr = std::make_shared<Metal>(albedo, 0.4f);
+        sphere->isVisible = true;
+        sphere->inReflections = true;
+
+        AddToScene(sphere);
+    }
+    {
+        std::shared_ptr<Sphere> sphere = std::make_shared<Sphere>();
+        sphere->objectName = "Small Metal Sphere";
+        sphere->position = {-0.3f, 1.0f, 0.0f};
+        glm::vec3 albedo = {0.9f, 0.9f, 0.9f};
+        sphere->radius = {0.5f};
+        sphere->material_ptr = std::make_shared<Metal>(albedo, 0.05f);
+        sphere->isVisible = true;
+        sphere->inReflections = true;
+
+        AddToScene(sphere);
+    }
+}
+
+
 void Scene::CreateNewSphere()
 {
     std::shared_ptr<Sphere> newSphere = std::make_shared<Sphere>();
