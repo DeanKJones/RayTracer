@@ -13,6 +13,7 @@ public:
             bool pVisibility, bool pInReflections, float pSize);
 
     Cube(float pSize, glm::vec3 pPosition, std::shared_ptr<Material>& pMaterial);
+    void CornellBox();
 
 public:
     bool intersect(const Ray &ray, tHit &intersector, Payload &payload) const override;
