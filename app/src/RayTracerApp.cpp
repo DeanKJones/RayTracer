@@ -32,7 +32,8 @@ public:
 	RenderLayer() // Scene definition
 		: m_Camera(45.0f, 0.1f, 100.0f)
 	{
-        m_Scene.CreateDefaultScene();
+        //m_Scene.CreateDefaultScene();
+        m_Scene.CreateCornellBox();
         // Create BVH
         std::shared_ptr<BVH_Node> bvhNode = std::make_shared<BVH_Node>(m_Scene);
         m_SceneBVH.AddToScene(bvhNode);
