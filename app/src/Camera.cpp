@@ -19,7 +19,7 @@ Camera::Camera(float verticalFOV, float nearClip, float farClip)
     m_RightDirection = glm::vec3(1.0f, 0.0f, 0.0f);
     m_UpDirection = glm::vec3(0.0f, 1.0f, 0.0f);
 
-	m_Position = glm::vec3(0.0f, 0.85f, 4.0f);
+	m_Position = glm::vec3(0.0f, 0.95f, 4.0f);
 
     RecalculateView();
 }
