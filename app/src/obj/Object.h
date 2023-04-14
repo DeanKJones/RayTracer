@@ -8,7 +8,7 @@
 
 #include "../Ray.h"
 #include "../Payload.h"
-#include "../Material.h"
+#include "../shading/Material.h"
 
 class Object
 {

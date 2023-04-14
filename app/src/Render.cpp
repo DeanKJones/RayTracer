@@ -3,6 +3,8 @@
 
 #include <random>
 
+#include "shading/Lambertian.h"
+
 #include "algorithm"
 #include "../../core/external/libomp/include/omp.h"
 

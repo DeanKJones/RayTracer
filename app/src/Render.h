@@ -4,7 +4,7 @@
 
 #include "Camera.h"
 #include "Scene.h"
-#include "Material.h"
+#include "shading/Material.h"
 
 #include <memory>
 #include <cstdlib>

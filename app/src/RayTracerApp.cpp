@@ -1,5 +1,4 @@
 #include "../../core/src/Application.h"
-#include "../../core/src/EntryPoint.h"
 
 #include "../../core/src/Image.h"
 #include "../../core/src/Timer.h"

@@ -1,11 +1,11 @@
 
 #include "Scene.h"
 
-#include "obj/Line.h"
+#include "obj/primitive/Line.h"
 #include "obj/Cube.h"
 #include "obj/Plane.h"
-#include "obj/Sphere.h"
-#include "obj/Triangle.h"
+#include "obj/primitive/Sphere.h"
+#include "obj/primitive/Triangle.h"
 
 #include "obj/bvh/BVH.h"
 
@@ -13,6 +13,11 @@
 #include "imgui.h"
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui_internal.h"
+
+#include "shading/Metal.h"
+#include "shading/Emissive.h"
+#include "shading/Dielectric.h"
+#include "shading/Lambertian.h"
 
 #include "sstream"
 

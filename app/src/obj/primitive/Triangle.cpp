@@ -1,5 +1,9 @@
 #include "Triangle.h"
-#include "Mesh.h"
+#include "../Mesh.h"
+
+#include "../../shading/Lambertian.h"
+#include "../../shading/Metal.h"
+#include "../../shading/Dielectric.h"
 
 #include "imgui.h"
 #include "glm/gtc/type_ptr.hpp"

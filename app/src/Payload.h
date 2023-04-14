@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "glm/glm.hpp"
-#include "Material.h"
+#include "shading/Material.h"
 
 // Payload struct to set and grab information from the scene
 struct Payload 

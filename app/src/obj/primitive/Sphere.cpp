@@ -2,8 +2,12 @@
 #include "Sphere.h"
 
 #include "imgui.h"
-#include "../Scene.h"
+#include "../../Scene.h"
 #include "glm/gtc/type_ptr.hpp"
+
+#include "../../shading/Lambertian.h"
+#include "../../shading/Metal.h"
+#include "../../shading/Dielectric.h"
 
 
 Sphere::Sphere(std::string pName, glm::vec3 pPosition, std::shared_ptr<Material> pMaterial,

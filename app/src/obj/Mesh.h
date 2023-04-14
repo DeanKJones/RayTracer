@@ -2,7 +2,7 @@
 #define RAYTRACING_MESH_H
 
 #include "bvh/BVH.h"
-#include "Triangle.h"
+#include "primitive/Triangle.h"
 
 #include <vector>
 

@@ -4,8 +4,8 @@
 #include "glm/glm.hpp"
 #include <iostream>
 
-#include "Hit.h"
-#include "Object.h"
+#include "../Hit.h"
+#include "../Object.h"
 
 class Ray;
 class Mesh;

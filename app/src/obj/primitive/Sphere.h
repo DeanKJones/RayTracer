@@ -1,7 +1,7 @@
 #ifndef RAYTRACING_SPHERE_H
 #define RAYTRACING_SPHERE_H
 
-#include "Object.h"
+#include "../Object.h"
 
 class Sphere : public Object
 {
