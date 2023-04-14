@@ -2,7 +2,6 @@
 #include "Mesh.h"
 
 #include "imgui.h"
-#include "../Scene.h"
 #include "glm/gtc/type_ptr.hpp"
 
 bool Triangle::intersect(const Ray &ray, tHit &intersector, Payload &payload) const

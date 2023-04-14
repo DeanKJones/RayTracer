@@ -16,7 +16,7 @@ public:
     Triangle() : Object() {};
     ~Triangle() override = default;
 
-    Triangle(const Mesh* pMesh, const std::array<uint32_t, 3>& indices, std::shared_ptr<Material>& pMaterial, bool pBackface)
+    Triangle(const std::shared_ptr<Mesh> pMesh, const std::array<uint32_t, 3>& indices, std::shared_ptr<Material>& pMaterial, bool pBackface)
             : Object(), mesh(pMesh), indices(indices), hasBackfaceCulling(pBackface) { material_ptr = pMaterial; }
 
     bool intersect(const Ray &ray, tHit &intersector, Payload &payload) const override;
@@ -31,7 +31,7 @@ public:
     bool hasBackfaceCulling = false;
 
 private:
-    const Mesh* mesh;
+    const std::shared_ptr<Mesh> mesh;
     std::array<uint32_t, 3> indices;
 };
 

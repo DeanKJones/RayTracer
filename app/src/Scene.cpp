@@ -2,6 +2,7 @@
 #include "Scene.h"
 
 #include "obj/Line.h"
+#include "obj/Cube.h"
 #include "obj/Plane.h"
 #include "obj/Sphere.h"
 #include "obj/Triangle.h"
@@ -23,9 +24,9 @@ void Scene::CreateDefaultScene()
     {
         std::shared_ptr<Sphere> sphere = std::make_shared<Sphere>();
         sphere->objectName = "Blue Sphere";
-        sphere->position = {0.3f, 0.3f, 0.2f};
+        sphere->position = {0.2f, 0.3f, 0.2f};
         albedo = {0.0f, 0.0f, 0.9f};
-        sphere->radius = {0.3};
+        sphere->radius = {0.25};
         sphere->material_ptr = std::make_shared<Lambertian>(albedo);
         sphere->isVisible = true;
         sphere->inReflections = true;
@@ -65,7 +66,7 @@ void Scene::CreateDefaultScene()
     {
         std::shared_ptr<Sphere> sphere = std::make_shared<Sphere>();
         sphere->objectName = "Small Metal Sphere";
-        sphere->position = {0.6f, 0.3f, 0.8f};
+        sphere->position = {0.6f, 0.3f, 1.1f};
         albedo = {0.9f, 0.91f, 0.12f};
         sphere->radius = {0.3f};
         sphere->material_ptr = std::make_shared<Metal>(albedo, 0.4f);
@@ -86,7 +87,7 @@ void Scene::CreateDefaultScene()
         sphere->isVisible = true;
         sphere->inReflections = true;
 
-        AddToScene(sphere);
+        //AddToScene(sphere);
     }
 
     // Ground Sphere
@@ -147,22 +148,6 @@ void Scene::CreateDefaultScene()
         //AddToScene(zAxis);
     }
 
-    // Triangle
-    {
-        glm::vec3 point1, point2, point3;
-        point1 = {0.4f, 0.7f, -0.3f};
-        point2 = {1.0f, 1.0f, 0.0f};
-        point3 = {0.2f, 1.0f, 0.0f};
-        std::shared_ptr<Triangle> triangle = std::make_shared<Triangle>(point1, point2, point3);
-        triangle->objectName = "Triangle";
-        triangle->inReflections = true;
-        triangle->isVisible = true;
-        triangle->position = {0.0f, 0.0f, 0.0f};
-        triangle->material_ptr = std::make_shared<Metal>(glm::vec3(1.0f, 1.0f, 1.0f), 0.0f);
-
-        AddToScene(triangle);
-    }
-
     // Plane
     {
         std::shared_ptr<Material> material = std::make_shared<Lambertian>(glm::vec3(0.7f, 0.8f, 0.8f));
@@ -172,9 +157,21 @@ void Scene::CreateDefaultScene()
         groundPlane->objectName            = "Ground Plane";
         groundPlane->isVisible             = true;
         groundPlane->inReflections         = true;
-        groundPlane->position              = {0.0f, 0.0f, 0.0f};
 
         AddToScene(groundPlane);
+    }
+
+    // Cube
+    {
+        std::shared_ptr<Material> material = std::make_shared<Lambertian>(glm::vec3(0.9f, 0.9f, 0.9f));
+        float cubeSize = 1.0f;
+        glm::vec3 cubePos = {1.0f, 0.5f, 0.2f};
+        std::shared_ptr<Cube> cube = std::make_shared<Cube>(cubeSize, cubePos, material);
+        cube->objectName    = "Cube";
+        cube->isVisible     = true;
+        cube->inReflections = true;
+
+        AddToScene(cube);
     }
 
     // Random Spheres
@@ -182,7 +179,6 @@ void Scene::CreateDefaultScene()
         //CreateRandomSpheres(5, -1.5f, 1.5f);
     }
 }
-
 
 void Scene::CreateNewSphere()
 {
@@ -231,7 +227,7 @@ void Scene::RayPathToLine(Renderer &pRender)
 
     const ImVec2 cursor = ImGui::GetCurrentContext()->IO.MousePos;
     uint32_t cursorX = cursor.x;
-    uint32_t cursorY = (image->GetHeight() - (cursor.y - 87));
+    uint32_t cursorY = (image->GetHeight() - (cursor.y - 107));
 
     pRender.GetSettings().renderSinglePixel = true;
     pRender.PerPixel(cursorX, cursorY);

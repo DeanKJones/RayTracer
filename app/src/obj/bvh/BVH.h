@@ -14,6 +14,11 @@ public:
 
     BVH_Node(const std::vector<std::shared_ptr<Object>>& sceneObjects, size_t start, size_t end);
 
+    // TODO : Create a rebuild bvh function that
+    //        only rebuilds objects that have
+    //        been edited in the scene
+    void rebuildBVH();
+
     bool intersect(const Ray &ray, tHit &intersector, Payload &payload) const override;
     bool boundingBox(AABB& outputBox) const override;
     // We need to rebuild the BVH after every transform

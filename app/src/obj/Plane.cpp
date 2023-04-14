@@ -26,10 +26,10 @@ Plane::Plane(float pSize, glm::vec3 pPosition, std::shared_ptr<Material>& pMater
     vertexPositions.push_back({position.x - halfSize, position.y, position.z + halfSize});
 
     // Create Triangles
-    std::shared_ptr<Triangle> half1 = std::make_shared<Triangle>(static_cast<const Mesh*>(this),
+    std::shared_ptr<Triangle> half1 = std::make_shared<Triangle>(static_cast<const std::shared_ptr<Mesh>>(this),
                                                                  std::array<uint32_t , 3>{0, 3, 1},
                                                                  pMaterial, hasBackfaceCulling);
-    std::shared_ptr<Triangle> half2 = std::make_shared<Triangle>(static_cast<const Mesh*>(this),
+    std::shared_ptr<Triangle> half2 = std::make_shared<Triangle>(static_cast<const std::shared_ptr<Mesh>>(this),
                                                                  std::array<uint32_t , 3>{1, 3, 2},
                                                                  pMaterial, hasBackfaceCulling);
 
