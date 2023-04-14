@@ -172,12 +172,16 @@ Pixel Renderer::RenderColor(Ray& ray, int depth)
     Payload payload = TraceRay(ray);
 
     // No Hit -> Return Sky
-    if (payload.hitDistance < 0){
-        // Set Colors
+    if (payload.hitDistance < 0) {
+
+#define background 0
+#if background
         glm::vec3 unitVector = glm::normalize(ray.Direction);
         float t = 0.5 * (unitVector.y + 1.0f);
         glm::vec3 SkyColor(((1.0f - t) * glm::vec3(1.0f, 1.0f, 1.0f)) + (t * glm::vec3(0.5f, 0.7f, 1.0f)));
-
+#else
+        glm::vec3 SkyColor(0.0f, 0.0f, 0.0f);
+#endif
         // Catch the final ray for RayToLine
         if (m_settings.renderSinglePixel) {
             ray.HitDistance   = payload.hitDistance;
@@ -209,14 +213,15 @@ Pixel Renderer::RenderColor(Ray& ray, int depth)
     {
         Ray scatteredRay;
         glm::vec3 attenuation;
+        glm::vec3 emittedLight = payload.materialPtr->emittedLight(payload.u, payload.v, payload.hitPosition);
 
         if (payload.materialPtr->scatter(ray, payload, attenuation, scatteredRay))
         {
             Pixel bounced = RenderColor(scatteredRay, depth - 1);
-            pixel.RGB = (attenuation * bounced.RGB) * 0.75f;
+            pixel.RGB = (emittedLight + attenuation * bounced.RGB) * 0.75f;
             return pixel;
         }
-        pixel.RGB = {0.0f, 0.0f, 0.0f};
+        pixel.RGB = emittedLight;
         return pixel;
     }
 
