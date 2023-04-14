@@ -1,7 +1,7 @@
 #ifndef RAYTRACING_LINE_H
 #define RAYTRACING_LINE_H
 
-#include "Object.h"
+#include "../Object.h"
 
 class Line : public Object
 {

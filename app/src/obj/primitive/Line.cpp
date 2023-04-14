@@ -1,7 +1,6 @@
 
 #include "Line.h"
-#include "../Scene.h"
-#include "bvh/AABB.h"
+#include "../../Scene.h"
 
 #include "imgui.h"
 #include "glm/gtc/type_ptr.hpp"
