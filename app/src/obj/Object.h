@@ -23,6 +23,7 @@ public:
 
     virtual bool intersect(const Ray &, tHit &, Payload &) const = 0;
     virtual bool boundingBox(AABB& ) const = 0;
+    virtual void transform(const glm::mat4&) const = 0;
 
     virtual void getUI() = 0;
     virtual void getUV(const glm::vec3& , float& , float& ) const = 0;
@@ -35,6 +36,8 @@ public:
     glm::vec3 position;
     std::shared_ptr<Material> material_ptr;
 
-    bool isVisible      = true;
-    bool inReflections  = true;
+    bool isVisible        = true;
+    bool inReflections    = true;
+
+    glm::mat4 m_Transform = glm::mat4(1.0f);
 };

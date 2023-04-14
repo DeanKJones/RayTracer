@@ -27,51 +27,51 @@ Cube::Cube(float pSize, glm::vec3 pPosition, std::shared_ptr<Material> &pMateria
     vertexPositions.push_back({position.x - halfSize, position.y - halfSize, position.z - halfSize});
 
     // Create Triangles
-    m_Tris.push_back(std::make_shared<Triangle>(static_cast<const Mesh*>(this),
+    m_Tris.push_back(std::make_shared<Triangle>(static_cast<const std::shared_ptr<Mesh>>(this),
                                                 std::array<uint32_t , 3>{1, 2, 6},
                                                 pMaterial, hasBackfaceCulling));
 
-    m_Tris.push_back(std::make_shared<Triangle>(static_cast<const Mesh*>(this),
+    m_Tris.push_back(std::make_shared<Triangle>(static_cast<const std::shared_ptr<Mesh>>(this),
                                                 std::array<uint32_t , 3>{1, 6, 5},
                                                 pMaterial, hasBackfaceCulling));
 
-    m_Tris.push_back(std::make_shared<Triangle>(static_cast<const Mesh*>(this),
+    m_Tris.push_back(std::make_shared<Triangle>(static_cast<const std::shared_ptr<Mesh>>(this),
                                                 std::array<uint32_t , 3>{0, 1, 5},
                                                 pMaterial, hasBackfaceCulling));
 
-    m_Tris.push_back(std::make_shared<Triangle>(static_cast<const Mesh*>(this),
+    m_Tris.push_back(std::make_shared<Triangle>(static_cast<const std::shared_ptr<Mesh>>(this),
                                                 std::array<uint32_t , 3>{0, 5, 4},
                                                 pMaterial, hasBackfaceCulling));
 
-    m_Tris.push_back(std::make_shared<Triangle>(static_cast<const Mesh*>(this),
+    m_Tris.push_back(std::make_shared<Triangle>(static_cast<const std::shared_ptr<Mesh>>(this),
                                                 std::array<uint32_t , 3>{3, 0, 4},
                                                 pMaterial, hasBackfaceCulling));
 
-    m_Tris.push_back(std::make_shared<Triangle>(static_cast<const Mesh*>(this),
+    m_Tris.push_back(std::make_shared<Triangle>(static_cast<const std::shared_ptr<Mesh>>(this),
                                                 std::array<uint32_t , 3>{3, 4, 7},
                                                 pMaterial, hasBackfaceCulling));
 
-    m_Tris.push_back(std::make_shared<Triangle>(static_cast<const Mesh*>(this),
+    m_Tris.push_back(std::make_shared<Triangle>(static_cast<const std::shared_ptr<Mesh>>(this),
                                                 std::array<uint32_t , 3>{2, 3, 7},
                                                 pMaterial, hasBackfaceCulling));
 
-    m_Tris.push_back(std::make_shared<Triangle>(static_cast<const Mesh*>(this),
+    m_Tris.push_back(std::make_shared<Triangle>(static_cast<const std::shared_ptr<Mesh>>(this),
                                                 std::array<uint32_t , 3>{2, 7, 6},
                                                 pMaterial, hasBackfaceCulling));
 
-    m_Tris.push_back(std::make_shared<Triangle>(static_cast<const Mesh*>(this),
+    m_Tris.push_back(std::make_shared<Triangle>(static_cast<const std::shared_ptr<Mesh>>(this),
                                                 std::array<uint32_t , 3>{0, 3, 2},
                                                 pMaterial, hasBackfaceCulling));
 
-    m_Tris.push_back(std::make_shared<Triangle>(static_cast<const Mesh*>(this),
+    m_Tris.push_back(std::make_shared<Triangle>(static_cast<const std::shared_ptr<Mesh>>(this),
                                                 std::array<uint32_t , 3>{0, 2, 1},
                                                 pMaterial, hasBackfaceCulling));
 
-    m_Tris.push_back(std::make_shared<Triangle>(static_cast<const Mesh*>(this),
+    m_Tris.push_back(std::make_shared<Triangle>(static_cast<const std::shared_ptr<Mesh>>(this),
                                                 std::array<uint32_t , 3>{5, 6, 7},
                                                 pMaterial, hasBackfaceCulling));
 
-    m_Tris.push_back(std::make_shared<Triangle>(static_cast<const Mesh*>(this),
+    m_Tris.push_back(std::make_shared<Triangle>(static_cast<const std::shared_ptr<Mesh>>(this),
                                                 std::array<uint32_t , 3>{5, 7, 4},
                                                 pMaterial, hasBackfaceCulling));
 
@@ -81,6 +81,11 @@ Cube::Cube(float pSize, glm::vec3 pPosition, std::shared_ptr<Material> &pMateria
 
 bool Cube::intersect(const Ray &ray, tHit &intersector, Payload &payload) const
 {
+    // Move vertices
+    glm::mat4 transform = glm::mat4(1.0f);
+    transform = glm::rotate(transform, 45.0f, glm::vec3{0.0f, 0.0f, 1.0f});
+    this->transform(transform);
+
     if(m_BVH->intersect(ray, intersector, payload)) {
         return true;
     }
