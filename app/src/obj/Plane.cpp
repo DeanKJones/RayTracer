@@ -43,10 +43,6 @@ Plane::Plane(float pSize, glm::vec3 pPosition, std::shared_ptr<Material>& pMater
 
 bool Plane::intersect(const Ray &ray, tHit &intersector, Payload &payload) const
 {
-// Transforming triangles to world space
-//    for()
-//        t.transfomr(trans);
-
     if(m_BVH->intersect(ray, intersector, payload)) {
         return true;
     }

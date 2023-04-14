@@ -81,11 +81,6 @@ Cube::Cube(float pSize, glm::vec3 pPosition, std::shared_ptr<Material> &pMateria
 
 bool Cube::intersect(const Ray &ray, tHit &intersector, Payload &payload) const
 {
-    // Move vertices
-    glm::mat4 transform = glm::mat4(1.0f);
-    transform = glm::rotate(transform, 45.0f, glm::vec3{0.0f, 0.0f, 1.0f});
-    this->transform(transform);
-
     if(m_BVH->intersect(ray, intersector, payload)) {
         return true;
     }

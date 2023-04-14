@@ -14,7 +14,6 @@ public:
 
     bool intersect(const Ray &ray, tHit &quadratic, Payload &payload) const override;
     bool boundingBox(AABB& outputBox) const override;
-    void transform(const glm::mat4& transform) const override {}
 
     bool solveQuadratic(const float &a, const float &b, const float &c, tHit &quadratic) const;
 

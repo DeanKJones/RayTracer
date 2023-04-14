@@ -16,10 +16,6 @@ public:
     glm::vec3 max() const { return maximum; }
 
     bool intersect(const Ray &ray, tHit intersector) const;
-    inline void transform(const glm::mat4 transform) const {
-//        minimum = transform * glm::vec4(minimum, 1.0f);
-//        maximum = transform * glm::vec4(maximum, 1.0f);
-    }
 
 public:
     glm::vec3 minimum;

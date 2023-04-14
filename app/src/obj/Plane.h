@@ -21,14 +21,9 @@ public:
     void getUV(const glm::vec3& p, float& u, float& v) const override {}
     void getUI() override;
 
-   // getTriangles();
-   // getWorld
-
 public:
     float m_Size;
     bool hasBackfaceCulling = true;
-    //Transform transform;
-
 };
 
 
