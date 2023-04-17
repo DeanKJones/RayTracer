@@ -6,6 +6,22 @@
 
 #include <vector>
 
+struct Vertex
+{
+    glm::vec3 Position;
+    glm::vec3 Normal;
+    glm::vec3 Color;
+
+    glm::vec2 texCoord;
+
+    bool operator==(const Vertex& other) const {
+        return Position == other.Position   &&
+               Color    == other.Color      &&
+               texCoord == other.texCoord   &&
+               Normal   == other.Normal;
+    }
+};
+
 class Mesh : public Object
 {
 public:
@@ -24,12 +40,11 @@ public:
 public:
     bool loadOBJ(const std::string& filename);
 
-    inline const glm::vec3& getPosition(uint32_t index) const { return vertexPositions[index]; }
-    inline const glm::vec3& setPosition(uint32_t index, glm::vec3 wPosition) { return vertexPositions[index] = wPosition; }
+    inline glm::vec3 getPosition(uint32_t index) const { return m_Vertices[index].Position; }
+    inline glm::vec3 setPosition(uint32_t index, glm::vec3 wPosition) { return m_Vertices[index].Position = wPosition; }
 
 protected:
-    std::vector<glm::vec3> vertexPositions;
-    std::vector<glm::vec3> vertexNormals;
+    std::vector<Vertex> m_Vertices;
 
     std::vector<std::shared_ptr<Object>> m_Tris;
     std::shared_ptr<BVH_Node> m_BVH;
