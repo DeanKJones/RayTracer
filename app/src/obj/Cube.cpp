@@ -1,7 +1,14 @@
 
 #include "Cube.h"
 #include "imgui.h"
+
+#include "../shading/Metal.h"
+#include "../shading/Emissive.h"
+#include "../shading/Dielectric.h"
 #include "../shading/Lambertian.h"
+
+#include <memory>
+
 #include "glm/gtc/type_ptr.hpp"
 
 Cube::Cube(std::string pName, glm::vec3 pPosition, std::shared_ptr<Material> pMaterial,
@@ -80,7 +87,7 @@ Cube::Cube(float pSize, glm::vec3 pPosition, std::shared_ptr<Material> &pMateria
 }
 
 
-void Cube::CornellBox()
+void Cube::CornellBox(std::shared_ptr<Material> pMaterial)
 {
     position = {0.0f, 0.0f, 0.0f};
     m_Size = 2;
@@ -97,8 +104,8 @@ void Cube::CornellBox()
     vertexPositions.push_back({position.x - halfSize,    position.y,          position.z + halfSize});
     vertexPositions.push_back({position.x - halfSize,    position.y,          position.z - halfSize});
 
-    std::shared_ptr<Material> Red = std::make_shared<Lambertian>(glm::vec3(0.9f, 0.0f, 0.0f));
-    std::shared_ptr<Material> Blue = std::make_shared<Lambertian>(glm::vec3(0.0f, 0.0f, 0.9f));
+    std::shared_ptr<Material> Red   = std::make_shared<Lambertian>(glm::vec3(0.9f, 0.0f, 0.0f));
+    std::shared_ptr<Material> Blue  = std::make_shared<Lambertian>(glm::vec3(0.0f, 0.0f, 0.9f));
     std::shared_ptr<Material> Green = std::make_shared<Lambertian>(glm::vec3(0.0f, 0.9f, 0.0f));
     std::shared_ptr<Material> White = std::make_shared<Lambertian>(glm::vec3(0.9f, 0.9f, 0.9f));
 
