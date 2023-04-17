@@ -189,7 +189,8 @@ void Scene::CreateCornellBox()
 {
     {
         std::shared_ptr<Cube> cornellBox = std::make_shared<Cube>();
-        cornellBox->CornellBox();
+        auto tMetal = std::make_shared<Metal>(glm::vec3(1.0f, 1.0f, 1.0f), 0.0f);
+        cornellBox->CornellBox(tMetal);
         cornellBox->objectName = "Cornell Box Items";
         cornellBox->isVisible = true;
         cornellBox->inReflections = true;
@@ -214,7 +215,7 @@ void Scene::CreateCornellBox()
         sphere->position = {0.6f, 0.4f, 0.0f};
         glm::vec3 albedo = {0.9f, 0.91f, 0.12f};
         sphere->radius = {0.3f};
-        sphere->material_ptr = std::make_shared<Metal>(albedo, 0.4f);
+        sphere->material_ptr = std::make_shared<Metal>(albedo, 0.75f);
         sphere->isVisible = true;
         sphere->inReflections = true;
 
@@ -224,9 +225,9 @@ void Scene::CreateCornellBox()
         std::shared_ptr<Sphere> sphere = std::make_shared<Sphere>();
         sphere->objectName = "Small Metal Sphere";
         sphere->position = {-0.3f, 1.0f, 0.0f};
-        glm::vec3 albedo = {0.9f, 0.9f, 0.9f};
+        glm::vec3 albedo = {1.0f, 1.0f, 1.0f};
         sphere->radius = {0.5f};
-        sphere->material_ptr = std::make_shared<Metal>(albedo, 0.05f);
+        sphere->material_ptr = std::make_shared<Dielectric>(albedo, 1.52f);
         sphere->isVisible = true;
         sphere->inReflections = true;
 
