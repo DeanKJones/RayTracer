@@ -25,14 +25,31 @@ Cube::Cube(float pSize, glm::vec3 pPosition, std::shared_ptr<Material> &pMateria
     float halfSize = m_Size / 2;
 
     // Create Corners
-    vertexPositions.push_back({position.x + halfSize, position.y + halfSize, position.z - halfSize});
-    vertexPositions.push_back({position.x + halfSize, position.y + halfSize, position.z + halfSize});
-    vertexPositions.push_back({position.x - halfSize, position.y + halfSize, position.z + halfSize});
-    vertexPositions.push_back({position.x - halfSize, position.y + halfSize, position.z - halfSize});
-    vertexPositions.push_back({position.x + halfSize, position.y - halfSize, position.z - halfSize});
-    vertexPositions.push_back({position.x + halfSize, position.y - halfSize, position.z + halfSize});
-    vertexPositions.push_back({position.x - halfSize, position.y - halfSize, position.z + halfSize});
-    vertexPositions.push_back({position.x - halfSize, position.y - halfSize, position.z - halfSize});
+    Vertex vertex_0 {};
+    vertex_0.Position = {position.x + halfSize, position.y + halfSize, position.z - halfSize};
+    Vertex vertex_1 {};
+    vertex_1.Position = {position.x + halfSize, position.y + halfSize, position.z + halfSize};
+    Vertex vertex_2 {};
+    vertex_2.Position = {position.x - halfSize, position.y + halfSize, position.z + halfSize};
+    Vertex vertex_3 {};
+    vertex_3.Position = {position.x - halfSize, position.y + halfSize, position.z - halfSize};
+    Vertex vertex_4 {};
+    vertex_4.Position = {position.x + halfSize, position.y - halfSize, position.z - halfSize};
+    Vertex vertex_5 {};
+    vertex_5.Position = {position.x + halfSize, position.y - halfSize, position.z + halfSize};
+    Vertex vertex_6 {};
+    vertex_6.Position = {position.x - halfSize, position.y - halfSize, position.z + halfSize};
+    Vertex vertex_7 {};
+    vertex_7.Position = {position.x - halfSize, position.y - halfSize, position.z - halfSize};
+
+    m_Vertices.push_back(vertex_0);
+    m_Vertices.push_back(vertex_1);
+    m_Vertices.push_back(vertex_2);
+    m_Vertices.push_back(vertex_3);
+    m_Vertices.push_back(vertex_4);
+    m_Vertices.push_back(vertex_5);
+    m_Vertices.push_back(vertex_6);
+    m_Vertices.push_back(vertex_7);
 
     // Create Triangles
     m_Tris.push_back(std::make_shared<Triangle>(static_cast<const std::shared_ptr<Mesh>>(this),
@@ -95,14 +112,31 @@ void Cube::CornellBox(std::shared_ptr<Material> pMaterial)
     float halfSize = m_Size / 2;
 
     // Create Corners
-    vertexPositions.push_back({position.x + halfSize, position.y + m_Size, position.z - halfSize});
-    vertexPositions.push_back({position.x + halfSize, position.y + m_Size, position.z + halfSize});
-    vertexPositions.push_back({position.x - halfSize, position.y + m_Size, position.z + halfSize});
-    vertexPositions.push_back({position.x - halfSize, position.y + m_Size, position.z - halfSize});
-    vertexPositions.push_back({position.x + halfSize,    position.y,          position.z - halfSize});
-    vertexPositions.push_back({position.x + halfSize,    position.y,          position.z + halfSize});
-    vertexPositions.push_back({position.x - halfSize,    position.y,          position.z + halfSize});
-    vertexPositions.push_back({position.x - halfSize,    position.y,          position.z - halfSize});
+    Vertex vertex_0 {};
+    vertex_0.Position = {position.x + halfSize, position.y + m_Size, position.z - halfSize};
+    Vertex vertex_1 {};
+    vertex_1.Position = {position.x + halfSize, position.y + m_Size, position.z + halfSize};
+    Vertex vertex_2 {};
+    vertex_2.Position = {position.x - halfSize, position.y + m_Size, position.z + halfSize};
+    Vertex vertex_3 {};
+    vertex_3.Position = {position.x - halfSize, position.y + m_Size, position.z - halfSize};
+    Vertex vertex_4 {};
+    vertex_4.Position = {position.x + halfSize,    position.y,          position.z - halfSize};
+    Vertex vertex_5 {};
+    vertex_5.Position = {position.x + halfSize,    position.y,          position.z + halfSize};
+    Vertex vertex_6 {};
+    vertex_6.Position = {position.x - halfSize,    position.y,          position.z + halfSize};
+    Vertex vertex_7 {};
+    vertex_7.Position = {position.x - halfSize,    position.y,          position.z - halfSize};
+
+    m_Vertices.push_back(vertex_0);
+    m_Vertices.push_back(vertex_1);
+    m_Vertices.push_back(vertex_2);
+    m_Vertices.push_back(vertex_3);
+    m_Vertices.push_back(vertex_4);
+    m_Vertices.push_back(vertex_5);
+    m_Vertices.push_back(vertex_6);
+    m_Vertices.push_back(vertex_7);
 
     std::shared_ptr<Material> Red   = std::make_shared<Lambertian>(glm::vec3(0.9f, 0.0f, 0.0f));
     std::shared_ptr<Material> Blue  = std::make_shared<Lambertian>(glm::vec3(0.0f, 0.0f, 0.9f));

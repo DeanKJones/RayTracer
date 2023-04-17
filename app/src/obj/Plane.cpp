@@ -20,10 +20,19 @@ Plane::Plane(float pSize, glm::vec3 pPosition, std::shared_ptr<Material>& pMater
     float halfSize = m_Size / 2;
 
     // Create corners
-    vertexPositions.push_back({position.x - halfSize, position.y, position.z - halfSize});
-    vertexPositions.push_back({position.x + halfSize, position.y, position.z - halfSize});
-    vertexPositions.push_back({position.x + halfSize, position.y, position.z + halfSize});
-    vertexPositions.push_back({position.x - halfSize, position.y, position.z + halfSize});
+    Vertex vertex_0 {};
+    vertex_0.Position = {position.x - halfSize, position.y, position.z - halfSize};
+    Vertex vertex_1 {};
+    vertex_1.Position = {position.x + halfSize, position.y, position.z - halfSize};
+    Vertex vertex_2 {};
+    vertex_2.Position = {position.x + halfSize, position.y, position.z + halfSize};
+    Vertex vertex_3 {};
+    vertex_3.Position = {position.x - halfSize, position.y, position.z + halfSize};
+
+    m_Vertices.push_back(vertex_0);
+    m_Vertices.push_back(vertex_1);
+    m_Vertices.push_back(vertex_2);
+    m_Vertices.push_back(vertex_3);
 
     // Create Triangles
     std::shared_ptr<Triangle> half1 = std::make_shared<Triangle>(static_cast<const std::shared_ptr<Mesh>>(this),
@@ -49,10 +58,19 @@ Plane::Plane(float pSize, glm::vec3 pPosition, std::shared_ptr<Material>& pMater
     float halfSize = m_Size / 2;
 
     // Create corners
-    vertexPositions.push_back({position.x - halfSize, position.y, position.z - halfSize});
-    vertexPositions.push_back({position.x + halfSize, position.y, position.z - halfSize});
-    vertexPositions.push_back({position.x + halfSize, position.y, position.z + halfSize});
-    vertexPositions.push_back({position.x - halfSize, position.y, position.z + halfSize});
+    Vertex vertex_0;
+    vertex_0.Position = {position.x - halfSize, position.y, position.z - halfSize};
+    Vertex vertex_1;
+    vertex_1.Position = {position.x + halfSize, position.y, position.z - halfSize};
+    Vertex vertex_2;
+    vertex_2.Position = {position.x + halfSize, position.y, position.z + halfSize};
+    Vertex vertex_3;
+    vertex_3.Position = {position.x - halfSize, position.y, position.z + halfSize};
+
+    m_Vertices.push_back(vertex_0);
+    m_Vertices.push_back(vertex_1);
+    m_Vertices.push_back(vertex_2);
+    m_Vertices.push_back(vertex_3);
 
     // Create Triangles
     if (flipped)
