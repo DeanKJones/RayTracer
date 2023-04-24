@@ -61,6 +61,19 @@ namespace Walnut {
 				return -InUnitSphere;
 			}
 		}
+
+        static glm::vec3 RandomCosineDirection() {
+            auto r1 = Float();
+            auto r2 = Float();
+            auto z = sqrt(1-r2);
+
+            auto phi = 2 * M_PI * r1;
+            auto x = cos(phi) * sqrt(r2);
+            auto y = sin(phi) * sqrt(r2);
+
+            return glm::vec3(x, y, z);
+        }
+
         static glm::vec2 RandomPointInCircle() {
             float angle = Random::Float() * 2 * PI;
             glm::vec2 pointOnCircle = glm::vec2(glm::cos(angle), glm::sin(angle));
