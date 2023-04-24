@@ -5,17 +5,10 @@
 // LAMBERTIAN MATERIALS
 
 bool Lambertian::scatter(
-        const Ray& ray, const Payload& payload, glm::vec3& colorAttenuation, Ray& scattered) const
+        const Ray& ray, const Payload& payload, glm::vec3& colorAttenuation, Ray& scattered, float& pdf) const
 {
 
     glm::vec3 scatterDirection;
-    bool lambertMode = GetLambertModel();
-
-    if (lambertMode){
-        scatterDirection = payload.worldNormal + Walnut::Random::InUnitHemi(payload.worldNormal);
-    } else {
-        scatterDirection = payload.worldNormal + Walnut::Random::InUnitSphere();
-    }
 
     // Need to catch degenerate ray scatters
     if(nearZero(scatterDirection)){
@@ -33,6 +26,14 @@ bool Lambertian::scatter(
     colorAttenuation = albedo->value(payload.u, payload.v, payload.hitPosition);
     return true;
 }
+
+
+float Lambertian::scatterPDF(const Ray& ray, const Payload& payload, Ray& scattered) const
+{
+    float cosine = glm::dot(payload.worldNormal, glm::normalize(scattered.Direction));
+    return cosine < 0 ? 0 : cosine / M_PI;
+}
+
 
 bool Lambertian::nearZero(glm::vec3& nearingZero) const
 {

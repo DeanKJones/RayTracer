@@ -20,8 +20,10 @@ public:
     }
 
     virtual bool scatter(
-        const Ray& ray, const Payload& payload, glm::vec3& colorAttenuation, Ray& scattered
+        const Ray& ray, const Payload& payload, glm::vec3& colorAttenuation, Ray& scattered, float& pdf
         ) const = 0;
+
+    virtual float scatterPDF(const Ray& ray, const Payload& payload, Ray& scattered) const { return 0; }
 
     glm::vec3 reflect(const glm::vec3 &incident, const glm::vec3 &normal) const;
 

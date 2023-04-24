@@ -13,8 +13,10 @@ public:
     Lambertian(std::shared_ptr<Texture> pTexture) : Material(pTexture) {}
 
     virtual bool scatter(
-            const Ray& ray, const Payload& payload, glm::vec3& colorAttenuation, Ray& scattered
+            const Ray& ray, const Payload& payload, glm::vec3& colorAttenuation, Ray& scattered, float& pdf
     ) const override;
+
+    virtual float scatterPDF(const Ray& ray, const Payload& payload, Ray& scattered) const override;
 
     bool nearZero(glm::vec3& nearingZero) const;
 
