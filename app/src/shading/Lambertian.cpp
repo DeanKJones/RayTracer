@@ -1,9 +1,7 @@
 #include "Lambertian.h"
 #include "../Payload.h"
+#include "../utils/ONB.h"
 
-
-// Globals
-bool Lambertian::lambertHemi = false;
 // LAMBERTIAN MATERIALS
 
 bool Lambertian::scatter(
@@ -24,8 +22,13 @@ bool Lambertian::scatter(
         scatterDirection = payload.worldNormal;
     }
 
+    onb uvw;
+    uvw.buildFromW(payload.worldNormal);
+    scatterDirection = uvw.local(Walnut::Random::RandomCosineDirection());
+
     scattered.Origin = payload.hitPosition + (payload.worldNormal * 0.00001f);
     scattered.Direction = scatterDirection;
+    pdf = glm::dot(uvw.w(), scatterDirection) / M_PI;
 
     colorAttenuation = albedo->value(payload.u, payload.v, payload.hitPosition);
     return true;
