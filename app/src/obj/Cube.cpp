@@ -104,7 +104,7 @@ Cube::Cube(float pSize, glm::vec3 pPosition, std::shared_ptr<Material> &pMateria
 }
 
 
-void Cube::CornellBox(std::shared_ptr<Material> pMaterial)
+void Cube::CornellBox()
 {
     position = {0.0f, 0.0f, 0.0f};
     m_Size = 2;
