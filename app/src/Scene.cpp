@@ -189,8 +189,7 @@ void Scene::CreateCornellBox()
 {
     {
         std::shared_ptr<Cube> cornellBox = std::make_shared<Cube>();
-        auto tMetal = std::make_shared<Metal>(glm::vec3(1.0f, 1.0f, 1.0f), 0.0f);
-        cornellBox->CornellBox(tMetal);
+        cornellBox->CornellBox();
         cornellBox->objectName = "Cornell Box Items";
         cornellBox->isVisible = true;
         cornellBox->inReflections = true;
