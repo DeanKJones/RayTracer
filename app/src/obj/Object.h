@@ -27,6 +27,9 @@ public:
     virtual void getUI() = 0;
     virtual void getUV(const glm::vec3& , float& , float& ) const = 0;
 
+    virtual double pdfValue(const glm::vec3& , const glm::vec3& ) const { return 0.0f; }
+    virtual glm::vec3 random(const glm::vec3& ) const { return glm::vec3{1.0f, 0.0f, 0.0f}; }
+
     // Getters
     std::shared_ptr<Material> getMaterialPtr() const { return material_ptr; }
 
