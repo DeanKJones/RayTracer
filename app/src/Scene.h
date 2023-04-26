@@ -40,6 +40,8 @@ public:
 
 public:
     std::vector<std::shared_ptr<Object>> sceneObjects;
+    std::shared_ptr<Object> sceneLight;
+
     std::vector<std::shared_ptr<Object>> ObjectsUI;
     mutable std::vector<Ray> rayToLine;
 

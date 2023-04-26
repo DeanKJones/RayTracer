@@ -199,15 +199,23 @@ void Scene::CreateCornellBox()
     }
     {
         std::shared_ptr<Material> material = std::make_shared<Emissive>(glm::vec3(5.0f, 5.0f, 5.0f));
-        float planeSize = 1.0f;
+        float planeSize = 0.5f;
         glm::vec3 planePosition = {0.0f, 1.9f, 0.0f};
         std::shared_ptr<Plane> EmissivePlane = std::make_shared<Plane>(planeSize, planePosition,
-                                                                       material, true);
+                                                                       material, true, true);
         EmissivePlane->objectName            = "Emissive Plane";
         EmissivePlane->isVisible             = true;
         EmissivePlane->inReflections         = true;
 
         AddToScene(EmissivePlane);
+
+        material = std::shared_ptr<Material>();
+        std::shared_ptr<Object> LightObj = std::make_shared<Plane>(planeSize, planePosition,
+                                           material, true, false);
+        EmissivePlane->objectName            = "Light PDF Plane";
+        EmissivePlane->isVisible             = true;
+        EmissivePlane->inReflections         = true;
+        sceneLight = LightObj;
     }
     {
         std::shared_ptr<Sphere> sphere = std::make_shared<Sphere>();
