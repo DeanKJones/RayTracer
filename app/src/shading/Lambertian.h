@@ -19,10 +19,6 @@ public:
     virtual float scatterPDF(const Ray& ray, const Payload& payload, Ray& scattered) const override;
 
     bool nearZero(glm::vec3& nearingZero) const;
-
-public:
-    bool GetLambertModel() const { return lambertHemi; }
-    static bool lambertHemi;
 };
 
 

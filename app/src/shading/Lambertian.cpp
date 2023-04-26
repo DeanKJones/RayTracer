@@ -1,6 +1,7 @@
 #include "Lambertian.h"
 #include "../Payload.h"
-#include "../utils/ONB.h"
+
+#include "../pdf/ONB.h"
 
 // LAMBERTIAN MATERIALS
 
@@ -17,7 +18,7 @@ bool Lambertian::scatter(
 
     onb uvw;
     uvw.buildFromW(payload.worldNormal);
-    scatterDirection = uvw.local(Walnut::Random::RandomCosineDirection());
+    scatterDirection = uvw.local(Walnut::Random::CosineDirection());
 
     scattered.Origin = payload.hitPosition + (payload.worldNormal * 0.00001f);
     scattered.Direction = scatterDirection;

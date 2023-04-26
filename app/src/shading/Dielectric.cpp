@@ -4,7 +4,7 @@
 #include <random>
 
 bool Dielectric::scatter(
-        const Ray &ray, const Payload &payload, glm::vec3 &colorAttenuation, Ray &scattered) const
+        const Ray &ray, const Payload &payload, glm::vec3 &colorAttenuation, Ray &scattered, float& pdf) const
 {
     colorAttenuation = albedo->value(payload.u, payload.v, payload.hitPosition);
     float eta = payload.frontFace ? (1.0f / indexOfRefraction) : indexOfRefraction;

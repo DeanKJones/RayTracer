@@ -4,7 +4,7 @@
 // METAL MATERIALS
 
 bool Metal::scatter(
-        const Ray& ray, const Payload& payload, glm::vec3& colorAttenuation, Ray& scattered) const
+        const Ray& ray, const Payload& payload, glm::vec3& colorAttenuation, Ray& scattered, float& pdf) const
 {
     glm::vec3 rayVector = glm::normalize(ray.Direction);
     glm::vec3 reflected = reflect(ray.Direction, payload.worldNormal);

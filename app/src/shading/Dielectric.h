@@ -11,7 +11,7 @@ public:
 
     Dielectric(glm::vec3 pColor, float pIR) : Material(pColor), indexOfRefraction(pIR) {}
     virtual bool scatter(
-            const Ray& ray, const Payload& payload, glm::vec3& colorAttenuation, Ray& scattered
+            const Ray& ray, const Payload& payload, glm::vec3& colorAttenuation, Ray& scattered, float& pdf
     ) const override;
 
     glm::vec3 refract(const glm::vec3& incident, const glm::vec3& n, float etai_over_etat) const;

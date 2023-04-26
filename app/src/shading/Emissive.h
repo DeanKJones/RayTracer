@@ -17,7 +17,7 @@ public:
     }
 
     inline virtual bool scatter(
-            const Ray& ray, const Payload& payload, glm::vec3& colorAttenuation, Ray& scattered
+            const Ray& ray, const Payload& payload, glm::vec3& colorAttenuation, Ray& scattered, float& pdf
     ) const override { return false; }
 
 public:
