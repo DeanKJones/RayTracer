@@ -4,6 +4,9 @@
 
 struct Ray
 {
+    Ray() = default;
+    Ray(glm::vec3 pOrigin, glm::vec3 pDirection) : Origin(pOrigin), Direction(pDirection) {}
+
 	glm::vec3 Origin;
 	glm::vec3 Direction;
 
