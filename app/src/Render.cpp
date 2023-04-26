@@ -3,7 +3,11 @@
 
 #include <random>
 
-#include "shading/Lambertian.h"
+#include "pdf/pdfMix.h"
+#include "pdf/pdfCosine.h"
+#include "pdf/pdfObject.h"
+
+#include "shading/Emissive.h"
 
 #include "algorithm"
 #include "../../core/external/libomp/include/omp.h"
@@ -174,7 +178,7 @@ Pixel Renderer::RenderColor(Ray& ray, int depth)
     // No Hit -> Return Sky
     if (payload.hitDistance < 0) {
 
-#define background 0
+#define background 1
 #if background
         glm::vec3 unitVector = glm::normalize(ray.Direction);
         float t = 0.5 * (unitVector.y + 1.0f);
@@ -214,11 +218,21 @@ Pixel Renderer::RenderColor(Ray& ray, int depth)
         Ray scatteredRay;
         glm::vec3 attenuation;
         glm::vec3 emittedLight = payload.materialPtr->emittedLight(payload.u, payload.v, payload.hitPosition);
+        float pdfValue;
 
-        if (payload.materialPtr->scatter(ray, payload, attenuation, scatteredRay))
+        if (payload.materialPtr->scatter(ray, payload, attenuation, scatteredRay, pdfValue))
         {
+            std::shared_ptr<pdf> pdfLight  = std::make_shared<pdfObject>(m_activeScene->sceneLight, payload.hitPosition);
+            std::shared_ptr<pdf> pdfWorld = std::make_shared<pdfCosine>(payload.worldNormal);
+
+            pdfMix pdf(pdfLight, pdfWorld);
+            scatteredRay = Ray(payload.hitPosition, pdf.generate());
+            pdfValue = pdf.value(scatteredRay.Direction);
+
             Pixel bounced = RenderColor(scatteredRay, depth - 1);
-            pixel.RGB = (emittedLight + attenuation * bounced.RGB) * 0.75f;
+            pixel.RGB = (emittedLight + attenuation *
+                         payload.materialPtr->scatterPDF(ray, payload, scatteredRay) *
+                         bounced.RGB) / pdfValue;
             return pixel;
         }
         pixel.RGB = emittedLight;
