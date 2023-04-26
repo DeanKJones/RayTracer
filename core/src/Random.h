@@ -62,7 +62,7 @@ namespace Walnut {
 			}
 		}
 
-        static glm::vec3 RandomCosineDirection() {
+        static glm::vec3 CosineDirection() {
             auto r1 = Float();
             auto r2 = Float();
             auto z = sqrt(1-r2);
