@@ -42,8 +42,12 @@ add_subdirectory(external/imgui)
 #stb-image
 add_subdirectory(external/stb_image)
 
-#stb-image
+#libomp
 add_subdirectory(external/libomp)
+
+#tinyobjloader
+add_subdirectory(external/tinyobjloader)
+
 # ===============================
 
 # ========== Core =============
