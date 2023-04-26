@@ -14,10 +14,13 @@ public:
           bool pVisibility, bool pInReflections, float pSize);
 
     Plane(float pSize, glm::vec3 pPosition, std::shared_ptr<Material>& pMaterial);
-    Plane(float pSize, glm::vec3 pPosition, std::shared_ptr<Material>& pMaterial, bool flipped);
+    Plane(float pSize, glm::vec3 pPosition, std::shared_ptr<Material>& pMaterial, bool flipped, bool backface);
 
     bool intersect(const Ray &ray, tHit &intersector, Payload &payload) const override;
     bool boundingBox(AABB& outputBox) const override;
+
+    double pdfValue(const glm::vec3& origin, const glm::vec3& v) const override;
+    glm::vec3 random(const glm::vec3& origin) const override;
 
     void getUV(const glm::vec3& p, float& u, float& v) const override {}
     void getUI() override;

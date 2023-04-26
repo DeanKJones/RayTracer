@@ -2,7 +2,9 @@
 
 #include "imgui.h"
 #include "../Scene.h"
+
 #include "glm/gtc/type_ptr.hpp"
+#include "glm/gtx/norm.hpp"
 
 
 Plane::Plane(std::string pName, glm::vec3 pPosition, std::shared_ptr<Material> pMaterial, bool pVisibility,
@@ -50,10 +52,11 @@ Plane::Plane(float pSize, glm::vec3 pPosition, std::shared_ptr<Material>& pMater
 }
 
 
-Plane::Plane(float pSize, glm::vec3 pPosition, std::shared_ptr<Material>& pMaterial, bool flipped)
+Plane::Plane(float pSize, glm::vec3 pPosition, std::shared_ptr<Material>& pMaterial, bool flipped, bool backface)
 {
     position = pPosition;
     m_Size = pSize;
+    hasBackfaceCulling = backface;
     // Make center by halving size
     float halfSize = m_Size / 2;
 
@@ -117,6 +120,35 @@ bool Plane::boundingBox(AABB &outputBox) const
 {
     outputBox = m_BVH->box;
     return true;
+}
+
+
+double Plane::pdfValue(const glm::vec3& origin, const glm::vec3& v) const
+{
+    Payload payload;
+    tHit intersector(0.0001f, std::numeric_limits<float>::max());
+    Ray ray(origin, v);
+
+    if (!this->intersect(ray, intersector, payload)){
+        return 0;
+    }
+
+    // Something produces under-lit render here
+    float area = (m_Size) * (m_Size);
+    float distanceSqr = (payload.hitDistance * payload.hitDistance) * glm::dot(v, v);
+    float cosine = std::fabs(glm::dot(v, payload.worldNormal) / glm::length(v));
+
+    return distanceSqr / (cosine * area);
+}
+
+
+glm::vec3 Plane::random(const glm::vec3& origin) const
+{
+    float halfSize = m_Size / 2;
+    glm::vec3 randomPoint = {Walnut::Random::Float(position.x - halfSize, position.x + halfSize),
+                             position.y,
+                             Walnut::Random::Float(position.z - halfSize, position.z + halfSize)};
+    return randomPoint - origin;
 }
 
 
