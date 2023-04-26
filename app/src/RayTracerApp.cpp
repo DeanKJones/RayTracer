@@ -38,6 +38,8 @@ public:
         std::shared_ptr<BVH_Node> bvhNode = std::make_shared<BVH_Node>(m_Scene);
         m_SceneBVH.AddToScene(bvhNode);
 
+        m_SceneBVH.sceneLight = m_Scene.sceneLight;
+
         // Render BVH Box view
         m_SceneBox.TraverseBvhNode(bvhNode);
         for (std::shared_ptr<Object> item : m_Scene.sceneObjects) {
